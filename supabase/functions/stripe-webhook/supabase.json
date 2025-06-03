@@ -1,0 +1,6 @@
+{
+  "name": "stripe-webhook",
+  "version": "1.0",
+  "description": "Webhook handler for Stripe events",
+  "public_access": true
+}
