@@ -1,5 +1,5 @@
 [build]
-  command = "CI=false npm install -D tailwindcss postcss autoprefixer && npm run build"
+  command = "CI=false npm install -D tailwindcss postcss autoprefixer ajv ajv-keywords && CI=false npm install && npm run build"
   publish = "build"
 
 [build.environment]
