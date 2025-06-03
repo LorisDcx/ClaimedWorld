@@ -1,9 +1,10 @@
 [build]
-  command = "CI=false npm install -D tailwindcss postcss autoprefixer ajv ajv-keywords && CI=false npm install && npm run build"
+  command = "CI=false npm install -D tailwindcss postcss autoprefixer ajv ajv-keywords && CI=false npm install && CI=false npm run build"
   publish = "build"
 
 [build.environment]
   NODE_VERSION = "20.11.1"
+  PHP_VERSION = "7.4"
   REACT_APP_SUPABASE_URL = "https://wmnwnwntoddgzxjsvhdz.supabase.co"
   REACT_APP_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indtbndud250b2RkZ3p4anN2aGR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg4ODA2NDUsImV4cCI6MjA2NDQ1NjY0NX0.tZRZO0fxTpXn0rHHDhhV7-tYEz3wvubhBehxRSBDMqg"
   REACT_APP_STRIPE_PUBLISHABLE_KEY = "pk_test_51REoDbR33558RSCu4xEisShtQIfoZNVw06snA5Q64xo3FhRxJrDou1yyQ8546EVdX6IfQzvdKSE5mebWLRvQ9ZqJ00laZMuDp2"
