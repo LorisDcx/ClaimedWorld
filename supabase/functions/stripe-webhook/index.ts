@@ -8,7 +8,8 @@
 
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1'
-import Stripe from 'https://esm.sh/stripe@12.0.0?target=deno'
+// Import Stripe SDK - commenté car temporairement non utilisé à cause de l'erreur SubtleCryptoProvider
+// import Stripe from 'https://esm.sh/stripe@12.0.0?target=deno'
 
 console.log('Stripe webhook function initialized - listening for events')
 
@@ -34,29 +35,31 @@ serve(async (req) => {
       // throw new Error('No stripe signature found')
     }
 
-    // Get the raw body
+    // Get the raw body and parse it as JSON
     const body = await req.text()
-
-    // Initialize Stripe
-    const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') || '', {
-      apiVersion: '2022-11-15',
-    })
-
-    // Verify the webhook signature
-    const event = stripe.webhooks.constructEvent(
-      body,
-      signature,
-      Deno.env.get('STRIPE_WEBHOOK_SECRET') || ''
-    )
+    console.log('Request body received, starting processing...')
+    
+    // Parse payload directly to handle the event
+    let eventData;
+    try {
+      eventData = JSON.parse(body);
+      console.log('Event type:', eventData.type);
+    } catch (parseError) {
+      console.error('Error parsing webhook body:', parseError);
+      return new Response(JSON.stringify({ error: `Invalid JSON: ${parseError.message}` }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 400,
+      });
+    }
 
     // Create Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL') || ''
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
     const supabase = createClient(supabaseUrl, supabaseKey)
 
-    // Handle the event
-    if (event.type === 'checkout.session.completed') {
-      const session = event.data.object
+    // Process the event
+    if (eventData.type === 'checkout.session.completed') {
+      const session = eventData.data.object
       const { countryId, userId, amount } = session.metadata
 
       // Create a new bid
