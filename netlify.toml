@@ -1,5 +1,5 @@
 [build]
-  command = "CI=false npm install --legacy-peer-deps && CI=false npm run build"
+  command = "bash -c 'mise settings add idiomatic_version_file_enable_tools node || true && CI=false npm install --legacy-peer-deps && CI=false npm run build'"
   publish = "build"
 
 [build.environment]
