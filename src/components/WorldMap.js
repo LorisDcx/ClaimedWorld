@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import worldMapSvg from '../assets/world-map.svg';
+
 
 const WorldMap = ({ countries, onCountryClick, selectedCountry }) => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -64,7 +64,7 @@ const WorldMap = ({ countries, onCountryClick, selectedCountry }) => {
 
   // Effet pour charger le SVG et l'injecter dans le DOM
   useEffect(() => {
-    fetch(worldMapSvg)
+    fetch('/world-map.svg')
       .then(response => response.text())
       .then(svgText => {
         setSvgContent(svgText);
