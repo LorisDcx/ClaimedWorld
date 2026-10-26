@@ -33,6 +33,7 @@ import WorldMap from './world-map';
 import CountryStandings from './country-standings';
 import AllianceManagement from './alliance-management';
 import SponsorConsole from './sponsor-console';
+import SponsorAttribution from './sponsor-attribution';
 import SupportCreator from './support-creator';
 import BorderAttack from './border-attack';
 import ProgressionPanel from './progression-panel';
@@ -644,67 +645,72 @@ export default function Game() {
           <ChevronDown size={12} />
         </div>
         {tab === 'map' && country && (
-          <CountryStandings
-            country={country}
-            territory={selectedTerritory}
-            campId={campId}
-            now={now}
-            needed={needed}
-            busy={!!busy}
-            wallet={availableWallet}
-            modeLabel={
-              mode === 'alliance'
-                ? `Trésorerie de ${alliance?.name} · ${number(availableWallet || 0)} disponibles`
-                : player
-                  ? `Stock personnel · ${player.wallet}/${player.stockCap}`
-                  : 'En votre nom'
-            }
-            modeSwitcher={
-              alliance && (
-                <select
-                  className="claim-mode"
-                  aria-label="Revendiquer au nom de"
-                  value={mode}
-                  onChange={(event) => {
-                    setClaimMode(event.target.value as 'solo' | 'alliance');
-                    setAmount(1);
-                  }}
-                >
-                  <option value="solo">En mon nom</option>
-                  <option value="alliance" disabled={!canCommand}>
-                    Pour l’alliance · {alliance.name}
-                  </option>
-                </select>
-              )
-            }
-            restriction={claimRestriction}
-            attackAllowed={attackAllowed}
-            sponsorBids={
-              state?.sponsorAuctions.filter((bid) => bid.country_id === country.id) || []
-            }
-            onSponsor={() => participate({ type: 'my-sponsors', id: country.id })}
-            paymentsMode={state?.paymentsMode}
-            onClose={() => setSelected(null)}
-            attackPanel={
-              <BorderAttack
-                key={`${country.id}-${mode}`}
-                countryId={country.id}
-                world={state?.territories || []}
-                campId={campId}
-                mode={mode}
-                canCommand={attackAllowed}
-                restriction={claimRestriction}
-                busy={!!busy}
-                act={act}
-                onSignup={() => participate()}
-              />
-            }
-            onBid={() => {
-              if (!player) participate();
-              else if (attackAllowed)
-                void act({ action: 'contribute', countryId: country.id, amount: needed, mode });
-            }}
-          />
+          <div className="country-inspection">
+            <CountryStandings
+              country={country}
+              territory={selectedTerritory}
+              campId={campId}
+              now={now}
+              needed={needed}
+              busy={!!busy}
+              wallet={availableWallet}
+              modeLabel={
+                mode === 'alliance'
+                  ? `Trésorerie de ${alliance?.name} · ${number(availableWallet || 0)} disponibles`
+                  : player
+                    ? `Stock personnel · ${player.wallet}/${player.stockCap}`
+                    : 'En votre nom'
+              }
+              modeSwitcher={
+                alliance && (
+                  <select
+                    className="claim-mode"
+                    aria-label="Revendiquer au nom de"
+                    value={mode}
+                    onChange={(event) => {
+                      setClaimMode(event.target.value as 'solo' | 'alliance');
+                      setAmount(1);
+                    }}
+                  >
+                    <option value="solo">En mon nom</option>
+                    <option value="alliance" disabled={!canCommand}>
+                      Pour l’alliance · {alliance.name}
+                    </option>
+                  </select>
+                )
+              }
+              restriction={claimRestriction}
+              attackAllowed={attackAllowed}
+              sponsorBids={
+                state?.sponsorAuctions.filter((bid) => bid.country_id === country.id) || []
+              }
+              onSponsor={() => participate({ type: 'my-sponsors', id: country.id })}
+              paymentsMode={state?.paymentsMode}
+              onClose={() => setSelected(null)}
+              attackPanel={
+                <BorderAttack
+                  key={`${country.id}-${mode}`}
+                  countryId={country.id}
+                  world={state?.territories || []}
+                  campId={campId}
+                  mode={mode}
+                  canCommand={attackAllowed}
+                  restriction={claimRestriction}
+                  busy={!!busy}
+                  act={act}
+                  onSignup={() => participate()}
+                />
+              }
+              onBid={() => {
+                if (!player) participate();
+                else if (attackAllowed)
+                  void act({ action: 'contribute', countryId: country.id, amount: needed, mode });
+              }}
+            />
+            {selectedTerritory?.sponsor && (
+              <SponsorAttribution country={country} sponsor={selectedTerritory.sponsor} />
+            )}
+          </div>
         )}
         <Tutorial
           state={state}
@@ -1804,7 +1810,7 @@ function GameModal({
               />
             </label>
             <label>
-              Site de destination
+              Site, application ou Instagram
               <input
                 name="url"
                 type="url"
@@ -1817,11 +1823,11 @@ function GameModal({
               Logo (facultatif)
               <input name="logo" type="file" accept="image/png,image/jpeg,image/webp" />
               <small className="input-hint">
-                PNG, JPEG ou WebP · 1 Mo maximum. Une pastille avec vos initiales sera utilisée sans
-                logo.
+                PNG, JPEG ou WebP · 1 Mo maximum. Un logo sur fond transparent est conseillé. Sans
+                logo, vos initiales s’affichent dans le pays.
               </small>
             </label>
-            <label>Couleur de votre pastille{colorPicker()}</label>
+            <label>Couleur de vos initiales{colorPicker()}</label>
             <label className="checkbox-label">
               <input type="checkbox" required />
               Je dispose des droits sur ce contenu et j’accepte les règles de modération. Les

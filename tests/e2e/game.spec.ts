@@ -463,7 +463,7 @@ test('visitor exploration and a complete account, conquest, and alliance journey
   await page.getByRole('button', { name: 'Créer un visuel' }).click();
   await page.getByLabel('Nom de votre projet').fill('Test Brand');
   await page.getByLabel('Description courte').fill('Une campagne de démonstration à modérer.');
-  await page.getByLabel('Site de destination').fill('https://example.com');
+  await page.getByLabel('Site, application ou Instagram').fill('https://example.com');
   await page.getByRole('checkbox').check();
   await page.getByRole('button', { name: 'Soumettre pour validation' }).click();
   await expect(page.getByRole('dialog')).toHaveCount(0);

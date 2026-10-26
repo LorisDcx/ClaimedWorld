@@ -1,3 +1,158 @@
+.country-inspection {
+  position: absolute;
+  z-index: 9;
+  top: 20px;
+  right: 20px;
+  bottom: 88px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  pointer-events: none;
+}
+.country-inspection > .country-standings {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  max-height: 100%;
+  min-height: 0;
+  flex: 0 1 auto;
+  overflow-y: auto;
+  pointer-events: auto;
+}
+.sponsor-attribution {
+  flex: 0 0 auto;
+  margin-top: auto;
+  padding: 17px 18px 14px;
+  background: #fafafaf5;
+  border: 1px solid #dedede;
+  backdrop-filter: blur(16px);
+  pointer-events: auto;
+  box-shadow: 0 8px 30px #00000008;
+}
+.country-inspection:has(.sponsor-attribution) .standings-note {
+  display: none;
+}
+.country-inspection:has(.sponsor-attribution) .standings-empty {
+  padding: 12px 0;
+  gap: 6px;
+}
+.country-inspection:has(.sponsor-attribution) .standings-empty > svg {
+  display: none;
+}
+.country-inspection:has(.sponsor-attribution) .standings-status {
+  margin-bottom: 12px;
+}
+.sponsor-attribution-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: #888;
+  font: 7px/1.5 var(--mono);
+  letter-spacing: 0.6px;
+}
+.sponsor-attribution-label > span:last-child {
+  color: #aaa;
+  font-size: 6px;
+  text-align: right;
+}
+.sponsor-attribution-brand {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin: 13px 0 9px;
+}
+.sponsor-attribution-brand img {
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.sponsor-attribution h3 {
+  font-size: 19px;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+  overflow-wrap: anywhere;
+}
+.sponsor-attribution-brand span {
+  display: block;
+  color: #888;
+  font-size: 9px;
+  margin-top: 3px;
+}
+.sponsor-attribution p {
+  font-size: 11px;
+  color: #666;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.sponsor-attribution a {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding-top: 10px;
+  margin-top: 11px;
+  border-top: 1px solid #ddd;
+  font-size: 10px;
+  font-weight: 600;
+}
+.sponsor-attribution a > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.sponsor-attribution a > svg:last-child {
+  margin-left: auto;
+  flex-shrink: 0;
+  transition: transform 0.15s;
+}
+.sponsor-attribution a:hover > svg:last-child {
+  transform: translate(2px, -2px);
+}
+.map-sponsor.dimmed {
+  opacity: 0.13;
+}
+.country-path.is-sponsored:hover,
+.country-path.is-sponsored.selected {
+  fill: #e3e3de;
+}
+.stream-mode .country-inspection {
+  display: none;
+}
+@media (max-width: 640px) {
+  .country-inspection {
+    top: auto;
+    right: 16px;
+    left: 16px;
+    bottom: 82px;
+    width: auto;
+    max-height: calc(100% - 105px);
+    gap: 8px;
+  }
+  .country-inspection > .country-standings {
+    max-height: 36vh;
+    overflow-y: auto;
+    flex-shrink: 1;
+  }
+  .sponsor-attribution {
+    padding: 12px 15px 11px;
+  }
+  .sponsor-attribution-brand {
+    margin: 8px 0 6px;
+  }
+  .sponsor-attribution h3 {
+    font-size: 16px;
+  }
+  .sponsor-attribution p {
+    font-size: 10px;
+    -webkit-line-clamp: 2;
+  }
+  .sponsor-attribution a {
+    margin-top: 7px;
+    padding-top: 7px;
+  }
+}
 .house-ad {
   padding: 16px;
   border: 1px solid #ddd;

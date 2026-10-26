@@ -10,6 +10,7 @@ export interface Country {
   regionalPath: string;
   center: number[];
   bounds: number[][];
+  sponsorBox: number[];
   parentName: string | null;
   anchors: { point: number[]; size: number }[];
   overviewMarker: boolean;

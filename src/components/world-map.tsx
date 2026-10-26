@@ -133,7 +133,7 @@ export default function WorldMap({
         >
           <defs>
             {countries
-              .filter((c) => byId.get(c.id)?.owner)
+              .filter((c) => byId.get(c.id)?.owner || byId.get(c.id)?.sponsor)
               .map((c) => (
                 <clipPath key={c.id} id={`${mapId}-border-${c.id}`} clipPathUnits="userSpaceOnUse">
                   <path d={visiblePath(c)} />
@@ -172,12 +172,12 @@ export default function WorldMap({
               <path
                 key={c.id}
                 d={visiblePath(c)}
-                fill={selected === c.id ? '#383838' : '#141414'}
+                fill={territory?.sponsor ? '#f0f0ed' : selected === c.id ? '#383838' : '#141414'}
                 stroke={o ? 'none' : '#ffffff'}
                 strokeWidth={1.2}
                 vectorEffect="non-scaling-stroke"
                 strokeLinejoin="round"
-                className={`country-path ${dimmed ? 'dimmed' : ''} ${selected === c.id ? 'selected' : ''}`}
+                className={`country-path ${territory?.sponsor ? 'is-sponsored' : ''} ${dimmed ? 'dimmed' : ''} ${selected === c.id ? 'selected' : ''}`}
                 role="button"
                 aria-label={c.name}
                 focusable="false"
@@ -189,6 +189,53 @@ export default function WorldMap({
               />
             );
           })}
+          <g pointerEvents="none" aria-hidden="true">
+            {countries
+              .filter((c) => byId.get(c.id)?.sponsor)
+              .map((c) => {
+                const territory = byId.get(c.id)!;
+                const sponsor = territory.sponsor!;
+                const [x, y, width, height] = c.sponsorBox;
+                const dimmed =
+                  filter === 'neutral'
+                    ? !!territory.owner
+                    : filter !== 'all' && filter !== 'sponsored' && filter !== territory.owner?.id;
+                return (
+                  <g
+                    key={c.id}
+                    className={`map-sponsor ${dimmed ? 'dimmed' : ''}`}
+                    data-territory={c.id}
+                    clipPath={`url(#${mapId}-border-${c.id})`}
+                  >
+                    {sponsor.logo_id || sponsor.logo_url ? (
+                      <image
+                        href={sponsor.logo_url || `/api/media/${sponsor.logo_id}`}
+                        x={x}
+                        y={y}
+                        width={width}
+                        height={height}
+                        preserveAspectRatio="xMidYMid meet"
+                      />
+                    ) : (
+                      <text
+                        x={x + width / 2}
+                        y={y + height / 2}
+                        dominantBaseline="central"
+                        textAnchor="middle"
+                        fontSize={Math.min(
+                          height * 0.6,
+                          width / Math.max(sponsor.initials.length, 1),
+                        )}
+                        fontWeight="800"
+                        fill={sponsor.color}
+                      >
+                        {sponsor.initials}
+                      </text>
+                    )}
+                  </g>
+                );
+              })}
+          </g>
           {/* Paint ownership after every surface. Clipping keeps each band on its
               own side of a shared edge, independent of country draw order. */}
           <g className="ownership-borders" pointerEvents="none" aria-hidden="true">
@@ -288,35 +335,6 @@ export default function WorldMap({
                 </g>
               ));
           })}
-          {countries
-            .filter((c) => byId.get(c.id)?.sponsor)
-            .map((c) => {
-              const s = byId.get(c.id)!.sponsor!;
-              return (
-                <g
-                  key={`s-${c.id}`}
-                  transform={`translate(${c.center.join(' ')}) scale(${1 / view.scale})`}
-                  className="map-sponsor"
-                  onClick={() => onSelect(c.id)}
-                >
-                  <rect x="-14" y="-12" width="28" height="24" rx="7" fill="white" />
-                  {s.logo_id || s.logo_url ? (
-                    <image
-                      href={s.logo_url || `/api/media/${s.logo_id}`}
-                      x="-11"
-                      y="-9"
-                      width="22"
-                      height="18"
-                      preserveAspectRatio="xMidYMid meet"
-                    />
-                  ) : (
-                    <text textAnchor="middle" y="4" fontSize="10" fontWeight="800" fill={s.color}>
-                      {s.initials}
-                    </text>
-                  )}
-                </g>
-              );
-            })}
           {selected &&
             (() => {
               const c = countries.find((c) => c.id === selected);
