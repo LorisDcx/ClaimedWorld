@@ -91,12 +91,13 @@ test('sponsor credits fund competing ads and move without wallet refunds or exte
   await page.goto('/?country=250');
   const panel = page.getByRole('complementary', { name: 'Conquête de France' });
   await panel.getByRole('tab', { name: 'Sponsoring', exact: true }).click();
+  await expect(panel.locator('.sponsor-country-price strong')).toHaveText('60 €');
+  await panel.getByLabel('Enchère sponsor du pays').fill('100');
+  await panel.getByRole('checkbox', { name: /Ces fonds seront engagés/ }).check();
+  await panel.getByRole('button', { name: 'Enchérir 100,00 €' }).click();
+  await expect(panel.locator('.sponsor-ranking')).toContainText('Sponsor One');
   await panel.getByRole('button', { name: 'Gérer mes crédits sponsor' }).click();
   const console = page.locator('.sponsor-console');
-  await expect(console.locator('.sponsor-wallet strong').first()).toContainText('300,00');
-  await console.getByRole('spinbutton', { name: 'Crédits sponsor à engager' }).fill('100');
-  await console.getByRole('checkbox', { name: /Je confirme l’engagement/ }).check();
-  await console.getByRole('button', { name: 'Engager 100 crédits', exact: true }).click();
   await expect(console.locator('.sponsor-position')).toContainText('France');
   await expect(console.locator('.sponsor-wallet strong').first()).toContainText('200,00');
   const before = await first.get('/api/sponsoring').then((r) => r.json());

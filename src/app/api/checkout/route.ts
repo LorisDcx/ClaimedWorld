@@ -88,7 +88,7 @@ export async function POST(request: Request) {
         custom_text: {
           submit: {
             message:
-              'Crédits publicitaires uniquement : aucun avantage de conquête. Minimum 5 crédits engagés par pays. Le solde non engagé est conservé, sans remise à zéro de saison.',
+              'Crédits publicitaires uniquement : aucun avantage de conquête. Minimum par pays selon sa surface et sa visibilité, dès 2 crédits. Le solde non engagé est conservé, sans remise à zéro de saison.',
           },
         },
         success_url: `${appUrl}/?payment=success`,

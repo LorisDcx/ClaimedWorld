@@ -70,6 +70,7 @@ export interface SponsorStake {
 export interface SponsorConsoleData {
   wallet: { balance_cents: number; debt_cents: number; frozen: number };
   minimumBidCents: number;
+  minimumBids: Record<string, number>;
   campaigns: Sponsor[];
   stakes: SponsorStake[];
   bids: SponsorBid[];
@@ -147,6 +148,8 @@ export interface Snapshot {
   paymentsEnabled: boolean;
   sponsorAuctions: SponsorBid[];
   sponsorWallet: { balance_cents: number; debt_cents: number; frozen: number } | null;
+  sponsorCampaigns?: Sponsor[];
+  alliedCampIds?: string[];
   leaderboard: Camp[];
   archived: { id: number; starts_at: number; ends_at: number; summary: string }[];
   serverTime: number;

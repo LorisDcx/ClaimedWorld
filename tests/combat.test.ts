@@ -144,7 +144,7 @@ test('attacking a non-leading rival only damages that camp, and insufficient or 
   assert.equal(score(world, '276', 'france-attacker'), 0);
   await assert.rejects(
     () => launchAttack('france-attacker', { ...order, requestId: randomUUID(), amount: 41 }, now),
-    /insuffisantes/,
+    /insuffisants/,
   );
   await assert.rejects(
     () =>
@@ -263,6 +263,96 @@ test('alliance attacks enforce rank and strategy while preserving treasury, fund
       .sort(),
     [2, 8],
   );
+});
+
+test('stock-backed attacks keep a one-point foothold, spend once and require confirmation against alliance members', async () => {
+  const season = await currentSeason(),
+    now = season.starts_at + 8000;
+  await player('stock-border', now);
+  await player('stock-defender', now);
+  await bid('stock-border', '380', 1, now, season.id);
+  await bid('stock-defender', '040', 50, now, season.id);
+  const order = {
+    source: '380',
+    destination: '040',
+    target: 'stock-defender',
+    amount: 60,
+    mode: 'solo' as const,
+    useStock: true,
+    requestId: randomUUID(),
+  };
+  await launchAttack('stock-border', order, now);
+  let world = await territories(season.id, now);
+  assert.equal(score(world, '380', 'stock-border'), 1);
+  assert.equal(score(world, '040', 'stock-border'), 10);
+  assert.equal((await get('SELECT wallet FROM users WHERE id=?', 'stock-border'))?.wallet, 40);
+  await launchAttack('stock-border', order, now + 1);
+  assert.equal((await get('SELECT wallet FROM users WHERE id=?', 'stock-border'))?.wallet, 40);
+  await assert.rejects(
+    () => launchAttack('stock-border', { ...order, useStock: false }, now + 1),
+    /référence/,
+  );
+  await assert.rejects(() =>
+    launchAttack('stock-border', { ...order, requestId: randomUUID(), amount: 200 }, now + 1),
+  );
+  await run(
+    'INSERT INTO alliances(id,name,color,emblem,description,leader_id,invite,created_at) VALUES(?,?,?,?,?,?,?,?)',
+    'stock-friends',
+    'Stock Friends',
+    '#111111',
+    'x',
+    '',
+    'stock-border',
+    'stock-friends-invite',
+    now,
+  );
+  for (const id of ['stock-border', 'stock-defender'])
+    await run('UPDATE users SET alliance_id=? WHERE id=?', 'stock-friends', id);
+  await bid('stock-defender', '040', 5, now + 2, season.id);
+  const friendly = { ...order, amount: 6, requestId: randomUUID() };
+  await assert.rejects(() => launchAttack('stock-border', friendly, now + 2), /votre alliance/);
+  assert.equal((await get('SELECT wallet FROM users WHERE id=?', 'stock-border'))?.wallet, 40);
+  await launchAttack('stock-border', { ...friendly, acknowledgeAlly: true }, now + 2);
+  assert.equal((await get('SELECT wallet FROM users WHERE id=?', 'stock-border'))?.wallet, 34);
+  world = await territories(season.id, now + 2);
+  assert.equal(score(world, '380', 'stock-border'), 1);
+});
+
+test('alliance stock attacks spend treasury contributions with donor attribution and keep local garrisons', async () => {
+  const season = await currentSeason(),
+    now = season.starts_at + 9000;
+  await run(
+    'INSERT INTO treasury_lots VALUES(?,?,?,?,?,?,?)',
+    'combat-reserve',
+    'combat-team',
+    'combat-member',
+    season.id,
+    500,
+    500,
+    now,
+  );
+  await bid('china-defender', '156', 20, now, season.id);
+  const order = {
+    source: '643',
+    destination: '156',
+    target: 'china-defender',
+    amount: 30,
+    mode: 'alliance' as const,
+    useStock: true,
+    requestId: randomUUID(),
+  };
+  await assert.rejects(() => launchAttack('combat-member', order, now), /généraux/);
+  await launchAttack('combat-general', order, now);
+  assert.equal(
+    (await get('SELECT treasury FROM alliances WHERE id=?', 'combat-team'))?.treasury,
+    470,
+  );
+  assert.equal(
+    (await get('SELECT remaining FROM treasury_lots WHERE id=?', 'combat-reserve'))?.remaining,
+    470,
+  );
+  assert.equal(score(await territories(season.id, now), '643', 'combat-team'), 10);
+  assert.equal((await progression('combat-member', season.id, now)).metrics.funded, 61);
 });
 
 test('season rewards stop counting destroyed or transferred source points at the exact attack time', () => {

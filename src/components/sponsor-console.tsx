@@ -4,6 +4,7 @@ import { ArrowRight, ArrowUpRight, Clock3, Plus, Wallet } from 'lucide-react';
 import countries from '@/data/countries.json';
 import type { SponsorConsoleData } from '@/lib/types';
 import SupportCreator from './support-creator';
+import { sponsorMinimum } from '@/lib/sponsor-pricing';
 
 const credits = (amount: number) =>
   (amount / 100).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -35,7 +36,7 @@ export default function SponsorConsole({
   const [busy, setBusy] = useState(false);
   const [country, setCountry] = useState(countryId || '250');
   const [campaign, setCampaign] = useState('');
-  const [amount, setAmount] = useState('5');
+  const [amount, setAmount] = useState(String(sponsorMinimum(countryId || '250') / 100));
   const [accepted, setAccepted] = useState(false);
   const [topup, setTopup] = useState('20');
   const [terms, setTerms] = useState(false);
@@ -92,6 +93,7 @@ export default function SponsorConsole({
     groups.find((group) => group.campaign === campaignId && group.country === country)?.amount || 0;
   const leader = data?.bids.find((bid) => bid.country_id === country && bid.winning);
   const locked = !!data?.wallet.frozen || !!data?.wallet.debt_cents;
+  const minimum = data?.minimumBids?.[country] ?? sponsorMinimum(country);
   async function submit(action: Record<string, unknown>, success: string) {
     setBusy(true);
     try {
@@ -171,7 +173,8 @@ export default function SponsorConsole({
       <p className="sponsor-money-rule">
         1 crédit = 1 €. Le portefeuille n’est pas remis à zéro. Les fonds engagés restent
         déplaçables entre pays, sans retour au portefeuille, et expirent 30 jours après leur premier
-        placement. Un déplacement ne prolonge jamais ce délai.
+        placement. Un déplacement ne prolonge jamais ce délai. Les enchères commencent dès 2 € selon
+        le pays ; une recharge du portefeuille commence à 5 €.
       </p>
       <details className="sponsor-section">
         <summary>Recharger avec Stripe</summary>
@@ -255,7 +258,7 @@ export default function SponsorConsole({
           );
         }}
       >
-        <h3>Engager des crédits · minimum 5 par pays</h3>
+        <h3>Engager des crédits</h3>
         <label>
           Visuel à afficher
           <select
@@ -279,16 +282,29 @@ export default function SponsorConsole({
           <select
             aria-label="Pays de l’enchère sponsor"
             value={country}
-            onChange={(event) => setCountry(event.target.value)}
+            onChange={(event) => {
+              const next = event.target.value;
+              setCountry(next);
+              const placed =
+                groups.find((group) => group.campaign === campaignId && group.country === next)
+                  ?.amount || 0;
+              setAmount(String(Math.max(1, sponsorMinimum(next) - placed) / 100));
+            }}
           >
             {countries.map((item) => (
               <option key={item.id} value={item.id}>
-                {item.name}
+                {item.name} · dès {sponsorMinimum(item.id) / 100} €
               </option>
             ))}
           </select>
         </label>
         <div className="sponsor-bid-context">
+          <span>
+            Minimum pour ce pays :{' '}
+            <b>
+              {credits(minimum)} crédits ({credits(minimum)} €)
+            </b>
+          </span>
           <span>
             Déjà engagés avec ce visuel : <b>{credits(personal)}</b>
           </span>
@@ -298,7 +314,7 @@ export default function SponsorConsole({
                 En tête : {leader.name} · <b>{credits(leader.amount)}</b>
               </>
             ) : (
-              'Emplacement libre · première enchère à 5 crédits'
+              `Emplacement libre · première enchère à ${credits(minimum)} crédits`
             )}
           </span>
         </div>
@@ -307,7 +323,7 @@ export default function SponsorConsole({
           <input
             aria-label="Crédits sponsor à engager"
             type="number"
-            min={Math.max(1, 500 - personal) / 100}
+            min={Math.max(1, minimum - personal) / 100}
             step="0.01"
             max={data.wallet.balance_cents / 100}
             value={amount}
@@ -336,6 +352,7 @@ export default function SponsorConsole({
             locked ||
             !campaignId ||
             amountCents < 1 ||
+            personal + amountCents < minimum ||
             amountCents > data.wallet.balance_cents
           }
         >
@@ -359,8 +376,8 @@ export default function SponsorConsole({
                       {data.campaigns.find((item) => item.id === group.campaign)?.name} ·{' '}
                       {winner
                         ? 'En tête'
-                        : group.amount < 500
-                          ? 'Sous le minimum de 5'
+                        : group.amount < sponsorMinimum(group.country)
+                          ? `Sous le minimum de ${sponsorMinimum(group.country) / 100}`
                           : 'Dépassé ou visuel suspendu'}
                     </small>
                     <span>
@@ -422,7 +439,7 @@ export default function SponsorConsole({
                 </option>
                 {approved.map((item) => (
                   <option key={item.id} value={item.id}>
-                    {item.name}
+                    {item.name} · dès {sponsorMinimum(item.id) / 100} €
                   </option>
                 ))}
               </select>
@@ -455,8 +472,9 @@ export default function SponsorConsole({
               />
             </label>
             <p className="muted">
-              Les fonds les plus anciens sont déplacés d’abord. Laissez zéro ou au moins 5 crédits
-              au départ ; la destination doit atteindre 5 crédits. Aucun retour au portefeuille.
+              Les fonds les plus anciens sont déplacés d’abord. Laissez zéro ou au moins{' '}
+              {sponsorMinimum(source?.country || '') / 100} crédits au départ ; la destination doit
+              atteindre {sponsorMinimum(destination) / 100} crédits. Aucun retour au portefeuille.
             </p>
             <button
               className="secondary full"

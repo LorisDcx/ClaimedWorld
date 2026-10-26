@@ -117,7 +117,7 @@ test('Stripe credits only verified matching payments, once per purchase even wit
 });
 
 test('refunds debit unused credits and active stakes without resurrecting money on duplicate delivery', async () => {
-  await placeSponsorFunds('buyer', 'buyer', '250', 500, true);
+  await placeSponsorFunds('buyer', 'buyer', '470', 500, true);
   const refund = {
     id: 'charge-buyer',
     object: 'charge',
@@ -156,13 +156,13 @@ test('out-of-order refund and dispute events are respected when payment confirma
   await send('late-paid', 'checkout.session.completed', paid('late'));
   assert.equal((await sponsorWallet('late')).balance_cents, 500);
   assert.equal((await sponsorWallet('late')).frozen, 1);
-  await assert.rejects(() => placeSponsorFunds('late', 'late', '250', 500, true));
+  await assert.rejects(() => placeSponsorFunds('late', 'late', '470', 500, true));
   await send('dispute-won', 'charge.dispute.closed', {
     id: 'dispute-late',
     payment_intent: 'pi-late',
     status: 'won',
   });
   assert.equal((await sponsorWallet('late')).frozen, 0);
-  await placeSponsorFunds('late', 'late', '250', 500, true);
+  await placeSponsorFunds('late', 'late', '470', 500, true);
   assert.equal((await sponsorWallet('late')).balance_cents, 0);
 });

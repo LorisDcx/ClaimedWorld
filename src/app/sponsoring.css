@@ -156,6 +156,86 @@
     padding-top: 7px;
   }
 }
+.sponsor-country-price {
+  padding: 14px 0;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 14px;
+}
+.sponsor-country-price > span,
+.sponsor-country-price small {
+  display: block;
+  color: #888;
+  font-size: 9px;
+  line-height: 1.7;
+}
+.sponsor-country-price > span {
+  font: 7px var(--mono);
+  letter-spacing: 0.6px;
+}
+.sponsor-country-price strong {
+  display: block;
+  font-size: 30px;
+  margin: 7px 0;
+}
+.country-sponsor-form label {
+  display: block;
+  font-size: 10px;
+  margin: 12px 0;
+  line-height: 1.6;
+}
+.country-sponsor-form input:not([type='checkbox']),
+.country-sponsor-form select {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  border: 1px solid #ddd;
+  background: white;
+  color: #222;
+  font-family: inherit;
+  font-size: 11px;
+  padding: 9px;
+  min-width: 0;
+}
+.country-sponsor-form .checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  line-height: 1.6;
+}
+.country-sponsor-form .checkbox-label input {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.country-sponsor-form .muted {
+  font-size: 9px;
+  line-height: 1.6;
+}
+.country-sponsor-auction > .text-button {
+  margin-top: 14px;
+  font-size: 10px;
+}
+.admin-map-reset {
+  border: 1px solid #ddd;
+  padding: 18px;
+  margin-bottom: 25px;
+}
+.admin-map-reset h3 {
+  font-size: 16px;
+  margin-bottom: 9px;
+}
+.admin-map-reset p {
+  font-size: 11px;
+  line-height: 1.7;
+  margin-bottom: 15px;
+}
+.admin-map-reset [role='alert'] {
+  padding: 12px;
+  background: #eee;
+  border-left: 2px solid #111;
+}
+.admin-map-reset [role='alert'] svg {
+  vertical-align: middle;
+  margin-right: 6px;
+}
 .house-ad {
   padding: 16px;
   border: 1px solid #ddd;

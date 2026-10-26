@@ -1,7 +1,7 @@
 'use client';
 import { ArrowUpRight, Clock3, Flag, X } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
-import type { Country, Territory, SponsorBid } from '@/lib/types';
+import type { Country, Territory, SponsorBid, Sponsor } from '@/lib/types';
 import SponsorAuction from './sponsor-auction';
 
 const number = (value: number) => new Intl.NumberFormat('fr-FR').format(value);
@@ -29,6 +29,9 @@ export default function CountryStandings({
   onSponsor,
   attackPanel,
   paymentsMode,
+  sponsorWallet,
+  sponsorCampaigns,
+  act,
 }: {
   country: Country;
   territory?: Territory;
@@ -47,6 +50,9 @@ export default function CountryStandings({
   onSponsor?: () => void;
   attackPanel?: ReactNode;
   paymentsMode?: 'disabled' | 'test' | 'live';
+  sponsorWallet?: { balance_cents: number; debt_cents: number; frozen: number } | null;
+  sponsorCampaigns?: Sponsor[];
+  act?: (body: Record<string, unknown>, success?: string) => Promise<boolean>;
 }) {
   const [layer, setLayer] = useState<'players' | 'sponsors' | 'combat'>('players');
   const owner = territory?.owner;
@@ -198,6 +204,12 @@ export default function CountryStandings({
         attackPanel
       ) : (
         <SponsorAuction
+          key={country.id}
+          countryId={country.id}
+          wallet={sponsorWallet}
+          campaigns={sponsorCampaigns}
+          act={act}
+          busy={busy}
           bids={sponsorBids}
           onSponsor={onSponsor || (() => {})}
           houseAd={territory?.sponsor?.house ? territory.sponsor : null}

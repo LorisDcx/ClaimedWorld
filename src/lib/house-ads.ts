@@ -1,4 +1,3 @@
-import countries from '@/data/countries.json';
 import type { Sponsor } from './types';
 
 export const HOUSE_CAMPAIGNS = [
@@ -18,26 +17,25 @@ export const HOUSE_CAMPAIGNS = [
     url: 'https://giftlock.vercel.app/',
     initials: 'W',
     color: '#841b3c',
-    logo_url: '/sponsors/waant.webp',
+    logo_url: '/sponsors/waant-symbol.png',
   },
 ] as const;
 
-// A stable shuffled selection: no changes on refresh, no invented paid bids.
-const hash = (id: string) =>
-  [...`claimed-house-v1:${id}`].reduce(
-    (n, c) => Math.imul(n ^ c.charCodeAt(0), 16777619) >>> 0,
-    2166136261,
-  );
-const placements = countries
-  .filter((c) => c.area > 0.006)
-  .sort((a, b) => hash(a.id) - hash(b.id))
-  .slice(0, 12);
+// Explicit house placements, independent of player conquests and paid bids.
+const placements: Record<string, number> = {
+  '276': 0,
+  '840': 0,
+  '578': 1,
+  '752': 1,
+  '208': 1,
+  '036': 1,
+};
 export function houseSponsor(countryId: string): Sponsor | null {
-  const index = placements.findIndex((c) => c.id === countryId);
-  return index < 0
+  const index = placements[countryId];
+  return index === undefined
     ? null
     : {
-        ...HOUSE_CAMPAIGNS[index % HOUSE_CAMPAIGNS.length],
+        ...HOUSE_CAMPAIGNS[index],
         country_id: countryId,
         status: 'approved',
         amount: 0,

@@ -48,6 +48,7 @@ const tables = new Set([
   'rate_limits',
   'uploads',
   'schema_migrations',
+  'admin_resets',
   'alliance_memberships',
   'alliance_ledger',
   'treasury_lots',

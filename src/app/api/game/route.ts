@@ -37,6 +37,7 @@ import {
 import { CombatError, launchAttack } from '@/lib/combat';
 import { activeInfluence } from '@/lib/influence';
 import { notifyWorld } from '@/lib/world-events';
+import { resetConquestMap } from '@/lib/admin';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 const username = z
@@ -131,6 +132,7 @@ export async function GET(request: Request) {
     if (!userId || !(await publicPlayer(userId))?.isAdmin)
       return NextResponse.json({ error: 'Accès refusé.' }, { status: 403 });
     return NextResponse.json({
+      resetCutoff: Date.now(),
       sponsors: await all(
         'SELECT s.*,u.username FROM sponsors s LEFT JOIN users u ON s.user_id=u.id ORDER BY s.created_at DESC',
       ),
@@ -217,6 +219,8 @@ export async function POST(request: Request) {
           amount: z.number().int().min(1).max(1000000).parse(body.amount),
           mode: z.enum(['solo', 'alliance']).parse(body.mode ?? 'solo'),
           requestId: z.string().uuid().parse(body.requestId),
+          useStock: z.boolean().parse(body.useStock ?? false),
+          acknowledgeAlly: z.boolean().parse(body.acknowledgeAlly ?? false),
         },
         now,
       );
@@ -648,6 +652,14 @@ export async function POST(request: Request) {
         userId,
         z.string().max(100).parse(body.target),
         z.string().trim().min(10).max(500).parse(body.reason),
+        now,
+      );
+    } else if (action === 'admin-reset-map') {
+      await resetConquestMap(
+        userId,
+        z.number().int().parse(body.seasonId),
+        z.number().int().parse(body.resetBefore),
+        z.string().parse(body.confirmation),
         now,
       );
     } else if (action === 'moderate') {
