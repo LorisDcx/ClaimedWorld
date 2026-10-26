@@ -66,6 +66,7 @@ export async function POST(request: Request) {
     const checkout = await stripe.checkout.sessions.create(
       {
         mode: 'payment',
+        managed_payments: { enabled: false },
         allowed_payment_method_types: ['card'],
         expires_at: expires,
         line_items: [
@@ -110,7 +111,14 @@ export async function POST(request: Request) {
         { error: 'Recharge invalide : minimum 5 €, avec acceptation des conditions.' },
         { status: 400 },
       );
-    console.error('Checkout failed', error);
+    console.error(
+      'Checkout failed',
+      error instanceof Stripe.errors.StripeError
+        ? { type: error.type, code: error.code, message: error.message, requestId: error.requestId }
+        : error instanceof Error
+          ? error.message
+          : 'Unknown error',
+    );
     return NextResponse.json({ error: 'Impossible d’ouvrir Stripe. Réessayez.' }, { status: 502 });
   }
 }
