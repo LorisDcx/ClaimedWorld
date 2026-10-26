@@ -45,6 +45,7 @@ import type { Country, Snapshot, Sponsor, Territory } from '@/lib/types';
 import { requiredInfluence } from '@/lib/rules';
 import { sponsorMinimum } from '@/lib/sponsor-pricing';
 import AdminMapReset from './admin-map-reset';
+import ThemeToggle from './theme-toggle';
 const countries = data as Country[];
 const number = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
 const colors = ['#ff5d35', '#7972e8', '#4aaf83', '#e4ac3a', '#39a5c5', '#e66d9e'];
@@ -103,7 +104,7 @@ export default function Game() {
   const [busy, setBusy] = useState('');
   const [tab, setTab] = useState('map');
   const [selected, setSelected] = useState<string | null>(null);
-  const [amount, setAmount] = useState(1);
+  const [amount, setAmount] = useState<number | null>(null);
   const [claimMode, setClaimMode] = useState<'solo' | 'alliance'>('solo');
   const [filter, setFilter] = useState('all');
   const [query, setQuery] = useState('');
@@ -318,7 +319,7 @@ export default function Game() {
     setTab('map');
     setQuery('');
     setSearchOpen(false);
-    setAmount(1);
+    setAmount(null);
     if (zoom) setFocus({ id, nonce: Date.now() });
   }
   async function share(text: string) {
@@ -378,13 +379,20 @@ export default function Game() {
   const ownScore = selectedTerritory?.scores.find((c) => c.id === campId)?.score || 0;
   const isOwner = !!campId && selectedTerritory?.owner?.id === campId;
   const needed = requiredInfluence(selectedTerritory?.owner?.score || 0, ownScore, isOwner);
+  const claimAmount = amount ?? needed;
   const recommended =
     countries.find(
       (c) => c.id === '250' && !state?.territories.find((t) => t.id === c.id)?.owner,
-    ) || countries.find((c) => !state?.territories.find((t) => t.id === c.id)?.owner);
+    ) ||
+    countries.find((c) => !state?.territories.find((t) => t.id === c.id)?.owner) ||
+    countries[0];
   const remaining = state ? state.season.ends_at - now : 0;
   const close = () => setModal(null);
   const replayTutorial = () => {
+    if (!state?.player) {
+      setModal({ type: 'signup' });
+      return;
+    }
     setModal(null);
     setSelected(null);
     setTab('map');
@@ -485,6 +493,7 @@ export default function Game() {
           )}
         </div>
         <div className="header-actions">
+          <ThemeToggle />
           {country && (
             <form
               className="selection-actions"
@@ -496,7 +505,7 @@ export default function Game() {
                 }
                 if (!attackAllowed) return;
                 void act(
-                  { action: 'contribute', countryId: country.id, amount, mode },
+                  { action: 'contribute', countryId: country.id, amount: claimAmount, mode },
                   'Influence investie.',
                 );
               }}
@@ -514,7 +523,7 @@ export default function Game() {
                   min={1}
                   max={availableWallet}
                   step="1"
-                  value={amount}
+                  value={claimAmount}
                   onChange={(e) => setAmount(Number(e.target.value))}
                 />
               )}
@@ -532,7 +541,9 @@ export default function Game() {
                   !!busy ||
                   !attackAllowed ||
                   (!!player &&
-                    (!Number.isInteger(amount) || amount < 1 || amount > (availableWallet || 0)))
+                    (!Number.isInteger(claimAmount) ||
+                      claimAmount < 1 ||
+                      claimAmount > (availableWallet || 0)))
                 }
                 title={
                   claimRestriction ||
@@ -545,7 +556,7 @@ export default function Game() {
                 <span>
                   {isOwner
                     ? 'Renforcer'
-                    : !player || amount >= needed
+                    : !player || claimAmount >= needed
                       ? 'Revendiquer'
                       : 'Contribuer'}
                 </span>
@@ -654,6 +665,8 @@ export default function Game() {
               campId={campId}
               now={now}
               needed={needed}
+              amount={claimAmount}
+              onAmount={setAmount}
               busy={!!busy}
               wallet={availableWallet}
               modeLabel={
@@ -671,7 +684,7 @@ export default function Game() {
                     value={mode}
                     onChange={(event) => {
                       setClaimMode(event.target.value as 'solo' | 'alliance');
-                      setAmount(1);
+                      setAmount(null);
                     }}
                   >
                     <option value="solo">En mon nom</option>
@@ -711,7 +724,12 @@ export default function Game() {
               onBid={() => {
                 if (!player) participate();
                 else if (attackAllowed)
-                  void act({ action: 'contribute', countryId: country.id, amount: needed, mode });
+                  void act({
+                    action: 'contribute',
+                    countryId: country.id,
+                    amount: claimAmount,
+                    mode,
+                  });
               }}
             />
             {selectedTerritory?.sponsor && (
@@ -724,9 +742,9 @@ export default function Game() {
           selected={selected}
           hidden={tab !== 'map' || !!modal || stream}
           replay={tutorialReplay}
+          busy={!!busy}
           act={act}
           onExplore={() => recommended && chooseCountry(recommended.id, true)}
-          onSignup={() => setModal({ type: 'signup' })}
           onProgression={() => setModal({ type: 'progression' })}
         />
         {error && (
@@ -1089,7 +1107,7 @@ export default function Game() {
             <Trophy size={13} />
             Succès & objectifs
           </button>
-          <button onClick={replayTutorial}>Didacticiel</button>
+          {player && <button onClick={replayTutorial}>Didacticiel</button>}
           <button onClick={() => setModal({ type: 'help' })}>
             <HelpCircle size={13} />
             Comment jouer
@@ -1327,9 +1345,9 @@ function GameModal({
                 type="password"
                 autoComplete={type === 'signup' ? 'new-password' : 'current-password'}
                 required
-                minLength={8}
+                minLength={type === 'signup' ? 12 : 8}
                 maxLength={128}
-                placeholder="8 caractères minimum"
+                placeholder={type === 'signup' ? '12 caractères minimum' : 'Votre mot de passe'}
               />
             </label>
             {type === 'signup' && <label>Votre couleur{colorPicker()}</label>}

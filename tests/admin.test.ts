@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { currentSeason, run, get, territories } from '../src/lib/db';
 import { resetConquestMap } from '../src/lib/admin';
 import { placeSponsorFunds, sponsorWallet } from '../src/lib/sponsoring';
+import { hashPassword } from '../src/lib/password';
 process.env.DATABASE_PATH = ':memory:';
 
 test('map reset requires admin, typed confirmation and a recent cutoff; it preserves funds, accounts and later conquests', async () => {
@@ -13,7 +14,7 @@ test('map reset requires admin, typed confirmation and a recent cutoff; it prese
       'INSERT INTO users(id,username,password,color,created_at,generation_anchor,is_admin) VALUES(?,?,?,?,?,?,?)',
       id,
       id,
-      '!',
+      hashPassword('Admin-password-123!'),
       '#111111',
       now,
       now,
@@ -69,7 +70,19 @@ test('map reset requires admin, typed confirmation and a recent cutoff; it prese
     () => resetConquestMap('reset-admin', season.id, now - 600000, 'REINITIALISER', now + 3),
     /expiré/,
   );
-  await resetConquestMap('reset-admin', season.id, now, 'REINITIALISER', now + 3);
+  await assert.rejects(
+    () =>
+      resetConquestMap('reset-admin', season.id, now, 'REINITIALISER', now + 3, 'wrong-password'),
+    /mot de passe/,
+  );
+  await resetConquestMap(
+    'reset-admin',
+    season.id,
+    now,
+    'REINITIALISER',
+    now + 3,
+    'Admin-password-123!',
+  );
   let world = await territories(season.id, now + 3);
   assert.equal(world.find((t) => t.id === '250')?.owner, null);
   assert.equal(world.find((t) => t.id === '392')?.owner, null);
@@ -87,11 +100,59 @@ test('map reset requires admin, typed confirmation and a recent cutoff; it prese
     now + 3600000,
     season.id,
   );
-  await resetConquestMap('reset-admin', season.id, now, 'REINITIALISER', now + 5);
+  await resetConquestMap(
+    'reset-admin',
+    season.id,
+    now,
+    'REINITIALISER',
+    now + 5,
+    'Admin-password-123!',
+  );
   world = await territories(season.id, now + 5);
   assert.equal(
     world.find((t) => t.id === '392')?.owner?.id,
     'reset-player',
     'retry does not erase later conquests',
   );
+});
+
+test('failed reset passwords remain rate-limited across failed transactions', async () => {
+  const now = Date.now(),
+    season = await currentSeason(now);
+  await run(
+    'INSERT INTO users(id,username,password,color,created_at,generation_anchor,is_admin) VALUES(?,?,?,?,?,?,?)',
+    'rate-admin',
+    'RateAdmin',
+    hashPassword('Admin-password-123!'),
+    '#111111',
+    now,
+    now,
+    1,
+  );
+  for (let i = 0; i < 10; i++)
+    await assert.rejects(
+      () =>
+        resetConquestMap(
+          'rate-admin',
+          season.id,
+          now,
+          'REINITIALISER',
+          now + 1,
+          'incorrect-password',
+        ),
+      /mot de passe/,
+    );
+  await assert.rejects(
+    () =>
+      resetConquestMap(
+        'rate-admin',
+        season.id,
+        now,
+        'REINITIALISER',
+        now + 1,
+        'Admin-password-123!',
+      ),
+    /Trop de tentatives/,
+  );
+  assert.equal(await get('SELECT id FROM admin_resets WHERE user_id=?', 'rate-admin'), undefined);
 });

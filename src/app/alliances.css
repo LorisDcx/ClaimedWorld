@@ -3,15 +3,15 @@
   max-width: 108px;
   padding: 6px 3px;
   border: 0;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--tone-dddddd, #ddd);
   background: transparent;
-  color: #444;
+  color: var(--tone-444444, #444);
   font-size: 9px;
   cursor: pointer;
 }
 .standings-mode {
   font: 8px var(--mono);
-  color: #888;
+  color: var(--tone-888888, #888);
   margin: 9px 0 0;
 }
 .standings-mode-switcher {
@@ -28,7 +28,7 @@
 }
 .alliance-management {
   margin: 20px 0;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid var(--tone-dddddd, #ddd);
   padding-top: 20px;
 }
 .treasury-overview > span {
@@ -36,7 +36,7 @@
   align-items: center;
   gap: 8px;
   font: 8px var(--mono);
-  color: #777;
+  color: var(--tone-777777, #777);
   letter-spacing: 1px;
 }
 .treasury-overview > strong {
@@ -47,7 +47,7 @@
 }
 .treasury-overview small {
   font: 10px var(--font);
-  color: #999;
+  color: var(--tone-999999, #999);
 }
 .treasury-deposit {
   display: flex;
@@ -80,11 +80,11 @@
   margin: 9px 0;
 }
 .alliance-objective > small {
-  color: #888;
+  color: var(--tone-888888, #888);
   font-size: 10px;
 }
 .strategy-settings {
-  border-top: 1px solid #e5e5e5;
+  border-top: 1px solid var(--tone-e5e5e5, #e5e5e5);
   padding: 13px 0;
 }
 .strategy-settings > summary {
@@ -122,7 +122,7 @@
   overflow: auto;
   margin: 8px 0 12px;
   padding: 6px 9px;
-  background: #f6f6f6;
+  background: var(--tone-f6f6f6, #f6f6f6);
   overscroll-behavior: contain;
 }
 .objective-targets label {
@@ -139,13 +139,13 @@
   height: 12px;
   margin: 0;
   padding: 0;
-  accent-color: #111;
+  accent-color: var(--tone-111111, #111);
 }
 .objective-editor .muted {
   margin-bottom: 13px;
 }
 .target-names {
-  color: #777;
+  color: var(--tone-777777, #777);
   font-size: 10px;
   line-height: 1.8;
   margin-top: 12px;
@@ -160,27 +160,27 @@
   justify-content: space-between;
   gap: 12px;
   padding: 10px 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--tone-eeeeee, #eee);
   font-size: 11px;
 }
 .treasury-ledger small {
   display: block;
   margin-top: 4px;
   font-size: 9px;
-  color: #999;
+  color: var(--tone-999999, #999);
 }
 .treasury-ledger strong {
   font: 11px var(--mono);
 }
 .alliance-reward-note {
   font-size: 10px;
-  color: #888;
+  color: var(--tone-888888, #888);
   line-height: 1.7;
   margin: 10px 0;
 }
 .season-bonus-card {
   padding: 18px;
-  background: #f6f6f6;
+  background: var(--tone-f6f6f6, #f6f6f6);
   margin: 18px 0;
 }
 .season-bonus-card h3 {
@@ -190,14 +190,14 @@
 .season-bonus-card p {
   font-size: 11px;
   line-height: 1.7;
-  color: #777;
+  color: var(--tone-777777, #777);
   margin-top: 10px;
 }
 .season-bonus-card > small {
   display: block;
   font-size: 9px;
   line-height: 1.7;
-  color: #999;
+  color: var(--tone-999999, #999);
 }
 .bonus-values {
   display: flex;
@@ -205,13 +205,13 @@
   gap: 8px;
   margin: 16px 0;
   font-size: 9px;
-  color: #888;
+  color: var(--tone-888888, #888);
 }
 .bonus-values b {
   display: block;
   font: 20px var(--heading);
   font-weight: 550;
-  color: #111;
+  color: var(--tone-111111, #111);
   margin-bottom: 5px;
 }
 @media (max-width: 640px) {

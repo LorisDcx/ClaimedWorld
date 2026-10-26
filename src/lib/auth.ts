@@ -43,13 +43,56 @@ export class GameError extends Error {
   }
 }
 export function assertSameOrigin(request: Request) {
+  if (request.headers.get('sec-fetch-site') === 'cross-site')
+    throw new GameError('Origine de la requête non autorisée.', 403);
   const origin = request.headers.get('origin');
   if (!origin) return;
-  const url = new URL(request.url);
-  const host = request.headers.get('host');
-  const allowed = new Set([url.origin, process.env.NEXT_PUBLIC_APP_URL]);
-  if (host) allowed.add(`${url.protocol}//${host}`);
+  const configured = process.env.NEXT_PUBLIC_APP_URL;
+  const allowed = new Set([configured ? new URL(configured).origin : new URL(request.url).origin]);
+  if (process.env.NODE_ENV !== 'production') {
+    const local = new URL(request.url);
+    allowed.add(local.origin);
+    if (['localhost', '127.0.0.1', '0.0.0.0'].includes(local.hostname))
+      for (const host of ['localhost', '127.0.0.1', '0.0.0.0']) {
+        const alias = new URL(local);
+        alias.hostname = host;
+        allowed.add(alias.origin);
+      }
+  }
   if (!allowed.has(origin)) throw new GameError('Origine de la requête non autorisée.', 403);
+}
+export function requestIp(request: Request) {
+  return process.env.VERCEL === '1' || process.env.TRUST_PROXY === 'true'
+    ? request.headers.get('x-forwarded-for')?.split(',')[0]?.trim().slice(0, 128) || 'local'
+    : 'local';
+}
+export async function readJsonBody(request: Request, maximum = 12000) {
+  if (!request.headers.get('content-type')?.toLowerCase().startsWith('application/json'))
+    throw new GameError('Format non autorisé.', 415);
+  if (Number(request.headers.get('content-length')) > maximum)
+    throw new GameError('Requête trop volumineuse.', 413);
+  const reader = request.body?.getReader();
+  if (!reader) throw new GameError('Requête vide.');
+  const chunks: Uint8Array[] = [];
+  let length = 0;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      length += value.byteLength;
+      if (length > maximum) {
+        await reader.cancel();
+        throw new GameError('Requête trop volumineuse.', 413);
+      }
+      chunks.push(value);
+    }
+  } finally {
+    reader.releaseLock();
+  }
+  const decoded = JSON.parse(Buffer.concat(chunks).toString('utf8'));
+  if (!decoded || typeof decoded !== 'object' || Array.isArray(decoded))
+    throw new GameError('Un objet JSON est requis.');
+  return decoded as Record<string, unknown>;
 }
 export async function rateLimit(key: string, max: number, windowMs: number) {
   const now = Date.now();

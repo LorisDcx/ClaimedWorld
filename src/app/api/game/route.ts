@@ -22,6 +22,9 @@ import {
   rateLimit,
   sessionUser,
   assertSameOrigin,
+  readJsonBody,
+  requestIp,
+  digest,
 } from '@/lib/auth';
 import { CONTRIBUTION_LIFETIME, DAY, ALLIANCE_LIMIT, TREASURY_CAP } from '@/lib/rules';
 import type { Alliance } from '@/lib/types';
@@ -38,6 +41,7 @@ import { CombatError, launchAttack } from '@/lib/combat';
 import { activeInfluence } from '@/lib/influence';
 import { notifyWorld } from '@/lib/world-events';
 import { resetConquestMap } from '@/lib/admin';
+import { cachedAnonymousWorld } from '@/lib/world-cache';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 const username = z
@@ -52,8 +56,33 @@ function requireThat(condition: unknown, message: string, status = 400): asserts
   if (!condition) throw new GameError(message, status);
 }
 export async function GET(request: Request) {
+  try {
+    return await getWorld(request);
+  } catch (error) {
+    if (error instanceof GameError)
+      return NextResponse.json(
+        { error: error.message },
+        {
+          status: error.status,
+          headers: {
+            'Cache-Control': 'no-store',
+            ...(error.status === 429 ? { 'Retry-After': '60' } : {}),
+          },
+        },
+      );
+    if (error instanceof z.ZodError)
+      return NextResponse.json({ error: 'Paramètres invalides.' }, { status: 400 });
+    console.error('World read failed', error instanceof Error ? error.message : 'Unknown error');
+    return NextResponse.json(
+      { error: 'Le monde est momentanément indisponible.' },
+      { status: 503 },
+    );
+  }
+}
+async function getWorld(request: Request) {
   const url = new URL(request.url);
   const userId = await sessionUser();
+  await rateLimit(`read:${userId || requestIp(request)}`, 240, 60000);
   await currentSeason();
   if (url.searchParams.has('profile')) {
     const profile = await get<{
@@ -141,32 +170,30 @@ export async function GET(request: Request) {
       ),
     });
   }
-  return NextResponse.json(await snapshot(userId), { headers: { 'Cache-Control': 'no-store' } });
+  return NextResponse.json(
+    userId ? await snapshot(userId) : await cachedAnonymousWorld(() => snapshot(null)),
+    { headers: { 'Cache-Control': 'no-store' } },
+  );
 }
 export async function POST(request: Request) {
   try {
     assertSameOrigin(request);
-    requireThat(
-      request.headers.get('content-type')?.includes('application/json'),
-      'Format non autorisé.',
-      415,
-    );
-    const raw = await request.text();
-    requireThat(raw.length < 12000, 'Requête trop volumineuse.', 413);
-    const body = JSON.parse(raw);
+    const body = await readJsonBody(request);
     const action = z.string().parse(body.action);
     const now = Date.now();
     const season = await currentSeason(now);
     // Proxy headers are only trusted when the operator explicitly opts in.
-    const ip =
-      process.env.VERCEL === '1' || process.env.TRUST_PROXY === 'true'
-        ? request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'local'
-        : 'local';
+    const ip = requestIp(request);
     await rateLimit(`request:${ip}`, 300, 60000);
     if (action === 'signup' || action === 'login') {
       await rateLimit(`auth:${ip}`, 20, 15 * 60000);
       const name = username.parse(body.username);
-      const password = z.string().min(8).max(128).parse(body.password);
+      await rateLimit(`auth-user:${digest(name.toLowerCase())}`, 30, 15 * 60000);
+      const password = z
+        .string()
+        .min(action === 'signup' ? 12 : 8)
+        .max(128)
+        .parse(body.password);
       if (action === 'signup') {
         requireThat(
           !(await get('SELECT id FROM users WHERE lower(username)=lower(?)', name)),
@@ -661,6 +688,7 @@ export async function POST(request: Request) {
         z.number().int().parse(body.resetBefore),
         z.string().parse(body.confirmation),
         now,
+        z.string().min(8).max(128).parse(body.password),
       );
     } else if (action === 'moderate') {
       requireThat(user.isAdmin, 'Accès refusé.', 403);

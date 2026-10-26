@@ -51,9 +51,11 @@ export default function ProgressionPanel({
             <Sparkles size={13} /> Récompenses visuelles uniquement
           </span>
         </div>
-        <button className="text-button progression-tutorial" onClick={onTutorial}>
-          Rejouer le didacticiel <ArrowUpRight size={12} />
-        </button>
+        {state?.player && (
+          <button className="text-button progression-tutorial" onClick={onTutorial}>
+            Rejouer le didacticiel <ArrowUpRight size={12} />
+          </button>
+        )}
       </div>
       <div className="progression-tabs" role="tablist" aria-label="Progression">
         {[

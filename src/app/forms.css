@@ -11,8 +11,8 @@
   animation: fade-in 0.15s;
 }
 .modal {
-  background: #fdfdfd;
-  border: 1px solid #e7e7e7;
+  background: var(--tone-fdfdfd, #fdfdfd);
+  border: 1px solid var(--tone-e7e7e7, #e7e7e7);
   border-radius: 18px;
   max-height: 90vh;
   overflow: auto;
@@ -44,7 +44,7 @@
 .modal-intro {
   font-size: 12px;
   line-height: 1.9;
-  color: #8f8f8f;
+  color: var(--tone-8f8f8f, #8f8f8f);
   margin-bottom: 24px;
 }
 .modal form > label {
@@ -52,18 +52,18 @@
   font-size: 11px;
   font-weight: 500;
   margin: 18px 0;
-  color: #676767;
+  color: var(--tone-676767, #676767);
 }
 .modal input:not([type='color']):not([type='checkbox']),
 .modal textarea,
 .modal select {
   width: 100%;
   display: block;
-  background: white;
-  border: 1px solid #dedede;
+  background: var(--tone-ffffff, white);
+  border: 1px solid var(--tone-dedede, #dedede);
   border-radius: 7px;
   padding: 12px;
-  color: #484848;
+  color: var(--tone-484848, #484848);
   font-size: 12px;
   margin-top: 8px;
 }
@@ -72,7 +72,7 @@
 }
 .modal input::placeholder,
 .modal textarea::placeholder {
-  color: #a5a5a5;
+  color: var(--tone-a5a5a5, #a5a5a5);
   font-weight: 400;
 }
 .full {
@@ -93,18 +93,18 @@
   border-radius: 50%;
   display: grid;
   place-items: center;
-  color: white;
-  border: 3px solid #fdfdfd;
+  color: var(--tone-ffffff, white);
+  border: 3px solid var(--tone-fdfdfd, #fdfdfd);
   outline: 1px solid transparent;
 }
 .color-options > button[aria-pressed='true'] {
-  outline-color: #a9a9a9;
+  outline-color: var(--tone-a9a9a9, #a9a9a9);
 }
 .custom-color {
   position: relative;
   overflow: hidden;
-  color: #999999;
-  border: 1px dashed #c6c6c6;
+  color: var(--tone-999999, #999999);
+  border: 1px dashed var(--tone-c6c6c6, #c6c6c6);
   border-radius: 50%;
   width: 26px;
   height: 26px;
@@ -123,23 +123,23 @@
 .form-switch {
   font-size: 11px;
   text-align: center;
-  color: #979797;
+  color: var(--tone-979797, #979797);
   margin-top: 21px;
 }
 .form-switch button {
   font-size: 11px;
-  color: #111111;
+  color: var(--tone-111111, #111111);
   padding-left: 3px;
 }
 .form-note {
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  background: #f1f1f1;
+  background: var(--tone-f1f1f1, #f1f1f1);
   border-radius: 8px;
   margin-top: 23px;
   padding: 13px;
-  color: #979797;
+  color: var(--tone-979797, #979797);
   font-size: 9px;
   line-height: 1.8;
 }
@@ -154,30 +154,30 @@
 .emblem-options > button {
   width: 40px;
   height: 40px;
-  border: 1px solid #dfdfdf;
+  border: 1px solid var(--tone-dfdfdf, #dfdfdf);
   border-radius: 8px;
   font-size: 27px;
-  color: #989898;
-  background: #f4f4f4;
+  color: var(--tone-989898, #989898);
+  background: var(--tone-f4f4f4, #f4f4f4);
 }
 .emblem-options > button.active {
-  color: #111111;
-  background: #f2f2f2;
-  border-color: #d0d0d0;
+  color: var(--tone-111111, #111111);
+  background: var(--tone-f2f2f2, #f2f2f2);
+  border-color: var(--tone-d0d0d0, #d0d0d0);
 }
 .notice {
-  background: #f4f4f4;
-  border: 1px solid #dedede;
+  background: var(--tone-f4f4f4, #f4f4f4);
+  border: 1px solid var(--tone-dedede, #dedede);
   border-radius: 8px;
   padding: 15px;
-  color: #8a8a8a;
+  color: var(--tone-8a8a8a, #8a8a8a);
   font-size: 11px;
   line-height: 1.8;
   margin: 16px 0;
 }
 .muted {
   font-size: 11px;
-  color: #9a9a9a;
+  color: var(--tone-9a9a9a, #9a9a9a);
   line-height: 1.8;
   margin: 15px 0;
 }
@@ -200,16 +200,16 @@
 }
 .profile-overview p {
   font-size: 10px;
-  color: #9b9b9b;
+  color: var(--tone-9b9b9b, #9b9b9b);
 }
 .profile-overview > .camp-badge {
   margin-left: auto;
 }
 .reserve-card {
   padding: 17px;
-  background: #efefef;
+  background: var(--tone-efefef, #efefef);
   border-radius: 10px;
-  border: 1px solid #e1e1e1;
+  border: 1px solid var(--tone-e1e1e1, #e1e1e1);
   margin-bottom: 24px;
 }
 .reserve-card > span {
@@ -217,7 +217,7 @@
   align-items: center;
   gap: 8px;
   font-size: 11px;
-  color: #828282;
+  color: var(--tone-828282, #828282);
 }
 .reserve-card strong {
   margin-left: auto;
@@ -228,7 +228,7 @@
 .reserve-card > small {
   display: block;
   font-size: 9px;
-  color: #989898;
+  color: var(--tone-989898, #989898);
   line-height: 1.9;
   margin-top: 10px;
 }
@@ -250,22 +250,22 @@
   font-size: 9px;
   display: block;
   margin-top: 5px;
-  color: #a2a2a2;
+  color: var(--tone-a2a2a2, #a2a2a2);
 }
 .detail-list-row > strong:last-child {
   margin-left: auto;
   font-size: 11px;
-  color: #8a8a8a;
+  color: var(--tone-8a8a8a, #8a8a8a);
 }
 .danger-link {
   font-size: 11px;
-  color: #858585;
+  color: var(--tone-858585, #858585);
   margin-top: 23px;
   text-decoration: underline;
   text-underline-offset: 4px;
 }
 .danger {
-  color: #858585;
+  color: var(--tone-858585, #858585);
 }
 .member-dot {
   width: 30px;
@@ -273,7 +273,7 @@
   border-radius: 50%;
   display: grid;
   place-items: center;
-  color: white;
+  color: var(--tone-ffffff, white);
   font-size: 11px;
   flex-shrink: 0;
 }
@@ -288,7 +288,7 @@
 }
 .list-heading {
   font-size: 12px;
-  color: #787878;
+  color: var(--tone-787878, #787878);
   margin: 25px 0 10px;
 }
 .alliance-modal-top {
@@ -300,12 +300,12 @@
 .alliance-modal-top > div > p {
   font-size: 12px;
   line-height: 1.8;
-  color: #909090;
+  color: var(--tone-909090, #909090);
   margin-bottom: 8px;
 }
 .alliance-modal-top > div > span {
   font-size: 9px;
-  color: #a6a6a6;
+  color: var(--tone-a6a6a6, #a6a6a6);
 }
 .checkbox-label {
   display: flex !important;
@@ -314,10 +314,10 @@
   font-size: 9px !important;
   line-height: 1.7;
   font-weight: 400 !important;
-  color: #9f9f9f !important;
+  color: var(--tone-9f9f9f, #9f9f9f) !important;
 }
 .checkbox-label > input {
-  accent-color: #111111;
+  accent-color: var(--tone-111111, #111111);
   margin: 3px 0 0;
 }
 .quote-card {
@@ -325,9 +325,9 @@
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  background: #f0f0f0;
+  background: var(--tone-f0f0f0, #f0f0f0);
   border-radius: 9px;
-  border: 1px solid #e1e1e1;
+  border: 1px solid var(--tone-e1e1e1, #e1e1e1);
   padding: 17px;
   margin-bottom: 25px;
 }
@@ -338,7 +338,7 @@
 .quote-card small {
   display: block;
   font-size: 9px;
-  color: #9f9f9f;
+  color: var(--tone-9f9f9f, #9f9f9f);
   margin-top: 6px;
   font-weight: 400;
 }
@@ -353,21 +353,21 @@
   gap: 16px;
 }
 .rules-grid > div {
-  background: #f2f2f2;
-  border: 1px solid #e3e3e3;
+  background: var(--tone-f2f2f2, #f2f2f2);
+  border: 1px solid var(--tone-e3e3e3, #e3e3e3);
   border-radius: 10px;
   padding: 23px;
   position: relative;
 }
 .rules-grid svg {
-  color: #979797;
+  color: var(--tone-979797, #979797);
 }
 .rule-number {
   position: absolute;
   right: 20px;
   top: 22px;
   font-size: 10px;
-  color: #b9b9b9;
+  color: var(--tone-b9b9b9, #b9b9b9);
   font-family: var(--heading);
 }
 .rules-grid h3 {
@@ -377,18 +377,18 @@
 .rules-grid p {
   font-size: 11px;
   line-height: 1.9;
-  color: #999999;
+  color: var(--tone-999999, #999999);
 }
 .prose {
   font-size: 12px;
   line-height: 2;
-  color: #8d8d8d;
+  color: var(--tone-8d8d8d, #8d8d8d);
 }
 .prose p {
   margin: 16px 0;
 }
 .prose a {
-  color: #111111;
+  color: var(--tone-111111, #111111);
   text-underline-offset: 3px;
 }
 .activity-list > button {
@@ -415,7 +415,7 @@
   display: block;
   font-size: 9px;
   margin-top: 5px;
-  color: #a6a6a6;
+  color: var(--tone-a6a6a6, #a6a6a6);
 }
 .confirm-actions {
   display: flex;
@@ -436,7 +436,7 @@
 }
 .campaign-row p {
   font-size: 10px;
-  color: #9e9e9e;
+  color: var(--tone-9e9e9e, #9e9e9e);
   margin-top: 7px;
 }
 .campaign-row .primary {
@@ -445,7 +445,7 @@
 }
 .admin-sponsor {
   border: 1px solid var(--line);
-  background: #f7f7f7;
+  background: var(--tone-f7f7f7, #f7f7f7);
   border-radius: 8px;
   padding: 17px;
   display: flex;
@@ -461,17 +461,17 @@
   display: block;
   font-size: 9px;
   margin-top: 6px;
-  color: #a0a0a0;
+  color: var(--tone-a0a0a0, #a0a0a0);
 }
 .admin-sponsor p {
   font-size: 11px;
   line-height: 1.8;
   margin: 10px 0;
-  color: #959595;
+  color: var(--tone-959595, #959595);
 }
 .admin-sponsor a {
   font-size: 10px;
-  color: #979797;
+  color: var(--tone-979797, #979797);
   word-break: break-all;
 }
 .admin-sponsor > div:last-child:not(:first-child) {

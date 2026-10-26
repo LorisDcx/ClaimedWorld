@@ -7,6 +7,7 @@ import { run, currentSeason, snapshot } from '../src/lib/db';
 import { launchAttack } from '../src/lib/combat';
 import { placeSponsorFunds, moveSponsorFunds } from '../src/lib/sponsoring';
 import { resetConquestMap } from '../src/lib/admin';
+import { hashPassword } from '../src/lib/password';
 Object.assign(process.env, { NODE_ENV: 'test' });
 
 test('PostgreSQL schema protects private tables and the adapter preserves parameters and numeric functions', async () => {
@@ -134,9 +135,20 @@ test('PostgreSQL schema protects private tables and the adapter preserves parame
       );
       assert.equal(market.find((b) => b.country_id === '276')?.amount, 6000);
       assert.equal(market.find((b) => b.country_id === '276')?.winning, true);
-      await run('UPDATE users SET is_admin=1 WHERE id=?', 'pg-player');
+      await run(
+        'UPDATE users SET is_admin=1,password=? WHERE id=?',
+        hashPassword('Admin-password-123!'),
+        'pg-player',
+      );
       const resetAt = Date.now();
-      await resetConquestMap('pg-player', season.id, resetAt, 'REINITIALISER', resetAt);
+      await resetConquestMap(
+        'pg-player',
+        season.id,
+        resetAt,
+        'REINITIALISER',
+        resetAt,
+        'Admin-password-123!',
+      );
       const cleared = await snapshot('pg-player');
       assert.equal(cleared.territories.filter((t) => t.owner).length, 0);
       assert.equal(cleared.territories.find((t) => t.id === '276')?.sponsor?.id, 'pg-ad');

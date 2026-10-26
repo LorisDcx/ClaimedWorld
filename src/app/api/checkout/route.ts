@@ -2,9 +2,10 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { z } from 'zod';
 import { randomUUID } from 'node:crypto';
-import { assertSameOrigin, GameError, rateLimit, sessionUser } from '@/lib/auth';
+import { assertSameOrigin, GameError, rateLimit, sessionUser, readJsonBody } from '@/lib/auth';
 import { get, run, transaction } from '@/lib/db';
 import { sponsorWallet } from '@/lib/sponsoring';
+import { stripeEnvironment } from '@/lib/payments-config';
 export const runtime = 'nodejs';
 export async function POST(request: Request) {
   try {
@@ -15,6 +16,8 @@ export async function POST(request: Request) {
     )
       throw new GameError('Les paiements ne sont pas activés sur cette installation.', 503);
     assertSameOrigin(request);
+    if (stripeEnvironment() === 'live' && process.env.LIVE_PAYMENT_LAUNCH_APPROVED !== 'true')
+      throw new GameError('Les paiements réels ne sont pas encore ouverts.', 503);
     const uid = await sessionUser();
     if (!uid) throw new GameError('Connectez-vous pour continuer.', 401);
     await rateLimit(`checkout:${uid}`, 10, 60000);
@@ -24,7 +27,7 @@ export async function POST(request: Request) {
         requestId: z.string().uuid(),
         termsAccepted: z.literal(true),
       })
-      .parse(await request.json());
+      .parse(await readJsonBody(request));
     if (!(await get("SELECT id FROM sponsors WHERE user_id=? AND status='approved'", uid)))
       throw new GameError('Faites approuver un visuel avant de recharger votre portefeuille.');
     if ((await sponsorWallet(uid)).frozen)

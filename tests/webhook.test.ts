@@ -44,7 +44,7 @@ async function setup(id: string) {
   );
 }
 async function send(id: string, type: string, object: Record<string, unknown>, invalid = false) {
-  const payload = JSON.stringify({ id, object: 'event', type, data: { object } });
+  const payload = JSON.stringify({ id, object: 'event', type, livemode: false, data: { object } });
   const signature = Stripe.webhooks.generateTestHeaderString({
     payload,
     secret: process.env.STRIPE_WEBHOOK_SECRET!,
@@ -137,6 +137,30 @@ test('refunds debit unused credits and active stakes without resurrecting money 
   );
   await send('paid-after-refund', 'checkout.session.completed', paid('buyer'));
   assert.equal((await sponsorWallet('buyer')).balance_cents, 0);
+});
+
+test('a valid signature cannot credit a webhook from the other Stripe environment', async () => {
+  const before = (await sponsorWallet('buyer')).balance_cents;
+  const payload = JSON.stringify({
+    id: 'evt_wrong_environment',
+    object: 'event',
+    type: 'checkout.session.completed',
+    livemode: true,
+    data: { object: paid('buyer') },
+  });
+  const signature = Stripe.webhooks.generateTestHeaderString({
+    payload,
+    secret: process.env.STRIPE_WEBHOOK_SECRET!,
+  });
+  const response = await POST(
+    new Request('http://localhost/api/webhooks/stripe', {
+      method: 'POST',
+      headers: { 'stripe-signature': signature },
+      body: payload,
+    }),
+  );
+  assert.equal(response.status, 400);
+  assert.equal((await sponsorWallet('buyer')).balance_cents, before);
 });
 
 test('out-of-order refund and dispute events are respected when payment confirmation arrives later', async () => {

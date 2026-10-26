@@ -17,6 +17,7 @@ export default function AdminMapReset({
 }) {
   const [open, setOpen] = useState(false),
     [confirmation, setConfirmation] = useState('');
+  const [password, setPassword] = useState('');
   return (
     <section className="admin-map-reset">
       <h3>Remise à zéro de la carte</h3>
@@ -33,15 +34,16 @@ export default function AdminMapReset({
         <form
           onSubmit={async (event) => {
             event.preventDefault();
-            if (busy || confirmation !== 'REINITIALISER') return;
+            if (busy || confirmation !== 'REINITIALISER' || !password) return;
             if (
               await act(
-                { action: 'admin-reset-map', seasonId, resetBefore, confirmation },
+                { action: 'admin-reset-map', seasonId, resetBefore, confirmation, password },
                 'La conquête de la carte a été remise à zéro.',
               )
             ) {
               setOpen(false);
               setConfirmation('');
+              setPassword('');
               await onComplete();
             }
           }}
@@ -62,6 +64,18 @@ export default function AdminMapReset({
               required
             />
           </label>
+          <label>
+            Votre mot de passe actuel
+            <input
+              aria-label="Mot de passe pour confirmer le reset"
+              type="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              maxLength={128}
+              required
+            />
+          </label>
           <div className="confirm-actions">
             <button
               type="button"
@@ -70,11 +84,15 @@ export default function AdminMapReset({
               onClick={() => {
                 setOpen(false);
                 setConfirmation('');
+                setPassword('');
               }}
             >
               Annuler
             </button>
-            <button className="primary" disabled={busy || confirmation !== 'REINITIALISER'}>
+            <button
+              className="primary"
+              disabled={busy || confirmation !== 'REINITIALISER' || !password}
+            >
               Confirmer la remise à zéro
             </button>
           </div>

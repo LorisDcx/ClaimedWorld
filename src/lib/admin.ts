@@ -1,5 +1,5 @@
 import { currentSeason, get, log, run, territories, transaction } from './db';
-import { GameError } from './auth';
+import { GameError, checkPassword, rateLimit } from './auth';
 
 export async function resetConquestMap(
   userId: string,
@@ -7,13 +7,29 @@ export async function resetConquestMap(
   resetBefore: number,
   confirmation: string,
   at = Date.now(),
+  password = '',
 ) {
+  if (confirmation !== 'REINITIALISER')
+    throw new GameError('Saisissez REINITIALISER pour confirmer.');
+  const authenticated = await get<{ is_admin: number; password: string }>(
+    'SELECT is_admin,password FROM users WHERE id=? AND banned=0',
+    userId,
+  );
+  if (Number(authenticated?.is_admin) !== 1)
+    throw new GameError('Accès administrateur requis.', 403);
+  if (!Number.isSafeInteger(resetBefore) || resetBefore > at || resetBefore < at - 5 * 60000)
+    throw new GameError('La confirmation a expiré. Rouvrez le panneau administrateur.', 409);
+  // Failed password attempts must remain counted even when the reset rolls back.
+  await rateLimit(`admin-reauth:${userId}`, 10, 15 * 60000);
+  if (!password || !checkPassword(password, authenticated!.password))
+    throw new GameError('Votre mot de passe actuel est requis pour cette action.', 403);
   return transaction(async () => {
-    const admin = await get<{ is_admin: number; username: string }>(
-      'SELECT is_admin,username FROM users WHERE id=? AND banned=0',
+    const admin = await get<{ is_admin: number; username: string; password: string }>(
+      'SELECT is_admin,username,password FROM users WHERE id=? AND banned=0',
       userId,
     );
-    if (Number(admin?.is_admin) !== 1) throw new GameError('Accès administrateur requis.', 403);
+    if (Number(admin?.is_admin) !== 1 || admin?.password !== authenticated!.password)
+      throw new GameError('Accès administrateur requis.', 403);
     if (confirmation !== 'REINITIALISER')
       throw new GameError('Saisissez REINITIALISER pour confirmer.');
     const season = await currentSeason(at);

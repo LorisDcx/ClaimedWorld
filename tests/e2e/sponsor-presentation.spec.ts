@@ -29,7 +29,6 @@ test('country-sized logos remain inside land and expose a compact sponsor attrib
   await page.route('**/api/events', (route) => route.fulfill({ status: 204 }));
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/?country=156');
-  await page.getByRole('button', { name: 'Je connais déjà le jeu' }).click();
   const china = page.locator('.map-sponsor[data-territory="156"]');
   const djibouti = page.locator('.map-sponsor[data-territory="262"]');
   await expect(china.locator('image')).toBeVisible();

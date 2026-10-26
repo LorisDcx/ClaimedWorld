@@ -133,7 +133,10 @@ export default function WorldMap({
         >
           <defs>
             <filter id={`${mapId}-logo-matte`} colorInterpolationFilters="sRGB">
-              <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -5 -5 -5 0 14" />
+              <feColorMatrix
+                type="matrix"
+                values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -5 -5 -5 0 14"
+              />
               <feComposite in2="SourceGraphic" operator="in" />
             </filter>
             {countries
@@ -147,13 +150,13 @@ export default function WorldMap({
           <path
             d={graticule}
             fill="none"
-            stroke="#111111"
+            stroke="var(--map-grid, #111111)"
             strokeOpacity=".07"
             strokeWidth=".45"
             vectorEffect="non-scaling-stroke"
             pointerEvents="none"
           />
-          <g className="ocean-labels" fill="#9b9b9b" textAnchor="middle">
+          <g className="ocean-labels" fill="var(--map-ocean, #9b9b9b)" textAnchor="middle">
             {oceans.map((ocean, index) => (
               <text
                 key={index}
@@ -176,8 +179,14 @@ export default function WorldMap({
               <path
                 key={c.id}
                 d={visiblePath(c)}
-                fill={territory?.sponsor ? '#f0f0ed' : selected === c.id ? '#383838' : '#141414'}
-                stroke={o ? 'none' : '#ffffff'}
+                fill={
+                  territory?.sponsor
+                    ? 'var(--map-sponsored, #f0f0ed)'
+                    : selected === c.id
+                      ? 'var(--map-selected, #383838)'
+                      : 'var(--map-country, #141414)'
+                }
+                stroke={o ? 'none' : 'var(--map-border, #ffffff)'}
                 strokeWidth={1.2}
                 vectorEffect="non-scaling-stroke"
                 strokeLinejoin="round"
@@ -214,7 +223,9 @@ export default function WorldMap({
                     {sponsor.logo_id || sponsor.logo_url ? (
                       <image
                         href={sponsor.logo_url || `/api/media/${sponsor.logo_id}`}
-                      filter={sponsor.id === 'house-cramdesk' ? `url(#${mapId}-logo-matte)` : undefined}
+                        filter={
+                          sponsor.id === 'house-cramdesk' ? `url(#${mapId}-logo-matte)` : undefined
+                        }
                         x={x}
                         y={y}
                         width={width}
@@ -334,7 +345,11 @@ export default function WorldMap({
                   <circle r="4" fill="transparent" />
                   <circle
                     r="1"
-                    fill={selected === c.id ? '#666666' : owner?.color || '#141414'}
+                    fill={
+                      selected === c.id
+                        ? 'var(--map-selected, #666666)'
+                        : owner?.color || 'var(--map-country, #141414)'
+                    }
                     pointerEvents="none"
                   />
                 </g>
