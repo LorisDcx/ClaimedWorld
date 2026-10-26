@@ -35,6 +35,8 @@ export interface Territory {
   sponsorReserved?: boolean;
 }
 export interface Sponsor {
+  house?: boolean;
+  logo_url?: string;
   id: string;
   country_id: string;
   name: string;
@@ -131,6 +133,8 @@ export interface Season {
   archived_at: number | null;
 }
 export interface Snapshot {
+  realtime?: { url: string; key: string } | null;
+  paymentsMode?: 'disabled' | 'test' | 'live';
   progression: Progression | null;
   player: Player | null;
   territories: Territory[];

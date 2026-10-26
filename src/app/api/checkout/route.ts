@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     assertSameOrigin(request);
     const uid = await sessionUser();
     if (!uid) throw new GameError('Connectez-vous pour continuer.', 401);
-    rateLimit(`checkout:${uid}`, 10, 60000);
+    await rateLimit(`checkout:${uid}`, 10, 60000);
     const body = z
       .object({
         amountCents: z.number().int().min(500).max(1000000),
@@ -25,13 +25,13 @@ export async function POST(request: Request) {
         termsAccepted: z.literal(true),
       })
       .parse(await request.json());
-    if (!get("SELECT id FROM sponsors WHERE user_id=? AND status='approved'", uid))
+    if (!(await get("SELECT id FROM sponsors WHERE user_id=? AND status='approved'", uid)))
       throw new GameError('Faites approuver un visuel avant de recharger votre portefeuille.');
-    if (sponsorWallet(uid).frozen)
+    if ((await sponsorWallet(uid)).frozen)
       throw new GameError('Ce compte de sponsoring nécessite une vérification.', 403);
     const now = Date.now();
-    const topup = transaction(() => {
-      run(
+    const topup = await transaction(async () => {
+      await run(
         'INSERT OR IGNORE INTO sponsor_topups(id,user_id,request_id,amount_cents,created_at) VALUES(?,?,?,?,?)',
         randomUUID(),
         uid,
@@ -39,13 +39,13 @@ export async function POST(request: Request) {
         body.amountCents,
         now,
       );
-      return get<{
+      return (await get<{
         id: string;
         amount_cents: number;
         checkout_id: string | null;
         checkout_expires: number | null;
         credited_at: number | null;
-      }>('SELECT * FROM sponsor_topups WHERE user_id=? AND request_id=?', uid, body.requestId)!;
+      }>('SELECT * FROM sponsor_topups WHERE user_id=? AND request_id=?', uid, body.requestId))!;
     });
     if (topup.amount_cents !== body.amountCents)
       throw new GameError('Cette demande correspond à un autre montant.', 409);
@@ -95,7 +95,7 @@ export async function POST(request: Request) {
       },
       { idempotencyKey: `sponsor-topup-${topup.id}` },
     );
-    run(
+    await run(
       'UPDATE sponsor_topups SET checkout_id=?,checkout_expires=? WHERE id=? AND credited_at IS NULL',
       checkout.id,
       expires * 1000,

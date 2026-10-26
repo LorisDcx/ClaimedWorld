@@ -1,6 +1,7 @@
 'use client';
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import Image from 'next/image';
+import { createClient } from '@supabase/supabase-js';
 import {
   ArrowRight,
   ArrowUpRight,
@@ -154,6 +155,9 @@ export default function Game() {
     };
   }, [refresh]);
   const sessionId = state?.player?.id || 'guest';
+  const worldReady = !!state;
+  const realtimeUrl = state?.realtime?.url;
+  const realtimeKey = state?.realtime?.key;
   useEffect(() => {
     const ids = new Set(state?.progression?.unlocks.map((u) => u.id) || []);
     const previous = announcedUnlocks.current;
@@ -174,6 +178,34 @@ export default function Game() {
     return () => clearTimeout(timer);
   }, [state?.progression?.unlocks, sessionId, notify]);
   useEffect(() => {
+    if (!worldReady) return;
+    if (realtimeUrl && realtimeKey) {
+      const client = createClient(realtimeUrl, realtimeKey, {
+        auth: { persistSession: false, autoRefreshToken: false },
+      });
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      const channel = client
+        .channel('world-revision')
+        .on(
+          'postgres_changes',
+          { event: 'UPDATE', schema: 'public', table: 'world_events' },
+          () => {
+            if (timer || document.hidden) return;
+            timer = setTimeout(
+              () => {
+                timer = undefined;
+                void refresh();
+              },
+              750 + Math.random() * 750,
+            );
+          },
+        )
+        .subscribe();
+      return () => {
+        clearTimeout(timer);
+        void client.removeChannel(channel);
+      };
+    }
     const source = new EventSource('/api/events');
     source.addEventListener('world', (event) => {
       const world = JSON.parse(event.data) as Snapshot;
@@ -184,7 +216,7 @@ export default function Game() {
       setError('');
     });
     return () => source.close();
-  }, [sessionId, syncClock]);
+  }, [sessionId, syncClock, worldReady, realtimeUrl, realtimeKey, refresh]);
   useEffect(() => {
     if (!toast) return;
     const timer = setTimeout(() => setToast(null), 5000);
@@ -651,6 +683,7 @@ export default function Game() {
               state?.sponsorAuctions.filter((bid) => bid.country_id === country.id) || []
             }
             onSponsor={() => participate({ type: 'my-sponsors', id: country.id })}
+            paymentsMode={state?.paymentsMode}
             onClose={() => setSelected(null)}
             attackPanel={
               <BorderAttack
@@ -978,9 +1011,11 @@ export default function Game() {
                   </button>
                 )}
                 <p className="discreet-note">
-                  {state?.paymentsEnabled
-                    ? 'Recharge par Stripe après validation d’un visuel. Aucun avantage de conquête.'
-                    : 'Les visuels peuvent être soumis. Les paiements sont désactivés sur cette installation locale.'}
+                  {state?.paymentsMode === 'test'
+                    ? 'Stripe en mode test : aucun paiement réel. Utilisez uniquement une carte de test.'
+                    : state?.paymentsEnabled
+                      ? 'Recharge par Stripe après validation d’un visuel. Aucun avantage de conquête.'
+                      : 'Les visuels peuvent être soumis. Les paiements sont désactivés sur cette installation locale.'}
                 </p>
                 <SupportCreator />
               </section>
@@ -1811,6 +1846,7 @@ function GameModal({
         <SponsorConsole
           countryId={modal.id}
           paymentsEnabled={!!state?.paymentsEnabled}
+          paymentsMode={state?.paymentsMode}
           version={state?.serverTime}
           act={act}
           onCreate={(id) => setModal({ type: 'sponsor', id })}
@@ -1932,18 +1968,18 @@ function GameModal({
       {type === 'privacy' && (
         <div className="prose">
           <p>
-            Cette installation locale conserve un pseudonyme, une couleur, un mot de passe dérivé
-            avec scrypt, les contributions, les appartenances aux alliances et les propositions
-            publicitaires dans une base SQLite sur le serveur.
+            Le jeu conserve votre pseudonyme, votre couleur, un mot de passe dérivé avec scrypt, vos
+            contributions, vos alliances et vos propositions publicitaires. La version hébergée
+            utilise une base PostgreSQL privée chez Supabase et un espace privé pour les logos.
           </p>
           <p>
             Un cookie strictement nécessaire, HttpOnly et SameSite, maintient votre connexion
             pendant 30 jours. Aucun outil de suivi publicitaire ni cookie analytique n’est installé.
           </p>
           <p>
-            Les pseudonymes, couleurs, alliances et scores sont publics. Les mots de passe et jetons
-            de session ne sont jamais transmis aux autres joueurs. Stripe traite les informations de
-            paiement si l’exploitant active cette option.
+            Les pseudonymes, couleurs, titres, succès, alliances et scores sont publics. Les mots de
+            passe et jetons de session ne sont jamais transmis aux autres joueurs. Stripe traite les
+            informations de paiement si l’exploitant active cette option.
           </p>
           <p>
             Avant une ouverture au public, l’exploitant devra publier ses coordonnées, ses

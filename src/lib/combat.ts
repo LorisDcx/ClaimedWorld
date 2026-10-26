@@ -57,9 +57,9 @@ export function proportionalFunding(
   return shares.filter((f) => f.amount > 0);
 }
 
-export function launchAttack(userId: string, order: AttackOrder, at = Date.now()) {
-  return transaction(() => {
-    const previous = get<{
+export async function launchAttack(userId: string, order: AttackOrder, at = Date.now()) {
+  return transaction(async () => {
+    const previous = await get<{
       source_id: string;
       destination_id: string;
       target_camp: string;
@@ -88,8 +88,8 @@ export function launchAttack(userId: string, order: AttackOrder, at = Date.now()
       throw new CombatError('Nombre de troupes invalide.');
     if (!isNeighbor(order.source, order.destination))
       throw new CombatError('Une attaque nécessite une frontière terrestre commune.');
-    const season = currentSeason(at);
-    const player = publicPlayer(userId, at);
+    const season = await currentSeason(at);
+    const player = await publicPlayer(userId, at);
     if (!player) throw new CombatError('Connexion requise.', 401);
     let campId = userId;
     if (order.mode === 'alliance') {
@@ -98,7 +98,7 @@ export function launchAttack(userId: string, order: AttackOrder, at = Date.now()
           'Seuls le chef et les généraux peuvent déplacer les troupes de l’alliance.',
           403,
         );
-      const alliance = get<{ target_ids: string }>(
+      const alliance = await get<{ target_ids: string }>(
         'SELECT target_ids FROM alliances WHERE id=? AND active=1',
         player.alliance_id,
       );
@@ -108,14 +108,14 @@ export function launchAttack(userId: string, order: AttackOrder, at = Date.now()
     }
     if (order.target === campId)
       throw new CombatError('Vous ne pouvez pas attaquer votre propre camp.');
-    const world = territories(season.id, at);
+    const world = await territories(season.id, at);
     const source = world.find((t) => t.id === order.source);
     const destination = world.find((t) => t.id === order.destination);
     if (source?.owner?.id !== campId)
       throw new CombatError('Votre camp doit contrôler le pays de départ.', 403);
     const defender = destination?.scores.find((c) => c.id === order.target);
     if (!defender) throw new CombatError('Ce rival n’a plus d’Influence active dans ce pays.', 409);
-    const available = activeInfluence(season.id, at);
+    const available = await activeInfluence(season.id, at);
     const lots = available
       .filter((c) => c.camp_id === campId && c.country_id === order.source)
       .sort((a, b) => a.expires_at - b.expires_at || a.id.localeCompare(b.id));
@@ -124,7 +124,7 @@ export function launchAttack(userId: string, order: AttackOrder, at = Date.now()
       throw new CombatError('Les troupes disponibles dans ce pays sont insuffisantes.', 409);
     const outcome = attackOutcome(order.amount, defender.score);
     const attackId = randomUUID();
-    run(
+    await run(
       'INSERT INTO battle_orders(id,user_id,request_id,source_id,destination_id,target_camp,amount,mode,destroyed,survivors,created_at,season_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',
       attackId,
       userId,
@@ -153,7 +153,7 @@ export function launchAttack(userId: string, order: AttackOrder, at = Date.now()
       .filter((c) => c.camp_id === order.target && c.country_id === order.destination)
       .sort((a, b) => a.expires_at - b.expires_at || a.id.localeCompare(b.id))) {
       const lost = Math.min(remainingDamage, lot.amount);
-      if (lost) withdraw(lot, lost);
+      if (lost) await withdraw(lot, lost);
       remainingDamage -= lost;
       if (!remainingDamage) break;
     }
@@ -163,10 +163,10 @@ export function launchAttack(userId: string, order: AttackOrder, at = Date.now()
       const sent = Math.min(toSend, lot.amount),
         lost = Math.min(toLose, sent),
         surviving = sent - lost;
-      withdraw(lot, sent);
+      await withdraw(lot, sent);
       if (surviving) {
         const child = randomUUID();
-        run(
+        await run(
           'INSERT INTO contributions VALUES(?,?,?,?,?,?,?,?)',
           child,
           lot.user_id,
@@ -177,14 +177,14 @@ export function launchAttack(userId: string, order: AttackOrder, at = Date.now()
           lot.expires_at,
           season.id,
         );
-        run('INSERT INTO influence_transfers VALUES(?,?,?)', child, lot.id, attackId);
-        const funding = all<FundingShare>(
+        await run('INSERT INTO influence_transfers VALUES(?,?,?)', child, lot.id, attackId);
+        const funding = await all<FundingShare>(
           'SELECT * FROM contribution_funding WHERE contribution_id=?',
           lot.id,
         );
         if (funding.length)
           for (const share of proportionalFunding(funding, lot.original_amount, surviving))
-            run(
+            await run(
               'INSERT INTO contribution_funding VALUES(?,?,?)',
               child,
               share.user_id,
@@ -196,7 +196,7 @@ export function launchAttack(userId: string, order: AttackOrder, at = Date.now()
       if (!toSend) break;
     }
     if (order.mode === 'alliance')
-      run(
+      await run(
         'INSERT INTO alliance_ledger VALUES(?,?,?,?,?,?,?,?)',
         randomUUID(),
         campId,
@@ -209,17 +209,17 @@ export function launchAttack(userId: string, order: AttackOrder, at = Date.now()
       );
     const actor =
       order.mode === 'alliance'
-        ? String(get('SELECT name FROM alliances WHERE id=?', campId)!.name)
+        ? String((await get('SELECT name FROM alliances WHERE id=?', campId))!.name)
         : player.username;
     const name = (id: string) => countries.find((c) => c.id === id)?.name || id;
-    log(
+    await log(
       `${actor} attaque ${defender.name} en ${name(order.destination)} depuis ${name(order.source)} : ${outcome.totalBurned} Influence brûlée, ${outcome.survivors} troupes installées.`,
       player.color,
       order.destination,
       season.id,
       at,
     );
-    territories(season.id, at);
+    await territories(season.id, at);
     return outcome;
   });
 }

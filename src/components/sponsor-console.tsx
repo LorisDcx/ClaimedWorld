@@ -18,12 +18,14 @@ type Act = (body: Record<string, unknown>, success?: string) => Promise<boolean>
 export default function SponsorConsole({
   countryId,
   paymentsEnabled,
+  paymentsMode,
   version,
   act,
   onCreate,
 }: {
   countryId?: string;
   paymentsEnabled: boolean;
+  paymentsMode?: 'disabled' | 'test' | 'live';
   version?: number;
   act: Act;
   onCreate: (country: string) => void;
@@ -131,6 +133,12 @@ export default function SponsorConsole({
     );
   return (
     <div className="sponsor-console">
+      {paymentsMode === 'test' && (
+        <div className="payment-test-note">
+          <strong>Stripe en mode test.</strong> Aucun paiement réel n’est effectué. Les crédits de
+          test servent uniquement à vérifier le fonctionnement.
+        </div>
+      )}
       {error && (
         <p className="notice" role="alert">
           {error}
@@ -199,7 +207,8 @@ export default function SponsorConsole({
             className="primary full"
             disabled={busy || !paymentsEnabled || locked || !approved.length}
           >
-            Recharger {topup || '0'} € <ArrowUpRight size={14} />
+            {paymentsMode === 'test' ? 'Tester une recharge de' : 'Recharger'} {topup || '0'} €{' '}
+            <ArrowUpRight size={14} />
           </button>
           <p className="muted">
             {!paymentsEnabled

@@ -28,6 +28,7 @@ export default function CountryStandings({
   sponsorBids = [],
   onSponsor,
   attackPanel,
+  paymentsMode,
 }: {
   country: Country;
   territory?: Territory;
@@ -45,6 +46,7 @@ export default function CountryStandings({
   sponsorBids?: SponsorBid[];
   onSponsor?: () => void;
   attackPanel?: ReactNode;
+  paymentsMode?: 'disabled' | 'test' | 'live';
 }) {
   const [layer, setLayer] = useState<'players' | 'sponsors' | 'combat'>('players');
   const owner = territory?.owner;
@@ -195,7 +197,12 @@ export default function CountryStandings({
       ) : layer === 'combat' ? (
         attackPanel
       ) : (
-        <SponsorAuction bids={sponsorBids} onSponsor={onSponsor || (() => {})} />
+        <SponsorAuction
+          bids={sponsorBids}
+          onSponsor={onSponsor || (() => {})}
+          houseAd={territory?.sponsor?.house ? territory.sponsor : null}
+          paymentsMode={paymentsMode}
+        />
       )}
     </aside>
   );

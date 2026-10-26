@@ -35,7 +35,7 @@ export async function POST(request: Request) {
         typeof session.payment_intent === 'string'
           ? session.payment_intent
           : session.payment_intent?.id || '';
-      creditSponsorTopup({
+      await creditSponsorTopup({
         topupId: session.metadata.topup_id,
         userId: session.metadata.user_id,
         checkoutId: session.id,
@@ -51,7 +51,7 @@ export async function POST(request: Request) {
           ? charge.payment_intent
           : charge.payment_intent?.id || '';
       if (charge.currency === 'eur' && intent)
-        refundSponsorTopup(
+        await refundSponsorTopup(
           intent,
           charge.metadata?.topup_id,
           charge.amount_refunded,
@@ -64,14 +64,14 @@ export async function POST(request: Request) {
         typeof dispute.payment_intent === 'string'
           ? dispute.payment_intent
           : dispute.payment_intent?.id || '';
-      if (intent) freezeSponsorAccount(intent, event.id);
+      if (intent) await freezeSponsorAccount(intent, event.id);
     } else if (event.type === 'charge.dispute.closed') {
       const dispute = event.data.object;
       const intent =
         typeof dispute.payment_intent === 'string'
           ? dispute.payment_intent
           : dispute.payment_intent?.id || '';
-      if (intent) closeSponsorDispute(intent, dispute.status === 'won', event.id);
+      if (intent) await closeSponsorDispute(intent, dispute.status === 'won', event.id);
     }
     return NextResponse.json({ received: true });
   } catch (error) {

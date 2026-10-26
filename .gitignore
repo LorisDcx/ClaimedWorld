@@ -10,3 +10,7 @@ playwright-report/
 test-results/
 *.tsbuildinfo
 artifacts/
+supabase/.temp/
+
+.vercel
+.env*

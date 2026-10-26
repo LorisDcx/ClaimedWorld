@@ -36,6 +36,7 @@ import {
 } from '@/lib/progression';
 import { CombatError, launchAttack } from '@/lib/combat';
 import { activeInfluence } from '@/lib/influence';
+import { notifyWorld } from '@/lib/world-events';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 const username = z
@@ -52,9 +53,9 @@ function requireThat(condition: unknown, message: string, status = 400): asserts
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const userId = await sessionUser();
-  currentSeason();
+  await currentSeason();
   if (url.searchParams.has('profile')) {
-    const profile = get<{
+    const profile = await get<{
       id: string;
       username: string;
       color: string;
@@ -65,10 +66,12 @@ export async function GET(request: Request) {
       url.searchParams.get('profile')!,
     );
     if (!profile) return NextResponse.json({ error: 'Profil introuvable.' }, { status: 404 });
-    const season = currentSeason();
-    const world = territories(season.id);
-    const badges = all<{ id: number; snapshot: string }>(
-      'SELECT id,snapshot FROM seasons WHERE archived_at IS NOT NULL',
+    const season = await currentSeason();
+    const world = await territories(season.id);
+    const badges = (
+      await all<{ id: number; snapshot: string }>(
+        'SELECT id,snapshot FROM seasons WHERE archived_at IS NOT NULL',
+      )
     ).flatMap((s) => {
       const a = JSON.parse(s.snapshot);
       return a.independentChampion?.id === profile.id
@@ -78,8 +81,8 @@ export async function GET(request: Request) {
     return NextResponse.json(
       {
         profile,
-        appearance: appearance(profile.id),
-        achievements: progression(profile.id, season.id).unlocks,
+        appearance: await appearance(profile.id),
+        achievements: (await progression(profile.id, season.id)).unlocks,
         territories: world.filter((t) => t.owner?.id === profile.id).map((t) => t.id),
         badges,
       },
@@ -89,8 +92,11 @@ export async function GET(request: Request) {
   if (url.searchParams.has('mine')) {
     if (!userId) return NextResponse.json({ error: 'Connexion requise.' }, { status: 401 });
     return NextResponse.json({
-      sponsors: all('SELECT * FROM sponsors WHERE user_id=? ORDER BY created_at DESC', userId),
-      contributions: activeInfluence(currentSeason().id, Date.now())
+      sponsors: await all(
+        'SELECT * FROM sponsors WHERE user_id=? ORDER BY created_at DESC',
+        userId,
+      ),
+      contributions: (await activeInfluence((await currentSeason()).id, Date.now()))
         .filter((c) => c.user_id === userId)
         .sort((a, b) => a.expires_at - b.expires_at),
     });
@@ -98,21 +104,21 @@ export async function GET(request: Request) {
   if (url.searchParams.has('alliance')) {
     const alliance = id.parse(url.searchParams.get('alliance'));
     return NextResponse.json({
-      members: all(
+      members: await all(
         `SELECT u.id,u.username,u.color,u.alliance_role,u.created_at,u.alliance_joined_at,
           COALESCE((SELECT SUM(amount) FROM alliance_ledger l WHERE l.user_id=u.id AND l.alliance_id=u.alliance_id AND l.kind='deposit' AND l.season_id=(SELECT MAX(id) FROM seasons)),0) AS donated,
           COALESCE((SELECT SUM(f.amount) FROM contribution_funding f JOIN contributions c ON c.id=f.contribution_id WHERE f.user_id=u.id AND c.camp_id=u.alliance_id AND c.season_id=(SELECT MAX(id) FROM seasons) AND c.id NOT IN (SELECT contribution_id FROM influence_transfers)),0) AS engaged
           FROM users u WHERE alliance_id=? AND banned=0 ORDER BY alliance_joined_at,id`,
         alliance,
       ),
-      ledger: all(
+      ledger: await all(
         'SELECT l.*,u.username FROM alliance_ledger l JOIN users u ON u.id=l.user_id WHERE l.alliance_id=? AND l.season_id=(SELECT MAX(id) FROM seasons) ORDER BY l.created_at DESC,l.id DESC LIMIT 80',
         alliance,
       ),
     });
   }
   if (url.searchParams.has('archive')) {
-    const season = get<{ snapshot: string }>(
+    const season = await get<{ snapshot: string }>(
       'SELECT snapshot FROM seasons WHERE id=? AND archived_at IS NOT NULL',
       Number(url.searchParams.get('archive')),
     );
@@ -122,18 +128,18 @@ export async function GET(request: Request) {
     );
   }
   if (url.searchParams.has('admin')) {
-    if (!userId || !publicPlayer(userId)?.isAdmin)
+    if (!userId || !(await publicPlayer(userId))?.isAdmin)
       return NextResponse.json({ error: 'Accès refusé.' }, { status: 403 });
     return NextResponse.json({
-      sponsors: all(
+      sponsors: await all(
         'SELECT s.*,u.username FROM sponsors s LEFT JOIN users u ON s.user_id=u.id ORDER BY s.created_at DESC',
       ),
-      reports: all(
+      reports: await all(
         'SELECT r.*,u.username FROM reports r JOIN users u ON r.user_id=u.id WHERE resolved=0 ORDER BY r.created_at DESC',
       ),
     });
   }
-  return NextResponse.json(snapshot(userId), { headers: { 'Cache-Control': 'no-store' } });
+  return NextResponse.json(await snapshot(userId), { headers: { 'Cache-Control': 'no-store' } });
 }
 export async function POST(request: Request) {
   try {
@@ -148,26 +154,26 @@ export async function POST(request: Request) {
     const body = JSON.parse(raw);
     const action = z.string().parse(body.action);
     const now = Date.now();
-    const season = currentSeason(now);
+    const season = await currentSeason(now);
     // Proxy headers are only trusted when the operator explicitly opts in.
     const ip =
-      process.env.TRUST_PROXY === 'true'
+      process.env.VERCEL === '1' || process.env.TRUST_PROXY === 'true'
         ? request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'local'
         : 'local';
-    rateLimit(`request:${ip}`, 300, 60000);
+    await rateLimit(`request:${ip}`, 300, 60000);
     if (action === 'signup' || action === 'login') {
-      rateLimit(`auth:${ip}`, 20, 15 * 60000);
+      await rateLimit(`auth:${ip}`, 20, 15 * 60000);
       const name = username.parse(body.username);
       const password = z.string().min(8).max(128).parse(body.password);
       if (action === 'signup') {
         requireThat(
-          !get('SELECT id FROM users WHERE username=?', name),
+          !(await get('SELECT id FROM users WHERE lower(username)=lower(?)', name)),
           'Ce pseudonyme est déjà utilisé.',
           409,
         );
         const chosen = color.parse(body.color || '#ff5d35');
         const uid = randomUUID();
-        run(
+        await run(
           'INSERT INTO users(id,username,password,color,created_at,generation_anchor) VALUES(?,?,?,?,?,?)',
           uid,
           name,
@@ -177,10 +183,11 @@ export async function POST(request: Request) {
           now,
         );
         await createSession(uid);
-        return NextResponse.json(snapshot(uid));
+        await notifyWorld();
+        return NextResponse.json(await snapshot(uid));
       }
-      const user = get<{ id: string; password: string; banned: number }>(
-        'SELECT * FROM users WHERE username=?',
+      const user = await get<{ id: string; password: string; banned: number }>(
+        'SELECT * FROM users WHERE lower(username)=lower(?)',
         name,
       );
       const valid = checkPassword(
@@ -189,19 +196,19 @@ export async function POST(request: Request) {
       );
       requireThat(user && valid && !user.banned, 'Pseudonyme ou mot de passe incorrect.', 401);
       await createSession(user.id);
-      return NextResponse.json(snapshot(user.id));
+      return NextResponse.json(await snapshot(user.id));
     }
     if (action === 'logout') {
       await endSession();
-      return NextResponse.json(snapshot(null));
+      return NextResponse.json(await snapshot(null));
     }
     const userId = await sessionUser();
     requireThat(userId, 'Connectez-vous pour participer.', 401);
-    const user = publicPlayer(userId, now);
+    const user = await publicPlayer(userId, now);
     requireThat(user, 'Compte introuvable.', 401);
-    rateLimit(`action:${userId}`, 60, 60000);
+    await rateLimit(`action:${userId}`, 60, 60000);
     if (action === 'border-attack') {
-      launchAttack(
+      await launchAttack(
         userId,
         {
           source: id.parse(body.source),
@@ -214,13 +221,13 @@ export async function POST(request: Request) {
         now,
       );
     } else if (action === 'equip-cosmetic') {
-      territories(season.id, now);
-      equipCosmetic(userId, id.parse(body.cosmeticId), season.id, now);
+      await territories(season.id, now);
+      await equipCosmetic(userId, id.parse(body.cosmeticId), season.id, now);
     } else if (action === 'select-objective') {
-      territories(season.id, now);
-      selectObjective(userId, id.parse(body.objectiveId), season.id, now);
+      await territories(season.id, now);
+      await selectObjective(userId, id.parse(body.objectiveId), season.id, now);
     } else if (action === 'tutorial') {
-      saveTutorial(
+      await saveTutorial(
         userId,
         z.number().int().min(0).max(4).parse(body.step),
         z.boolean().parse(body.dismissed),
@@ -237,8 +244,8 @@ export async function POST(request: Request) {
         countries.some((c) => c.id === country),
         'Territoire inconnu.',
       );
-      transaction(() => {
-        const live = publicPlayer(userId, now)!;
+      await transaction(async () => {
+        const live = (await publicPlayer(userId, now))!;
         let campId = userId;
         if (mode === 'alliance') {
           requireThat(live.alliance_id, 'Alliance requise.', 403);
@@ -247,7 +254,7 @@ export async function POST(request: Request) {
             'Seuls le chef et les généraux peuvent attaquer pour l’alliance.',
             403,
           );
-          const alliance = get<Alliance & { target_ids: string }>(
+          const alliance = await get<Alliance & { target_ids: string }>(
             'SELECT * FROM alliances WHERE id=? AND active=1',
             live.alliance_id,
           );
@@ -259,11 +266,13 @@ export async function POST(request: Request) {
           );
           requireThat(
             Number(
-              run(
-                'UPDATE alliances SET treasury=treasury-? WHERE id=? AND treasury>=?',
-                amount,
-                alliance.id,
-                amount,
+              (
+                await run(
+                  'UPDATE alliances SET treasury=treasury-? WHERE id=? AND treasury>=?',
+                  amount,
+                  alliance.id,
+                  amount,
+                )
               ).changes,
             ) === 1,
             'Trésorerie insuffisante.',
@@ -271,10 +280,10 @@ export async function POST(request: Request) {
           campId = alliance.id;
         } else {
           requireThat(live.wallet >= amount, 'Votre solde d’Influence est insuffisant.');
-          run('UPDATE users SET wallet=wallet-? WHERE id=?', amount, userId);
+          await run('UPDATE users SET wallet=wallet-? WHERE id=?', amount, userId);
         }
         const contributionId = randomUUID();
-        run(
+        await run(
           'INSERT INTO contributions VALUES(?,?,?,?,?,?,?,?)',
           contributionId,
           userId,
@@ -288,21 +297,26 @@ export async function POST(request: Request) {
         if (mode === 'alliance') {
           let remaining = amount;
           const funding = new Map<string, number>();
-          for (const lot of all<{ id: string; user_id: string; remaining: number }>(
+          for (const lot of await all<{ id: string; user_id: string; remaining: number }>(
             'SELECT id,user_id,remaining FROM treasury_lots WHERE alliance_id=? AND season_id=? AND remaining>0 ORDER BY created_at,id',
             campId,
             season.id,
           )) {
             const used = Math.min(remaining, lot.remaining);
-            run('UPDATE treasury_lots SET remaining=remaining-? WHERE id=?', used, lot.id);
+            await run('UPDATE treasury_lots SET remaining=remaining-? WHERE id=?', used, lot.id);
             funding.set(lot.user_id, (funding.get(lot.user_id) || 0) + used);
             remaining -= used;
             if (!remaining) break;
           }
           requireThat(remaining === 0, 'Les fonds de trésorerie ne sont pas disponibles.', 409);
           for (const [donor, used] of funding)
-            run('INSERT INTO contribution_funding VALUES(?,?,?)', contributionId, donor, used);
-          run(
+            await run(
+              'INSERT INTO contribution_funding VALUES(?,?,?)',
+              contributionId,
+              donor,
+              used,
+            );
+          await run(
             'INSERT INTO alliance_ledger VALUES(?,?,?,?,?,?,?,?)',
             randomUUID(),
             campId,
@@ -314,28 +328,30 @@ export async function POST(request: Request) {
             now,
           );
         }
-        territories(season.id, now);
+        await territories(season.id, now);
       });
     } else if (action === 'alliance-deposit') {
       const amount = z.number().int().min(1).max(TREASURY_CAP).parse(body.amount);
-      transaction(() => {
-        const live = publicPlayer(userId, now)!;
+      await transaction(async () => {
+        const live = (await publicPlayer(userId, now))!;
         requireThat(live.alliance_id, 'Alliance requise.');
         requireThat(live.wallet >= amount, 'Votre solde d’Influence est insuffisant.');
         requireThat(
           Number(
-            run(
-              'UPDATE alliances SET treasury=treasury+? WHERE id=? AND active=1 AND treasury+?<=?',
-              amount,
-              live.alliance_id,
-              amount,
-              TREASURY_CAP,
+            (
+              await run(
+                'UPDATE alliances SET treasury=treasury+? WHERE id=? AND active=1 AND treasury+?<=?',
+                amount,
+                live.alliance_id,
+                amount,
+                TREASURY_CAP,
+              )
             ).changes,
           ) === 1,
           `La trésorerie est plafonnée à ${TREASURY_CAP} Influence.`,
         );
-        run('UPDATE users SET wallet=wallet-? WHERE id=?', amount, userId);
-        run(
+        await run('UPDATE users SET wallet=wallet-? WHERE id=?', amount, userId);
+        await run(
           'INSERT INTO treasury_lots VALUES(?,?,?,?,?,?,?)',
           randomUUID(),
           live.alliance_id,
@@ -345,7 +361,7 @@ export async function POST(request: Request) {
           amount,
           now,
         );
-        run(
+        await run(
           'INSERT INTO alliance_ledger VALUES(?,?,?,?,?,?,?,?)',
           randomUUID(),
           live.alliance_id,
@@ -364,21 +380,21 @@ export async function POST(request: Request) {
         targets.every((target) => countries.some((c) => c.id === target)),
         'Cible inconnue.',
       );
-      transaction(() => {
-        const live = publicPlayer(userId, now)!;
+      await transaction(async () => {
+        const live = (await publicPlayer(userId, now))!;
         requireThat(
           live.alliance_id && live.alliance_role === 'leader',
           'Seul le chef définit les objectifs.',
           403,
         );
-        run(
+        await run(
           'UPDATE alliances SET objective=?,target_ids=? WHERE id=? AND leader_id=?',
           objective,
           JSON.stringify(targets),
           live.alliance_id,
           userId,
         );
-        run(
+        await run(
           'INSERT INTO alliance_ledger VALUES(?,?,?,?,?,?,?,?)',
           randomUUID(),
           live.alliance_id,
@@ -394,11 +410,11 @@ export async function POST(request: Request) {
       const name = username.parse(body.username);
       const chosen = color.parse(body.color);
       requireThat(
-        !get('SELECT id FROM users WHERE username=? AND id<>?', name, userId),
+        !(await get('SELECT id FROM users WHERE lower(username)=lower(?) AND id<>?', name, userId)),
         'Ce pseudonyme est déjà utilisé.',
         409,
       );
-      run('UPDATE users SET username=?,color=? WHERE id=?', name, chosen, userId);
+      await run('UPDATE users SET username=?,color=? WHERE id=?', name, chosen, userId);
     } else if (action === 'create-alliance') {
       requireThat(!user.alliance_id, 'Quittez votre alliance actuelle.');
       requireThat(user.cooldown_until <= now, 'Vous devez attendre 24 heures après votre départ.');
@@ -411,18 +427,18 @@ export async function POST(request: Request) {
         .parse(body.description || '');
       const emblem = z.enum(['✳', '◈', '✦', '⚑', '◎', '⌘']).parse(body.emblem || '✳');
       requireThat(
-        !get('SELECT id FROM alliances WHERE name=?', name),
+        !(await get('SELECT id FROM alliances WHERE lower(name)=lower(?)', name)),
         'Ce nom d’alliance est déjà utilisé.',
         409,
       );
-      transaction(() => {
-        const live = publicPlayer(userId, now)!;
+      await transaction(async () => {
+        const live = (await publicPlayer(userId, now))!;
         requireThat(
           !live.alliance_id && live.cooldown_until <= now,
           'Vous ne pouvez pas créer une alliance maintenant.',
         );
         const aid = randomUUID();
-        run(
+        await run(
           'INSERT INTO alliances(id,name,color,emblem,description,leader_id,invite,created_at) VALUES(?,?,?,?,?,?,?,?)',
           aid,
           name,
@@ -433,49 +449,53 @@ export async function POST(request: Request) {
           randomBytes(8).toString('hex'),
           now,
         );
-        run(
+        await run(
           "UPDATE users SET alliance_id=?,alliance_role='leader',alliance_joined_at=? WHERE id=?",
           aid,
           now,
           userId,
         );
-        run(
+        await run(
           'INSERT INTO alliance_memberships(user_id,alliance_id,joined_at) VALUES(?,?,?)',
           userId,
           aid,
           now,
         );
-        log(`${name} entre dans la partie.`, chosen, null, season.id, now);
+        await log(`${name} entre dans la partie.`, chosen, null, season.id, now);
       });
     } else if (action === 'join-alliance') {
       requireThat(!user.alliance_id, 'Quittez votre alliance actuelle.');
       requireThat(user.cooldown_until <= now, 'Vous devez attendre 24 heures après votre départ.');
-      const alliance = get<Alliance>(
+      const alliance = await get<Alliance>(
         'SELECT * FROM alliances WHERE (id=? OR invite=?) AND active=1',
         id.parse(body.allianceId),
         id.parse(body.allianceId),
       );
       requireThat(alliance, 'Alliance introuvable.');
-      transaction(() => {
-        const live = publicPlayer(userId, now)!;
+      await transaction(async () => {
+        const live = (await publicPlayer(userId, now))!;
         requireThat(
           !live.alliance_id && live.cooldown_until <= now,
           'Vous ne pouvez pas rejoindre une alliance maintenant.',
         );
         requireThat(
           Number(
-            get('SELECT COUNT(*) AS n FROM users WHERE alliance_id=? AND banned=0', alliance.id)
-              ?.n || 0,
+            (
+              await get(
+                'SELECT COUNT(*) AS n FROM users WHERE alliance_id=? AND banned=0',
+                alliance.id,
+              )
+            )?.n || 0,
           ) < ALLIANCE_LIMIT,
           `Une alliance peut accueillir ${ALLIANCE_LIMIT} membres maximum.`,
         );
-        run(
+        await run(
           "UPDATE users SET alliance_id=?,alliance_role='member',alliance_joined_at=? WHERE id=?",
           alliance.id,
           now,
           userId,
         );
-        run(
+        await run(
           'INSERT INTO alliance_memberships(user_id,alliance_id,joined_at) VALUES(?,?,?)',
           userId,
           alliance.id,
@@ -484,12 +504,15 @@ export async function POST(request: Request) {
       });
     } else if (action === 'leave-alliance') {
       requireThat(user.alliance_id, 'Vous jouez déjà en solo.');
-      transaction(() => {
-        const live = publicPlayer(userId, now)!;
+      await transaction(async () => {
+        const live = (await publicPlayer(userId, now))!;
         requireThat(live.alliance_id, 'Vous jouez déjà en solo.');
-        const alliance = get<Alliance>('SELECT * FROM alliances WHERE id=?', live.alliance_id)!;
+        const alliance = (await get<Alliance>(
+          'SELECT * FROM alliances WHERE id=?',
+          live.alliance_id,
+        ))!;
         if (alliance.leader_id === userId) {
-          const members = all<{ id: string }>(
+          const members = await all<{ id: string }>(
             "SELECT id FROM users WHERE alliance_id=? AND id<>? AND banned=0 ORDER BY CASE WHEN alliance_role='general' THEN 0 ELSE 1 END,alliance_joined_at,id",
             alliance.id,
             userId,
@@ -499,16 +522,16 @@ export async function POST(request: Request) {
             : members[0];
           requireThat(!body.successorId || successor, 'Successeur invalide.');
           if (successor) {
-            run('UPDATE alliances SET leader_id=? WHERE id=?', successor.id, alliance.id);
-            run("UPDATE users SET alliance_role='leader' WHERE id=?", successor.id);
-          } else run('UPDATE alliances SET active=0 WHERE id=?', alliance.id);
+            await run('UPDATE alliances SET leader_id=? WHERE id=?', successor.id, alliance.id);
+            await run("UPDATE users SET alliance_role='leader' WHERE id=?", successor.id);
+          } else await run('UPDATE alliances SET active=0 WHERE id=?', alliance.id);
         }
-        run(
+        await run(
           "UPDATE users SET alliance_id=NULL,alliance_role='member',cooldown_until=? WHERE id=?",
           now + DAY,
           userId,
         );
-        run(
+        await run(
           'UPDATE alliance_memberships SET left_at=? WHERE user_id=? AND alliance_id=? AND left_at IS NULL',
           now,
           userId,
@@ -516,30 +539,33 @@ export async function POST(request: Request) {
         );
       });
     } else if (action === 'kick-member' || action === 'set-general' || action === 'set-coleader') {
-      transaction(() => {
-        const live = publicPlayer(userId, now)!;
+      await transaction(async () => {
+        const live = (await publicPlayer(userId, now))!;
         requireThat(live.alliance_id, 'Alliance requise.');
-        const alliance = get<Alliance>('SELECT * FROM alliances WHERE id=?', live.alliance_id)!;
+        const alliance = (await get<Alliance>(
+          'SELECT * FROM alliances WHERE id=?',
+          live.alliance_id,
+        ))!;
         requireThat(alliance.leader_id === userId, 'Seul le chef peut gérer les membres.', 403);
         const target = id.parse(body.userId);
         requireThat(
           target !== userId &&
-            get('SELECT id FROM users WHERE id=? AND alliance_id=?', target, alliance.id),
+            (await get('SELECT id FROM users WHERE id=? AND alliance_id=?', target, alliance.id)),
           'Membre invalide.',
         );
         if (action === 'kick-member') {
-          run(
+          await run(
             "UPDATE users SET alliance_id=NULL,alliance_role='member',cooldown_until=0 WHERE id=?",
             target,
           );
-          run(
+          await run(
             'UPDATE alliance_memberships SET left_at=? WHERE user_id=? AND alliance_id=? AND left_at IS NULL',
             now,
             target,
             alliance.id,
           );
         } else
-          run(
+          await run(
             'UPDATE users SET alliance_role=? WHERE id=?',
             z.boolean().default(true).parse(body.enabled) ? 'general' : 'member',
             target,
@@ -554,14 +580,14 @@ export async function POST(request: Request) {
         'Territoire inconnu.',
       );
       if (action === 'sponsor-place')
-        placeSponsorFunds(userId, campaign, country, amount, body.accepted === true, now);
+        await placeSponsorFunds(userId, campaign, country, amount, body.accepted === true, now);
       else {
         const from = id.parse(body.fromCountryId);
         requireThat(
           countries.some((c) => c.id === from),
           'Territoire inconnu.',
         );
-        moveSponsorFunds(
+        await moveSponsorFunds(
           userId,
           id.parse(body.fromCampaignId),
           from,
@@ -585,16 +611,21 @@ export async function POST(request: Request) {
       );
       requireThat(
         Number(
-          get("SELECT COUNT(*) AS n FROM sponsors WHERE user_id=? AND status='pending'", userId)?.n,
+          (
+            await get(
+              "SELECT COUNT(*) AS n FROM sponsors WHERE user_id=? AND status='pending'",
+              userId,
+            )
+          )?.n,
         ) < 3,
         'Trois propositions en attente maximum.',
       );
       const logoId = body.logoId ? z.string().uuid().parse(body.logoId) : null;
       requireThat(
-        !logoId || get('SELECT id FROM uploads WHERE id=? AND user_id=?', logoId, userId),
+        !logoId || (await get('SELECT id FROM uploads WHERE id=? AND user_id=?', logoId, userId)),
         'Logo invalide.',
       );
-      run(
+      await run(
         'INSERT INTO sponsors(id,user_id,country_id,season_id,name,description,url,initials,color,amount,created_at,logo_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',
         randomUUID(),
         userId,
@@ -610,8 +641,8 @@ export async function POST(request: Request) {
         logoId,
       );
     } else if (action === 'report') {
-      rateLimit(`report:${userId}`, 5, 60 * 60000);
-      run(
+      await rateLimit(`report:${userId}`, 5, 60 * 60000);
+      await run(
         'INSERT INTO reports(id,user_id,target,reason,created_at) VALUES(?,?,?,?,?)',
         randomUUID(),
         userId,
@@ -623,31 +654,32 @@ export async function POST(request: Request) {
       requireThat(user.isAdmin, 'Accès refusé.', 403);
       const target = id.parse(body.id);
       const decision = z.enum(['approve', 'reject', 'resolve', 'ban']).parse(body.decision);
-      if (decision === 'resolve') run('UPDATE reports SET resolved=1 WHERE id=?', target);
+      if (decision === 'resolve') await run('UPDATE reports SET resolved=1 WHERE id=?', target);
       else if (decision === 'ban') {
         requireThat(target !== userId, 'Vous ne pouvez pas vous suspendre.');
-        transaction(() => {
-          run('UPDATE users SET banned=1 WHERE id=?', target);
-          run('DELETE FROM sessions WHERE user_id=?', target);
+        await transaction(async () => {
+          await run('UPDATE users SET banned=1 WHERE id=?', target);
+          await run('DELETE FROM sessions WHERE user_id=?', target);
         });
       } else {
-        const sponsor = get<{ payment_status: string }>(
+        const sponsor = await get<{ payment_status: string }>(
           'SELECT payment_status FROM sponsors WHERE id=?',
           target,
         );
         requireThat(sponsor, 'Proposition introuvable.');
-        transaction(() => {
-          sponsorMarket(now);
-          run(
+        await transaction(async () => {
+          await sponsorMarket(now);
+          await run(
             'UPDATE sponsors SET status=? WHERE id=?',
             decision === 'approve' ? 'approved' : 'rejected',
             target,
           );
-          sponsorMarket(now);
+          await sponsorMarket(now);
         });
       }
     } else throw new GameError('Action inconnue.');
-    return NextResponse.json(snapshot(userId));
+    if (action !== 'tutorial') await notifyWorld();
+    return NextResponse.json(await snapshot(userId));
   } catch (error) {
     if (
       error instanceof GameError ||

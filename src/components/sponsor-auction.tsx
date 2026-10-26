@@ -1,14 +1,18 @@
 'use client';
 import { ArrowUpRight, Megaphone } from 'lucide-react';
-import type { SponsorBid } from '@/lib/types';
+import type { Sponsor, SponsorBid } from '@/lib/types';
 const credits = (amount: number) =>
   (amount / 100).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 export default function SponsorAuction({
   bids,
   onSponsor,
+  houseAd,
+  paymentsMode,
 }: {
   bids: SponsorBid[];
   onSponsor: () => void;
+  houseAd?: Sponsor | null;
+  paymentsMode?: 'disabled' | 'test' | 'live';
 }) {
   const ranked = [...bids].sort(
     (a, b) =>
@@ -17,9 +21,26 @@ export default function SponsorAuction({
   const winner = ranked.find((bid) => bid.winning);
   return (
     <div className="country-sponsor-auction">
+      {paymentsMode === 'test' && (
+        <p className="payment-test-note">Sponsoring en mode test : aucun paiement réel.</p>
+      )}
       <p className="sponsor-auction-intro">
         Le logo et le contrôle du pays ont deux enchères indépendantes.
       </p>
+      {!winner && houseAd && (
+        <div className="house-ad">
+          <span className="eyebrow">CAMPAGNE MAISON · EMPLACEMENT DISPONIBLE</span>
+          <h3>{houseAd.name}</h3>
+          <p>{houseAd.description}</p>
+          <a href={houseAd.url} target="_blank" rel="noopener noreferrer">
+            Découvrir {houseAd.name} <ArrowUpRight size={13} />
+          </a>
+          <small>
+            Autopromotion du créateur, sans enchère payante. Un sponsor éligible remplace cette
+            annonce.
+          </small>
+        </div>
+      )}
       <div className="standings-label">
         <span>SPONSORS</span>
         <span>CRÉDITS ACTIFS</span>

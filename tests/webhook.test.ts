@@ -7,10 +7,10 @@ import { POST } from '../src/app/api/webhooks/stripe/route';
 process.env.DATABASE_PATH = ':memory:';
 process.env.STRIPE_SECRET_KEY = 'sk_test_local_signature_verification_only';
 process.env.STRIPE_WEBHOOK_SECRET = 'whsec_local_test_only';
-function setup(id: string) {
-  const season = currentSeason(),
+async function setup(id: string) {
+  const season = await currentSeason(),
     now = Date.now();
-  run(
+  await run(
     'INSERT INTO users(id,username,password,color,created_at,generation_anchor) VALUES(?,?,?,?,?,?)',
     id,
     id,
@@ -19,7 +19,7 @@ function setup(id: string) {
     now,
     now,
   );
-  run(
+  await run(
     "INSERT INTO sponsors(id,user_id,country_id,season_id,name,description,url,initials,color,amount,status,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,'approved',?)",
     id,
     id,
@@ -33,7 +33,7 @@ function setup(id: string) {
     0,
     now,
   );
-  run(
+  await run(
     'INSERT INTO sponsor_topups(id,user_id,request_id,amount_cents,checkout_id,created_at) VALUES(?,?,?,?,?,?)',
     id,
     id,
@@ -70,9 +70,9 @@ function paid(id: string, amount = 1000) {
 }
 
 test('Stripe credits only verified matching payments, once per purchase even with different event IDs', async () => {
-  setup('buyer');
+  await setup('buyer');
   assert.equal((await send('bad', 'checkout.session.completed', paid('buyer'), true)).status, 400);
-  assert.equal(sponsorWallet('buyer').balance_cents, 0);
+  assert.equal((await sponsorWallet('buyer')).balance_cents, 0);
   const original = console.error;
   console.error = () => {};
   try {
@@ -92,29 +92,32 @@ test('Stripe credits only verified matching payments, once per purchase even wit
   } finally {
     console.error = original;
   }
-  assert.equal(sponsorWallet('buyer').balance_cents, 0);
+  assert.equal((await sponsorWallet('buyer')).balance_cents, 0);
   assert.equal((await send('paid', 'checkout.session.completed', paid('buyer'))).status, 200);
   assert.equal((await send('paid', 'checkout.session.completed', paid('buyer'))).status, 200);
   assert.equal(
     (await send('duplicate-session', 'checkout.session.completed', paid('buyer'))).status,
     200,
   );
-  assert.equal(sponsorWallet('buyer').balance_cents, 1000);
+  assert.equal((await sponsorWallet('buyer')).balance_cents, 1000);
   assert.equal(
     Number(
-      get('SELECT COUNT(*) AS n FROM sponsor_ledger WHERE user_id=? AND kind=?', 'buyer', 'credit')!
-        .n,
+      (await get(
+        'SELECT COUNT(*) AS n FROM sponsor_ledger WHERE user_id=? AND kind=?',
+        'buyer',
+        'credit',
+      ))!.n,
     ),
     1,
   );
   assert.equal(
-    get<{ wallet: number }>('SELECT wallet FROM users WHERE id=?', 'buyer')!.wallet,
+    (await get<{ wallet: number }>('SELECT wallet FROM users WHERE id=?', 'buyer'))!.wallet,
     100,
   );
 });
 
 test('refunds debit unused credits and active stakes without resurrecting money on duplicate delivery', async () => {
-  placeSponsorFunds('buyer', 'buyer', '250', 500, true);
+  await placeSponsorFunds('buyer', 'buyer', '250', 500, true);
   const refund = {
     id: 'charge-buyer',
     object: 'charge',
@@ -126,18 +129,18 @@ test('refunds debit unused credits and active stakes without resurrecting money 
   };
   assert.equal((await send('refund', 'charge.refunded', refund)).status, 200);
   assert.equal((await send('refund-again', 'charge.refunded', refund)).status, 200);
-  assert.equal(sponsorWallet('buyer').balance_cents, 0);
-  assert.equal(sponsorWallet('buyer').debt_cents, 0);
+  assert.equal((await sponsorWallet('buyer')).balance_cents, 0);
+  assert.equal((await sponsorWallet('buyer')).debt_cents, 0);
   assert.equal(
-    sponsorMarket().some((bid) => bid.user_id === 'buyer'),
+    (await sponsorMarket()).some((bid) => bid.user_id === 'buyer'),
     false,
   );
   await send('paid-after-refund', 'checkout.session.completed', paid('buyer'));
-  assert.equal(sponsorWallet('buyer').balance_cents, 0);
+  assert.equal((await sponsorWallet('buyer')).balance_cents, 0);
 });
 
 test('out-of-order refund and dispute events are respected when payment confirmation arrives later', async () => {
-  setup('late');
+  await setup('late');
   await send('early-refund', 'charge.refunded', {
     id: 'charge-late',
     payment_intent: 'pi-late',
@@ -151,15 +154,15 @@ test('out-of-order refund and dispute events are respected when payment confirma
     payment_intent: 'pi-late',
   });
   await send('late-paid', 'checkout.session.completed', paid('late'));
-  assert.equal(sponsorWallet('late').balance_cents, 500);
-  assert.equal(sponsorWallet('late').frozen, 1);
-  assert.throws(() => placeSponsorFunds('late', 'late', '250', 500, true));
+  assert.equal((await sponsorWallet('late')).balance_cents, 500);
+  assert.equal((await sponsorWallet('late')).frozen, 1);
+  await assert.rejects(() => placeSponsorFunds('late', 'late', '250', 500, true));
   await send('dispute-won', 'charge.dispute.closed', {
     id: 'dispute-late',
     payment_intent: 'pi-late',
     status: 'won',
   });
-  assert.equal(sponsorWallet('late').frozen, 0);
-  placeSponsorFunds('late', 'late', '250', 500, true);
-  assert.equal(sponsorWallet('late').balance_cents, 0);
+  assert.equal((await sponsorWallet('late')).frozen, 0);
+  await placeSponsorFunds('late', 'late', '250', 500, true);
+  assert.equal((await sponsorWallet('late')).balance_cents, 0);
 });

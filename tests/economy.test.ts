@@ -10,9 +10,9 @@ import {
 } from '../src/lib/season-rewards';
 process.env.DATABASE_PATH = ':memory:';
 
-test('offline generation caps at 160 and spending cannot recover discarded ticks', () => {
-  const start = currentSeason().starts_at;
-  run(
+test('offline generation caps at 160 and spending cannot recover discarded ticks', async () => {
+  const start = (await currentSeason()).starts_at;
+  await run(
     'INSERT INTO users(id,username,password,color,created_at,generation_anchor) VALUES(?,?,?,?,?,?)',
     'stock',
     'StockPlayer',
@@ -21,13 +21,13 @@ test('offline generation caps at 160 and spending cannot recover discarded ticks
     start,
     start,
   );
-  assert.equal(publicPlayer('stock', start + HALF_HOUR)!.wallet, 120);
-  assert.equal(publicPlayer('stock', start + DAY)!.wallet, 160);
-  run('UPDATE users SET wallet=60 WHERE id=?', 'stock');
-  assert.equal(publicPlayer('stock', start + DAY)!.wallet, 60);
-  assert.equal(publicPlayer('stock', start + DAY + HALF_HOUR)!.wallet, 80);
-  assert.equal(publicPlayer('stock', start + 20 * DAY)!.wallet, 160);
-  assert.equal(publicPlayer('stock', start + 20 * DAY)!.reserve, 0);
+  assert.equal((await publicPlayer('stock', start + HALF_HOUR))!.wallet, 120);
+  assert.equal((await publicPlayer('stock', start + DAY))!.wallet, 160);
+  await run('UPDATE users SET wallet=60 WHERE id=?', 'stock');
+  assert.equal((await publicPlayer('stock', start + DAY))!.wallet, 60);
+  assert.equal((await publicPlayer('stock', start + DAY + HALF_HOUR))!.wallet, 80);
+  assert.equal((await publicPlayer('stock', start + 20 * DAY))!.wallet, 160);
+  assert.equal((await publicPlayer('stock', start + 20 * DAY))!.reserve, 0);
 });
 
 test('late and token participation yield tiny or zero season bonuses, with hard caps', () => {
@@ -93,9 +93,9 @@ test('useful control time credits funders and commanders, not unused donations o
   );
 });
 
-test('season bonuses are applied exactly once and disappear after the following season', () => {
-  const season = currentSeason();
-  run(
+test('season bonuses are applied exactly once and disappear after the following season', async () => {
+  const season = await currentSeason();
+  await run(
     'INSERT INTO users(id,username,password,color,created_at,generation_anchor) VALUES(?,?,?,?,?,?)',
     'reward',
     'RewardPlayer',
@@ -105,7 +105,7 @@ test('season bonuses are applied exactly once and disappear after the following 
     season.starts_at,
   );
   for (let day = 0; day < 30; day += 2)
-    run(
+    await run(
       'INSERT INTO contributions VALUES(?,?,?,?,?,?,?,?)',
       `reward-${day}`,
       'reward',
@@ -116,27 +116,30 @@ test('season bonuses are applied exactly once and disappear after the following 
       season.starts_at + (day + 3) * DAY,
       season.id,
     );
-  run(
+  await run(
     'INSERT INTO ownership_periods(country_id,season_id,camp_id,starts_at) VALUES(?,?,?,?)',
     '250',
     season.id,
     'reward',
     season.starts_at,
   );
-  const next = currentSeason(season.ends_at);
-  const player = publicPlayer('reward', next.starts_at)!;
+  const next = await currentSeason(season.ends_at);
+  const player = (await publicPlayer('reward', next.starts_at))!;
   assert.equal(player.stockCap, 180);
   assert.equal(player.generationRate, 22);
   assert.equal(player.wallet, 20);
   assert.equal(player.seasonBonus?.sourceSeason, season.id);
-  currentSeason(season.ends_at);
+  await currentSeason(season.ends_at);
   assert.equal(
-    get<{ n: number }>('SELECT COUNT(*) AS n FROM season_rewards WHERE user_id=?', 'reward')!.n,
+    (await get<{ n: number }>(
+      'SELECT COUNT(*) AS n FROM season_rewards WHERE user_id=?',
+      'reward',
+    ))!.n,
     1,
   );
-  assert.equal(publicPlayer('reward', next.starts_at)!.wallet, 20);
-  const third = currentSeason(next.ends_at);
-  const reset = publicPlayer('reward', third.starts_at)!;
+  assert.equal((await publicPlayer('reward', next.starts_at))!.wallet, 20);
+  const third = await currentSeason(next.ends_at);
+  const reset = (await publicPlayer('reward', third.starts_at))!;
   assert.equal(reset.stockCap, 160);
   assert.equal(reset.generationRate, 20);
   assert.equal(reset.wallet, 0);

@@ -150,7 +150,13 @@ Stack : Next.js App Router, React, TypeScript, CSS, D3 Geo, SQLite natif de Node
 
 ## Mise en ligne
 
-Cette version est un **MVP local**, pas un service public déjà déployé. Elle peut s’exécuter sur **un serveur Node persistant**, avec un volume durable pour `data/` :
+Le projet fonctionne sur **Vercel avec Supabase PostgreSQL, Storage et Realtime**. Le mode local sans `DATABASE_URL` utilise SQLite pour le développement et les tests. Sur Vercel, une base distante est obligatoire : le serveur refuse de créer une base éphémère.
+
+Le dépôt est [LorisDcx/ClaimedWorld](https://github.com/LorisDcx/ClaimedWorld), et l’adresse de lancement est [claimed-world.vercel.app](https://claimed-world.vercel.app). Les comptes, sessions, mises et historiques locaux sont importés avec une sauvegarde préalable. Le schéma `game` est privé ; seul un compteur de révision sans données personnelles est accessible en lecture au client Realtime. Les logos sont conservés dans un bucket privé et servis après vérification des droits et de la modération.
+
+Les comptes conservent l’authentification par pseudonyme et mot de passe scrypt et les cookies HttpOnly. Le stockage des comptes et sessions est PostgreSQL ; cette version n’utilise pas Supabase Auth. Les secrets restent dans `.env.local` ignoré par Git et dans les variables chiffrées Vercel. Les publicités maison CramDesk et Waant sont identifiées et remplacées par les enchères éligibles, sans créer de crédits fictifs.
+
+Pour une installation sur un serveur Node persistant, avec un volume durable pour `data/` :
 
 ```powershell
 npm run build
@@ -159,7 +165,7 @@ npm start
 
 Configurer `NEXT_PUBLIC_APP_URL` avec le domaine HTTPS, sauvegarder régulièrement la base et les logos, et prévoir un reverse proxy compatible SSE. SQLite convient ici à une instance unique ; les fonctions sans disque persistant ou le déploiement multi-instance nécessitent une adaptation du stockage et des transactions.
 
-Le GDD envisage Supabase/PostgreSQL. Aucun projet Supabase n’a été créé ni modifié : l’application utilise son backend local, entièrement fonctionnel. Une migration vers Supabase demandera de remplacer le dépôt SQLite, les sessions et le transport temps réel, avec des politiques RLS adaptées.
+Les migrations cloud se trouvent dans `supabase/migrations/`. `npm run db:apply` les applique une seule fois ; `npm run db:import` est limité au nouveau projet CLAIMED.WORLD et refuse une destination contenant déjà des joueurs. Les tests ne reçoivent aucune connexion ni clé Supabase réelle.
 
 Avant une ouverture publique : récupération/suppression de compte, modération et contestations complètes, protections anti-bots et multi-comptes avancées, gestion des campagnes abandonnées/remboursées, tests Stripe distants, conditions de vente et mentions de l’exploitant. Les limites de requêtes présentes constituent une protection de base, pas une détection avancée des bots. `TRUST_PROXY=true` ne doit être utilisé que derrière un proxy maîtrisé qui remplace les en-têtes IP clients.
 

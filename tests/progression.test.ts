@@ -6,8 +6,8 @@ import { controlWindow, HOUR } from '../src/lib/progression-catalog';
 import { CONTRIBUTION_LIFETIME, SEASON_LENGTH } from '../src/lib/rules';
 process.env.DATABASE_PATH = ':memory:';
 
-function player(id: string, now: number) {
-  run(
+async function player(id: string, now: number) {
+  await run(
     'INSERT INTO users(id,username,password,color,created_at,generation_anchor) VALUES(?,?,?,?,?,?)',
     id,
     id,
@@ -17,9 +17,16 @@ function player(id: string, now: number) {
     now,
   );
 }
-function bid(user: string, country: string, now: number, season: number, amount = 1, camp = user) {
+async function bid(
+  user: string,
+  country: string,
+  now: number,
+  season: number,
+  amount = 1,
+  camp = user,
+) {
   const id = `${user}-${country}-${now}`;
-  run(
+  await run(
     'INSERT INTO contributions VALUES(?,?,?,?,?,?,?,?)',
     id,
     user,
@@ -58,68 +65,74 @@ test('control objectives require overlapping ownership and restart after a loss,
   });
 });
 
-test('real conquests unlock permanent cosmetics; locked and unknown cosmetics cannot be equipped', () => {
-  const season = currentSeason();
+test('real conquests unlock permanent cosmetics; locked and unknown cosmetics cannot be equipped', async () => {
+  const season = await currentSeason();
   const now = season.starts_at + 1000;
-  player('achiever', now);
-  const wallet = publicPlayer('achiever', now)!.wallet;
-  assert.throws(() => equipCosmetic('achiever', 'border-double', season.id, now), /Débloquez/);
-  assert.throws(() => equipCosmetic('achiever', 'made-up', season.id, now), /inconnue/);
-  assert.equal(progression('achiever', season.id, now).unlocks.length, 0);
-  for (const id of ['250', '276', '380', '242', '548']) bid('achiever', id, now, season.id);
-  territories(season.id, now);
-  const earned = progression('achiever', season.id, now);
+  await player('achiever', now);
+  const wallet = (await publicPlayer('achiever', now))!.wallet;
+  await assert.rejects(
+    () => equipCosmetic('achiever', 'border-double', season.id, now),
+    /Débloquez/,
+  );
+  await assert.rejects(() => equipCosmetic('achiever', 'made-up', season.id, now), /inconnue/);
+  assert.equal((await progression('achiever', season.id, now)).unlocks.length, 0);
+  for (const id of ['250', '276', '380', '242', '548']) await bid('achiever', id, now, season.id);
+  await territories(season.id, now);
+  const earned = await progression('achiever', season.id, now);
   assert.ok(earned.unlocks.some((u) => u.id === 'five-flags'));
   assert.equal(earned.metrics.conquered, 5);
-  equipCosmetic('achiever', 'frame-orbit', season.id, now);
-  equipCosmetic('achiever', 'title-pioneer', season.id, now);
-  assert.equal(publicPlayer('achiever', now)!.appearance!.frame, 'orbit');
-  assert.equal(publicPlayer('achiever', now)!.wallet, wallet);
-  assert.equal(publicPlayer('achiever', now)!.stockCap, 160);
-  assert.equal(progression('achiever', season.id, now).unlocks.length, earned.unlocks.length);
-  territories(season.id, now + 24 * HOUR);
-  equipCosmetic('achiever', 'border-double', season.id, now + 24 * HOUR);
-  assert.equal(publicPlayer('achiever', now + 24 * HOUR)!.appearance!.border, 'double');
+  await equipCosmetic('achiever', 'frame-orbit', season.id, now);
+  await equipCosmetic('achiever', 'title-pioneer', season.id, now);
+  assert.equal((await publicPlayer('achiever', now))!.appearance!.frame, 'orbit');
+  assert.equal((await publicPlayer('achiever', now))!.wallet, wallet);
+  assert.equal((await publicPlayer('achiever', now))!.stockCap, 160);
+  assert.equal(
+    (await progression('achiever', season.id, now)).unlocks.length,
+    earned.unlocks.length,
+  );
+  await territories(season.id, now + 24 * HOUR);
+  await equipCosmetic('achiever', 'border-double', season.id, now + 24 * HOUR);
+  assert.equal((await publicPlayer('achiever', now + 24 * HOUR))!.appearance!.border, 'double');
 });
 
-test('objectives start on selection, persist after offline completion and never credit mere alliance membership', () => {
-  const season = currentSeason();
+test('objectives start on selection, persist after offline completion and never credit mere alliance membership', async () => {
+  const season = await currentSeason();
   const now = season.starts_at + 1000;
-  player('objective-player', now);
-  player('passenger', now);
-  for (const id of ['638', '480']) bid('objective-player', id, now, season.id);
-  territories(season.id, now);
-  selectObjective('objective-player', 'mascarene', season.id, now + HOUR);
-  selectObjective('passenger', 'mascarene', season.id, now + HOUR);
-  assert.equal(progression('objective-player', season.id, now + HOUR).objective!.heldMs, 0);
-  selectObjective('objective-player', 'mascarene', season.id, now + HOUR + 10);
+  await player('objective-player', now);
+  await player('passenger', now);
+  for (const id of ['638', '480']) await bid('objective-player', id, now, season.id);
+  await territories(season.id, now);
+  await selectObjective('objective-player', 'mascarene', season.id, now + HOUR);
+  await selectObjective('passenger', 'mascarene', season.id, now + HOUR);
+  assert.equal((await progression('objective-player', season.id, now + HOUR)).objective!.heldMs, 0);
+  await selectObjective('objective-player', 'mascarene', season.id, now + HOUR + 10);
   assert.equal(
-    progression('objective-player', season.id, now + HOUR + 10).objective!.startedAt,
+    (await progression('objective-player', season.id, now + HOUR + 10)).objective!.startedAt,
     now + HOUR,
   );
-  territories(season.id, now + 73 * HOUR);
-  const offline = progression('objective-player', season.id, now + 73 * HOUR);
+  await territories(season.id, now + 73 * HOUR);
+  const offline = await progression('objective-player', season.id, now + 73 * HOUR);
   assert.equal(offline.objective!.heldMs, 0);
   assert.equal(offline.objective!.completedAt, now + 2 * HOUR);
   assert.ok(offline.unlocks.some((u) => u.id === 'goal:mascarene'));
-  assert.equal(progression('passenger', season.id, now + 73 * HOUR).unlocks.length, 0);
-  equipCosmetic('objective-player', 'frame-compass', season.id, now + 73 * HOUR);
-  assert.throws(
+  assert.equal((await progression('passenger', season.id, now + 73 * HOUR)).unlocks.length, 0);
+  await equipCosmetic('objective-player', 'frame-compass', season.id, now + 73 * HOUR);
+  await assert.rejects(
     () => selectObjective('objective-player', 'mascarene', season.id, now + 73 * HOUR),
     /déjà/,
   );
-  assert.throws(
+  await assert.rejects(
     () => selectObjective('objective-player', 'unknown', season.id, now + 73 * HOUR),
     /inconnu/,
   );
 });
 
-test('collective success counts funds actually spent, and tutorial progress cannot unlock cosmetics', () => {
-  const season = currentSeason();
+test('collective success counts funds actually spent, and tutorial progress cannot unlock cosmetics', async () => {
+  const season = await currentSeason();
   const now = season.starts_at + 1000;
-  player('donor', now);
-  player('commander-progress', now);
-  run(
+  await player('donor', now);
+  await player('commander-progress', now);
+  await run(
     'INSERT INTO alliances(id,name,color,emblem,description,leader_id,invite,created_at) VALUES(?,?,?,?,?,?,?,?)',
     'progress-team',
     'Progress Team',
@@ -130,8 +143,8 @@ test('collective success counts funds actually spent, and tutorial progress cann
     'progress-invite',
     now,
   );
-  run('UPDATE users SET alliance_id=? WHERE id=?', 'progress-team', 'donor');
-  run(
+  await run('UPDATE users SET alliance_id=? WHERE id=?', 'progress-team', 'donor');
+  await run(
     'INSERT INTO alliance_ledger VALUES(?,?,?,?,?,?,?,?)',
     'donation-only',
     'progress-team',
@@ -142,40 +155,43 @@ test('collective success counts funds actually spent, and tutorial progress cann
     null,
     now,
   );
-  assert.equal(progression('donor', season.id, now).metrics.funded, 0);
-  const contribution = bid('commander-progress', '474', now, season.id, 200, 'progress-team');
-  run('INSERT INTO contribution_funding VALUES(?,?,?)', contribution, 'donor', 200);
-  territories(season.id, now);
-  const result = progression('donor', season.id, now);
+  assert.equal((await progression('donor', season.id, now)).metrics.funded, 0);
+  const contribution = await bid('commander-progress', '474', now, season.id, 200, 'progress-team');
+  await run('INSERT INTO contribution_funding VALUES(?,?,?)', contribution, 'donor', 200);
+  await territories(season.id, now);
+  const result = await progression('donor', season.id, now);
   assert.ok(result.unlocks.some((u) => u.id === 'team-player'));
   assert.equal(result.metrics.conquered, 0);
-  saveTutorial('donor', 4, true);
-  assert.deepEqual(progression('donor', season.id, now).tutorial, { step: 4, dismissed: true });
-  assert.throws(() => equipCosmetic('donor', 'frame-orbit', season.id, now), /Débloquez/);
+  await saveTutorial('donor', 4, true);
+  assert.deepEqual((await progression('donor', season.id, now)).tutorial, {
+    step: 4,
+    dismissed: true,
+  });
+  await assert.rejects(() => equipCosmetic('donor', 'frame-orbit', season.id, now), /Débloquez/);
 });
 
-test('season rollover keeps accomplishments and appearance but ends unfinished objective timers', () => {
-  const old = currentSeason();
+test('season rollover keeps accomplishments and appearance but ends unfinished objective timers', async () => {
+  const old = await currentSeason();
   const now = old.ends_at - 30 * 60 * 1000;
-  player('season-achiever', now);
-  for (const id of ['250', '276', '380']) bid('season-achiever', id, now, old.id);
-  territories(old.id, now);
-  selectObjective('season-achiever', 'europe', old.id, now);
-  equipCosmetic('season-achiever', 'title-pioneer', old.id, now);
-  const next = currentSeason(old.ends_at + 1);
+  await player('season-achiever', now);
+  for (const id of ['250', '276', '380']) await bid('season-achiever', id, now, old.id);
+  await territories(old.id, now);
+  await selectObjective('season-achiever', 'europe', old.id, now);
+  await equipCosmetic('season-achiever', 'title-pioneer', old.id, now);
+  const next = await currentSeason(old.ends_at + 1);
   assert.equal(next.starts_at, old.starts_at + SEASON_LENGTH);
-  const result = progression('season-achiever', next.id, old.ends_at + 1);
+  const result = await progression('season-achiever', next.id, old.ends_at + 1);
   assert.equal(result.objective, null);
   assert.equal(result.appearance.title, 'Pionnier');
   assert.ok(result.unlocks.some((u) => u.id === 'first-bid'));
   assert.ok(!result.unlocks.some((u) => u.id === 'goal:europe'));
   assert.equal(
-    get(
+    (await get(
       'SELECT COUNT(*) AS n FROM progression_unlocks WHERE user_id=? AND id=?',
       'season-achiever',
       'first-bid',
-    )!.n,
+    ))!.n,
     1,
   );
-  assert.equal(snapshot(null).progression, null);
+  assert.equal((await snapshot(null)).progression, null);
 });

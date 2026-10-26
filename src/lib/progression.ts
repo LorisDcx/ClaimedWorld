@@ -23,13 +23,13 @@ type Settings = {
   tutorial_dismissed: number;
 };
 
-function settings(userId: string): Settings {
-  run('INSERT OR IGNORE INTO player_progress(user_id) VALUES(?)', userId);
-  return get<Settings>('SELECT * FROM player_progress WHERE user_id=?', userId)!;
+async function settings(userId: string): Promise<Settings> {
+  await run('INSERT OR IGNORE INTO player_progress(user_id) VALUES(?)', userId);
+  return (await get<Settings>('SELECT * FROM player_progress WHERE user_id=?', userId))!;
 }
 
-export function appearance(userId: string): Appearance {
-  const selected = get<Settings>('SELECT * FROM player_progress WHERE user_id=?', userId);
+export async function appearance(userId: string): Promise<Appearance> {
+  const selected = await get<Settings>('SELECT * FROM player_progress WHERE user_id=?', userId);
   if (!selected) return { ...DEFAULT_APPEARANCE };
   const result = { ...DEFAULT_APPEARANCE };
   for (const slot of ['frame', 'title', 'border'] as const) {
@@ -37,26 +37,35 @@ export function appearance(userId: string): Appearance {
     if (
       cosmetic &&
       (!cosmetic.requires ||
-        get(
+        (await get(
           'SELECT id FROM progression_unlocks WHERE user_id=? AND id=?',
           userId,
           cosmetic.requires,
-        ))
+        )))
     )
       result[slot] = cosmetic.style;
   }
   return result;
 }
 
-export function progression(userId: string, seasonId: number, now = Date.now()): Progression {
-  return transaction(() => {
-    const selected = settings(userId);
-    const totals = get<{ spent: number; conquered: number; holdHours: number; funded: number }>(
+export async function progression(
+  userId: string,
+  seasonId: number,
+  now = Date.now(),
+): Promise<Progression> {
+  return transaction(async () => {
+    const selected = await settings(userId);
+    const totals = (await get<{
+      spent: number;
+      conquered: number;
+      holdHours: number;
+      funded: number;
+    }>(
       `
       SELECT
         COALESCE((SELECT SUM(amount) FROM contributions WHERE user_id=? AND camp_id=? AND created_at<=? AND id NOT IN (SELECT contribution_id FROM influence_transfers)),0) AS spent,
         (SELECT COUNT(DISTINCT country_id) FROM ownership_periods WHERE camp_id=? AND starts_at<=?) AS conquered,
-        COALESCE((SELECT MAX(MAX(0,MIN(COALESCE(ends_at,?),?)-starts_at)) FROM ownership_periods WHERE camp_id=? AND starts_at<=?),0)/? AS holdHours,
+        COALESCE((SELECT MAX(MAX(0,MIN(COALESCE(ends_at,?),?)-starts_at)) FROM ownership_periods WHERE camp_id=? AND starts_at<=?),0)/CAST(? AS DOUBLE PRECISION) AS holdHours,
         COALESCE((SELECT SUM(f.amount) FROM contribution_funding f JOIN contributions c ON c.id=f.contribution_id WHERE f.user_id=? AND c.camp_id<>? AND c.created_at<=? AND c.id NOT IN (SELECT contribution_id FROM influence_transfers)),0) AS funded`,
       userId,
       userId,
@@ -71,13 +80,18 @@ export function progression(userId: string, seasonId: number, now = Date.now()):
       userId,
       userId,
       now,
-    )!;
+    ))!;
     for (const success of ACHIEVEMENTS) {
       if (totals[success.metric] >= success.target)
-        run('INSERT OR IGNORE INTO progression_unlocks VALUES(?,?,?)', userId, success.id, now);
+        await run(
+          'INSERT OR IGNORE INTO progression_unlocks VALUES(?,?,?)',
+          userId,
+          success.id,
+          now,
+        );
     }
     let objective: Progression['objective'] = null;
-    const active = get<{ objective_id: string; season_id: number; started_at: number }>(
+    const active = await get<{ objective_id: string; season_id: number; started_at: number }>(
       'SELECT * FROM player_objectives WHERE user_id=?',
       userId,
     );
@@ -85,10 +99,10 @@ export function progression(userId: string, seasonId: number, now = Date.now()):
       const definition = CONTROL_OBJECTIVES.find((o) => o.id === active.objective_id);
       if (definition) {
         const deadline = Number(
-          get('SELECT ends_at FROM seasons WHERE id=?', active.season_id)?.ends_at ?? now,
+          (await get('SELECT ends_at FROM seasons WHERE id=?', active.season_id))?.ends_at ?? now,
         );
         const at = Math.min(now, deadline);
-        const periods = all<ControlInterval>(
+        const periods = await all<ControlInterval>(
           'SELECT country_id,starts_at,ends_at FROM ownership_periods WHERE camp_id=? AND season_id=? AND starts_at<=?',
           userId,
           active.season_id,
@@ -102,7 +116,7 @@ export function progression(userId: string, seasonId: number, now = Date.now()):
           definition.duration,
         );
         if (window.completedAt !== null)
-          run(
+          await run(
             'INSERT OR IGNORE INTO progression_unlocks VALUES(?,?,?)',
             userId,
             `goal:${definition.id}`,
@@ -115,10 +129,12 @@ export function progression(userId: string, seasonId: number, now = Date.now()):
             ...window,
             completedAt:
               Number(
-                get(
-                  'SELECT unlocked_at FROM progression_unlocks WHERE user_id=? AND id=?',
-                  userId,
-                  `goal:${definition.id}`,
+                (
+                  await get(
+                    'SELECT unlocked_at FROM progression_unlocks WHERE user_id=? AND id=?',
+                    userId,
+                    `goal:${definition.id}`,
+                  )
                 )?.unlocked_at || 0,
               ) || null,
             controlled: definition.countries.filter((id) =>
@@ -133,32 +149,38 @@ export function progression(userId: string, seasonId: number, now = Date.now()):
       }
     }
     return {
-      unlocks: all<{ id: string; unlocked_at: number }>(
-        'SELECT id,unlocked_at FROM progression_unlocks WHERE user_id=? ORDER BY unlocked_at,id',
-        userId,
+      unlocks: (
+        await all<{ id: string; unlocked_at: number }>(
+          'SELECT id,unlocked_at FROM progression_unlocks WHERE user_id=? ORDER BY unlocked_at,id',
+          userId,
+        )
       ).map((r) => ({ id: r.id, unlockedAt: r.unlocked_at })),
       metrics: totals,
       equipped: { frame: selected.frame, title: selected.title, border: selected.border },
-      appearance: appearance(userId),
+      appearance: await appearance(userId),
       objective,
       tutorial: { step: selected.tutorial_step, dismissed: !!selected.tutorial_dismissed },
     };
   });
 }
 
-export function equipCosmetic(
+export async function equipCosmetic(
   userId: string,
   cosmeticId: string,
   seasonId: number,
   now = Date.now(),
 ) {
-  transaction(() => {
-    progression(userId, seasonId, now);
+  await transaction(async () => {
+    await progression(userId, seasonId, now);
     const cosmetic = COSMETICS.find((c) => c.id === cosmeticId);
     if (!cosmetic) throw new ProgressionError('Apparence inconnue.');
     if (
       cosmetic.requires &&
-      !get('SELECT id FROM progression_unlocks WHERE user_id=? AND id=?', userId, cosmetic.requires)
+      !(await get(
+        'SELECT id FROM progression_unlocks WHERE user_id=? AND id=?',
+        userId,
+        cosmetic.requires,
+      ))
     )
       throw new ProgressionError('Débloquez d’abord le succès ou l’objectif associé.');
     const columns: Record<CosmeticSlot, string> = {
@@ -166,7 +188,7 @@ export function equipCosmetic(
       title: 'title',
       border: 'border',
     };
-    run(
+    await run(
       `UPDATE player_progress SET ${columns[cosmetic.slot]}=? WHERE user_id=?`,
       cosmetic.id,
       userId,
@@ -174,30 +196,30 @@ export function equipCosmetic(
   });
 }
 
-export function selectObjective(
+export async function selectObjective(
   userId: string,
   objectiveId: string,
   seasonId: number,
   now = Date.now(),
 ) {
-  transaction(() => {
-    progression(userId, seasonId, now);
+  await transaction(async () => {
+    await progression(userId, seasonId, now);
     if (!CONTROL_OBJECTIVES.some((o) => o.id === objectiveId))
       throw new ProgressionError('Objectif inconnu.');
     if (
-      get(
+      await get(
         'SELECT id FROM progression_unlocks WHERE user_id=? AND id=?',
         userId,
         `goal:${objectiveId}`,
       )
     )
       throw new ProgressionError('Cet objectif est déjà accompli.');
-    const current = get<{ objective_id: string; season_id: number }>(
+    const current = await get<{ objective_id: string; season_id: number }>(
       'SELECT * FROM player_objectives WHERE user_id=?',
       userId,
     );
     if (current?.objective_id === objectiveId && current.season_id === seasonId) return;
-    run(
+    await run(
       'INSERT INTO player_objectives VALUES(?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET objective_id=excluded.objective_id,season_id=excluded.season_id,started_at=excluded.started_at',
       userId,
       objectiveId,
@@ -207,9 +229,9 @@ export function selectObjective(
   });
 }
 
-export function saveTutorial(userId: string, step: number, dismissed: boolean) {
-  settings(userId);
-  run(
+export async function saveTutorial(userId: string, step: number, dismissed: boolean) {
+  await settings(userId);
+  await run(
     'UPDATE player_progress SET tutorial_step=?,tutorial_dismissed=? WHERE user_id=?',
     step,
     Number(dismissed),

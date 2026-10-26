@@ -1,3 +1,39 @@
+.house-ad {
+  padding: 16px;
+  border: 1px solid #ddd;
+  margin: 12px 0 18px;
+}
+.house-ad h3 {
+  font-size: 18px;
+  letter-spacing: -0.5px;
+  margin: 12px 0 7px;
+}
+.house-ad p {
+  font-size: 11px;
+  line-height: 1.7;
+  color: #888;
+}
+.house-ad a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  border-bottom: 1px solid #aaa;
+  padding-bottom: 4px;
+  margin: 12px 0;
+}
+.house-ad small {
+  display: block;
+  font: 8px/1.8 var(--mono);
+  color: #999;
+}
+.payment-test-note {
+  padding: 12px;
+  border: 1px dashed #999;
+  font-size: 11px;
+  line-height: 1.7;
+  margin: 15px 0;
+}
 .auction-tabs {
   display: flex;
   border-bottom: 1px solid #ddd;

@@ -1,9 +1,11 @@
 import { sessionUser } from '@/lib/auth';
 import { snapshot } from '@/lib/db';
+import { usesPostgres } from '@/lib/storage';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 // Persistent Node hosting: each browser gets a real SSE channel, with a polling fallback in the UI.
 export async function GET(request: Request) {
+  if (usesPostgres()) return Response.json({ transport: 'supabase-realtime' }, { status: 410 });
   const uid = await sessionUser();
   const encoder = new TextEncoder();
   let timer: ReturnType<typeof setInterval> | undefined;
@@ -23,10 +25,13 @@ export async function GET(request: Request) {
           /* already disconnected */
         }
       };
-      function send() {
+      let sending = false;
+      async function send() {
         if (ended) return;
+        if (sending) return;
+        sending = true;
         try {
-          const world = snapshot(uid);
+          const world = await snapshot(uid);
           const comparison = JSON.stringify({ ...world, serverTime: 0 });
           if (comparison !== previous) {
             controller.enqueue(encoder.encode(`event: world\ndata: ${JSON.stringify(world)}\n\n`));
@@ -36,10 +41,12 @@ export async function GET(request: Request) {
           if (++ticks >= 150) dispose();
         } catch {
           dispose();
+        } finally {
+          sending = false;
         }
       }
-      send();
-      if (!ended) timer = setInterval(send, 2000);
+      void send();
+      if (!ended) timer = setInterval(() => void send(), 2000);
       request.signal.addEventListener('abort', dispose, { once: true });
       if (request.signal.aborted) dispose();
     },

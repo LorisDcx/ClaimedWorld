@@ -300,9 +300,9 @@ export default function WorldMap({
                   onClick={() => onSelect(c.id)}
                 >
                   <rect x="-14" y="-12" width="28" height="24" rx="7" fill="white" />
-                  {s.logo_id ? (
+                  {s.logo_id || s.logo_url ? (
                     <image
-                      href={`/api/media/${s.logo_id}`}
+                      href={s.logo_url || `/api/media/${s.logo_id}`}
                       x="-11"
                       y="-9"
                       width="22"

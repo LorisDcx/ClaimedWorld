@@ -4,11 +4,11 @@ import { currentSeason, run, territories } from '../src/lib/db';
 import { CONTRIBUTION_LIFETIME, DAY } from '../src/lib/rules';
 process.env.DATABASE_PATH = ':memory:';
 
-test('one-point claims and later challengers expire by server dates without any intervening visits', () => {
-  const season = currentSeason();
+test('one-point claims and later challengers expire by server dates without any intervening visits', async () => {
+  const season = await currentSeason();
   const start = season.starts_at + 1000;
   for (const id of ['first', 'challenger'])
-    run(
+    await run(
       'INSERT INTO users(id,username,password,color,created_at,generation_anchor) VALUES(?,?,?,?,?,?)',
       id,
       id,
@@ -17,7 +17,7 @@ test('one-point claims and later challengers expire by server dates without any 
       start,
       start,
     );
-  run(
+  await run(
     'INSERT INTO contributions VALUES(?,?,?,?,?,?,?,?)',
     'first-bid',
     'first',
@@ -28,7 +28,7 @@ test('one-point claims and later challengers expire by server dates without any 
     start + CONTRIBUTION_LIFETIME,
     season.id,
   );
-  run(
+  await run(
     'INSERT INTO contributions VALUES(?,?,?,?,?,?,?,?)',
     'challenge',
     'challenger',
@@ -39,19 +39,20 @@ test('one-point claims and later challengers expire by server dates without any 
     start + DAY + CONTRIBUTION_LIFETIME,
     season.id,
   );
-  const country = (at: number) => territories(season.id, at).find((t) => t.id === '064')!;
-  assert.equal(country(start).owner?.id, 'first');
-  const challenged = country(start + DAY);
+  const country = async (at: number) =>
+    (await territories(season.id, at)).find((t) => t.id === '064')!;
+  assert.equal((await country(start)).owner?.id, 'first');
+  const challenged = await country(start + DAY);
   assert.equal(challenged.owner?.id, 'challenger');
   assert.equal(challenged.scores[0].nextExpiryAt, start + DAY + CONTRIBUTION_LIFETIME);
   // No snapshots, requests or timer ticks during the following three days.
-  const returned = country(start + CONTRIBUTION_LIFETIME);
+  const returned = await country(start + CONTRIBUTION_LIFETIME);
   assert.equal(returned.owner?.score, 2);
   assert.equal(
     returned.scores.some((c) => c.id === 'first'),
     false,
   );
-  const expired = country(start + DAY + CONTRIBUTION_LIFETIME);
+  const expired = await country(start + DAY + CONTRIBUTION_LIFETIME);
   assert.equal(expired.owner, null);
   assert.equal(expired.scores.length, 0);
 });

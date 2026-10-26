@@ -12,7 +12,9 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/*.test.ts",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "db:apply": "node scripts/apply-postgres.mjs",
+    "db:import": "node scripts/import-local-game.mjs"
   },
   "keywords": [],
   "author": "",
@@ -20,11 +22,13 @@
   "dependencies": {
     "@fontsource-variable/dm-sans": "5.3.0",
     "@fontsource-variable/manrope": "5.3.0",
+    "@supabase/supabase-js": "2.118.0",
     "country-flag-icons": "1.6.20",
     "d3-geo": "3.1.1",
     "i18n-iso-countries": "7.14.0",
     "lucide-react": "1.61.0",
     "next": "16.4.3",
+    "postgres": "3.4.9",
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "sharp": "0.35.5",
@@ -34,6 +38,7 @@
     "zod": "4.6.7"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "0.5.12",
     "@playwright/test": "1.64.1",
     "@types/d3-geo": "3.1.1",
     "@types/geojson": "7946.0.16",
@@ -44,6 +49,7 @@
     "eslint": "10.13.0",
     "eslint-config-next": "16.4.3",
     "prettier": "3.9.10",
+    "supabase": "2.122.0",
     "topojson-server": "3.0.1",
     "topojson-simplify": "3.0.3",
     "tsx": "4.23.15",

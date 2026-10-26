@@ -80,10 +80,10 @@ test('Pacific archipelagos and named US islands have geometry and usable small-i
   );
 });
 
-test('French overseas conquests and advertising slots are independent', () => {
-  const s = currentSeason();
+test('French overseas conquests and advertising slots are independent', async () => {
+  const s = await currentSeason();
   const at = s.starts_at + 1000;
-  run(
+  await run(
     'INSERT INTO users(id,username,password,color,created_at,generation_anchor) VALUES(?,?,?,?,?,?)',
     'geo-player',
     'GeoPlayer',
@@ -92,7 +92,7 @@ test('French overseas conquests and advertising slots are independent', () => {
     at,
     at,
   );
-  run(
+  await run(
     'INSERT INTO contributions VALUES(?,?,?,?,?,?,?,?)',
     'geo-fr',
     'geo-player',
@@ -103,7 +103,7 @@ test('French overseas conquests and advertising slots are independent', () => {
     at + 3600000,
     s.id,
   );
-  run(
+  await run(
     `INSERT INTO sponsors(id,user_id,country_id,season_id,name,description,url,initials,color,amount,status,payment_status,created_at)
     VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)`,
     'geo-ad',
@@ -120,9 +120,9 @@ test('French overseas conquests and advertising slots are independent', () => {
     'paid',
     at,
   );
-  run('INSERT INTO sponsor_wallets(user_id,balance_cents) VALUES(?,?)', 'geo-player', 1000);
-  placeSponsorFunds('geo-player', 'geo-ad', '250', 1000, true, at);
-  const world = territories(s.id, at);
+  await run('INSERT INTO sponsor_wallets(user_id,balance_cents) VALUES(?,?)', 'geo-player', 1000);
+  await placeSponsorFunds('geo-player', 'geo-ad', '250', 1000, true, at);
+  const world = await territories(s.id, at);
   assert.equal(world.find((t) => t.id === '250')!.owner?.id, 'geo-player');
   assert.equal(world.find((t) => t.id === '250')!.sponsor?.id, 'geo-ad');
   for (const id of ['638', '474', '312', '254']) {
@@ -131,7 +131,7 @@ test('French overseas conquests and advertising slots are independent', () => {
     assert.equal(territory.sponsor, null, id);
     assert.equal(territory.sponsorReserved, false, id);
   }
-  run(
+  await run(
     'INSERT INTO contributions VALUES(?,?,?,?,?,?,?,?)',
     'geo-re',
     'geo-player',
@@ -142,7 +142,7 @@ test('French overseas conquests and advertising slots are independent', () => {
     at + 3600000,
     s.id,
   );
-  const updated = territories(s.id, at);
+  const updated = await territories(s.id, at);
   assert.equal(updated.find((t) => t.id === '638')!.owner?.score, 50);
   assert.equal(updated.find((t) => t.id === '250')!.owner?.score, 100);
 });

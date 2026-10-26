@@ -5,13 +5,15 @@ import path from 'node:path';
 import sharp from 'sharp';
 import { assertSameOrigin, GameError, rateLimit, sessionUser } from '@/lib/auth';
 import { run } from '@/lib/db';
+import { usesPostgres } from '@/lib/storage';
+import { saveCloudLogo } from '@/lib/supabase-storage';
 export const runtime = 'nodejs';
 export async function POST(request: Request) {
   try {
     assertSameOrigin(request);
     const uid = await sessionUser();
     if (!uid) throw new GameError('Connexion requise.', 401);
-    rateLimit(`upload:${uid}`, 10, 3600000);
+    await rateLimit(`upload:${uid}`, 10, 3600000);
     if (Number(request.headers.get('content-length')) > 1500000)
       throw new GameError('Le logo doit peser moins de 1 Mo.');
     const form = await request.formData();
@@ -29,10 +31,13 @@ export async function POST(request: Request) {
       .webp({ quality: 85 })
       .toBuffer();
     const logoId = randomUUID();
-    const folder = path.join(process.cwd(), 'data', 'logos');
-    await mkdir(folder, { recursive: true });
-    await writeFile(path.join(folder, `${logoId}.webp`), encoded);
-    run('INSERT INTO uploads VALUES(?,?,?)', logoId, uid, Date.now());
+    if (usesPostgres()) await saveCloudLogo(logoId, encoded);
+    else {
+      const folder = path.join(process.cwd(), 'data', 'logos');
+      await mkdir(folder, { recursive: true });
+      await writeFile(path.join(folder, `${logoId}.webp`), encoded);
+    }
+    await run('INSERT INTO uploads VALUES(?,?,?)', logoId, uid, Date.now());
     return NextResponse.json({ logoId });
   } catch (error) {
     if (error instanceof GameError)

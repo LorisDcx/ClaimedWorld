@@ -20,6 +20,13 @@ export default defineConfig({
     env: {
       NEXT_DIST_DIR: '.next-test',
       DATABASE_PATH: testDatabasePath,
+      DATABASE_URL: '',
+      POSTGRES_URL: '',
+      VERCEL: '',
+      NEXT_PUBLIC_SUPABASE_URL: '',
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: '',
+      SUPABASE_SECRET_KEY: '',
+      SUPABASE_SERVICE_ROLE_KEY: '',
       ADMIN_USERNAME: 'AdminTest',
       ADMIN_PASSWORD: 'Admin-password-123!',
       ENABLE_PAYMENTS: 'false',
