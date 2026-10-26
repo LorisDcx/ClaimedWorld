@@ -1,0 +1,241 @@
+.claim-mode {
+  width: 108px;
+  max-width: 108px;
+  padding: 6px 3px;
+  border: 0;
+  border-bottom: 1px solid #ddd;
+  background: transparent;
+  color: #444;
+  font-size: 9px;
+  cursor: pointer;
+}
+.standings-mode {
+  font: 8px var(--mono);
+  color: #888;
+  margin: 9px 0 0;
+}
+.standings-mode-switcher {
+  margin-top: 12px;
+}
+.canvas-app .world-canvas {
+  overflow: clip;
+}
+.standings-mode-switcher .claim-mode {
+  width: 100%;
+  max-width: 100%;
+  font-size: 10px;
+  padding: 8px 0;
+}
+.alliance-management {
+  margin: 20px 0;
+  border-top: 1px solid #ddd;
+  padding-top: 20px;
+}
+.treasury-overview > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 8px var(--mono);
+  color: #777;
+  letter-spacing: 1px;
+}
+.treasury-overview > strong {
+  display: block;
+  margin-top: 12px;
+  font: 28px var(--heading);
+  font-weight: 550;
+}
+.treasury-overview small {
+  font: 10px var(--font);
+  color: #999;
+}
+.treasury-deposit {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  margin: 17px 0 10px;
+}
+.treasury-deposit label {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  font-size: 10px;
+}
+.treasury-deposit input {
+  width: 100%;
+  margin-top: 7px;
+}
+.treasury-deposit > button {
+  font-size: 10px;
+  padding: 12px;
+  min-height: 41px;
+  flex-shrink: 0;
+}
+.alliance-objective {
+  margin: 24px 0 14px;
+}
+.alliance-objective p {
+  font: 16px var(--heading);
+  line-height: 1.5;
+  margin: 9px 0;
+}
+.alliance-objective > small {
+  color: #888;
+  font-size: 10px;
+}
+.strategy-settings {
+  border-top: 1px solid #e5e5e5;
+  padding: 13px 0;
+}
+.strategy-settings > summary {
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 550;
+}
+.objective-editor {
+  margin-top: 16px;
+}
+.objective-editor label {
+  font-size: 11px;
+}
+.objective-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 0 10px;
+}
+.objective-toolbar > strong {
+  font-size: 10px;
+  font-weight: 550;
+}
+.objective-toolbar button {
+  font-size: 10px;
+}
+.objective-editor > input {
+  width: 100%;
+  padding: 9px 11px;
+  font-size: 11px;
+}
+.objective-targets {
+  max-height: 155px;
+  overflow: auto;
+  margin: 8px 0 12px;
+  padding: 6px 9px;
+  background: #f6f6f6;
+  overscroll-behavior: contain;
+}
+.objective-targets label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 0;
+  margin: 0;
+  cursor: pointer;
+  font-size: 10px;
+}
+.objective-targets input {
+  width: 12px;
+  height: 12px;
+  margin: 0;
+  padding: 0;
+  accent-color: #111;
+}
+.objective-editor .muted {
+  margin-bottom: 13px;
+}
+.target-names {
+  color: #777;
+  font-size: 10px;
+  line-height: 1.8;
+  margin-top: 12px;
+}
+.treasury-ledger {
+  margin-top: 9px;
+  max-height: 210px;
+  overflow: auto;
+}
+.treasury-ledger > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 11px;
+}
+.treasury-ledger small {
+  display: block;
+  margin-top: 4px;
+  font-size: 9px;
+  color: #999;
+}
+.treasury-ledger strong {
+  font: 11px var(--mono);
+}
+.alliance-reward-note {
+  font-size: 10px;
+  color: #888;
+  line-height: 1.7;
+  margin: 10px 0;
+}
+.season-bonus-card {
+  padding: 18px;
+  background: #f6f6f6;
+  margin: 18px 0;
+}
+.season-bonus-card h3 {
+  font-size: 16px;
+  margin: 12px 0 8px;
+}
+.season-bonus-card p {
+  font-size: 11px;
+  line-height: 1.7;
+  color: #777;
+  margin-top: 10px;
+}
+.season-bonus-card > small {
+  display: block;
+  font-size: 9px;
+  line-height: 1.7;
+  color: #999;
+}
+.bonus-values {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 16px 0;
+  font-size: 9px;
+  color: #888;
+}
+.bonus-values b {
+  display: block;
+  font: 20px var(--heading);
+  font-weight: 550;
+  color: #111;
+  margin-bottom: 5px;
+}
+@media (max-width: 640px) {
+  .topbar.has-selection .header-actions {
+    gap: 6px;
+  }
+  .topbar.has-selection .selection-actions {
+    gap: 6px;
+  }
+  .topbar.has-selection .selection-name {
+    max-width: 80px;
+  }
+  .claim-mode {
+    width: 78px;
+    max-width: 78px;
+    font-size: 8px;
+  }
+  .has-selection .header-actions {
+    gap: 6px;
+  }
+  .has-selection .selection-name {
+    max-width: 75px;
+  }
+  .treasury-deposit {
+    flex-wrap: wrap;
+  }
+}

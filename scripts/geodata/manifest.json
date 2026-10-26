@@ -1,0 +1,18 @@
+{
+  "version": "5.1.2",
+  "scale": "1:10m",
+  "license": "Public domain — https://www.naturalearthdata.com/about/terms-of-use/",
+  "sources": [
+    {
+      "kind": "map-units",
+      "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/v5.1.2/geojson/ne_10m_admin_0_map_units.geojson",
+      "sha256": "57da82be755f4afccd8f3b14251bb2752f5df1395f47d2d86f817470c4a48862"
+    },
+    {
+      "kind": "map-subunits",
+      "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/v5.1.2/geojson/ne_10m_admin_0_map_subunits.geojson",
+      "sha256": "76896018b9265072d8063e118e46df765be0ceb54a803b1a2571ebe25b36a071"
+    }
+  ],
+  "content": "298 map units; USA replaced by its three map subunits (mainland, Alaska, Hawaii). Properties trimmed; original geometry retained."
+}

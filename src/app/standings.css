@@ -1,0 +1,240 @@
+.country-standings {
+  position: absolute;
+  z-index: 9;
+  right: 20px;
+  top: 20px;
+  width: 300px;
+  max-height: calc(100% - 100px);
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  background: #fafafaf5;
+  border: 1px solid #dedede;
+  box-shadow: 0 12px 40px #00000008;
+  backdrop-filter: blur(16px);
+  animation: from-right 0.22s ease-out;
+}
+.standings-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.standings-heading .eyebrow {
+  font-size: 7px;
+  letter-spacing: 1.1px;
+}
+.standings-heading .icon-button {
+  width: 24px;
+  height: 24px;
+}
+.country-standings h2 {
+  font-size: 23px;
+  line-height: 1.2;
+  font-weight: 550;
+  margin-top: 12px;
+  overflow-wrap: anywhere;
+}
+.standings-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  color: #777;
+  font-size: 10px;
+  line-height: 1.6;
+  margin: 10px 0 22px;
+}
+.standings-status i {
+  width: 5px;
+  height: 5px;
+  margin-right: 3px;
+  flex-shrink: 0;
+}
+.standings-status strong {
+  font-weight: 550;
+  color: #222;
+  overflow-wrap: anywhere;
+}
+.standings-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font: 7px var(--mono);
+  letter-spacing: 0.6px;
+  color: #888;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+}
+.contender-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 17px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  min-height: 0;
+  max-height: 320px;
+  scrollbar-width: thin;
+}
+.contender {
+  display: flex;
+  gap: 11px;
+  padding: 15px 0;
+  border-bottom: 1px solid #e8e8e8;
+}
+.contender-rank {
+  font: 10px var(--mono);
+  color: #999;
+  padding-top: 2px;
+}
+.contender-detail {
+  flex: 1;
+  min-width: 0;
+}
+.contender-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+}
+.contender-title strong {
+  font-weight: 550;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.contender-title small {
+  margin-left: 6px;
+  font: 6px var(--mono);
+  color: #888;
+}
+.contender-title b {
+  font: 12px var(--mono);
+}
+.contender-meter {
+  height: 3px;
+  background: #e8e8e8;
+  margin: 10px 0 8px;
+}
+.contender-meter i {
+  display: block;
+  height: 100%;
+  transition: width 0.25s;
+}
+.contender-detail p {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9px;
+  color: #888;
+}
+.contender.is-owner .contender-rank,
+.contender.is-owner .contender-detail p {
+  color: #333;
+}
+.standings-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 22px 0;
+}
+.standings-empty strong {
+  font-size: 12px;
+  font-weight: 550;
+}
+.standings-empty p {
+  font-size: 11px;
+  line-height: 1.6;
+  color: #888;
+  max-width: 220px;
+}
+.standings-bid {
+  width: 100%;
+  justify-content: space-between;
+  min-height: 41px;
+  padding: 11px 12px;
+  font-size: 10px;
+  flex-shrink: 0;
+}
+.standings-bid b {
+  font-weight: 400;
+  opacity: 0.7;
+}
+.standings-balance {
+  color: #888;
+  font-size: 9px;
+  line-height: 1.6;
+  margin-top: 8px;
+}
+.standings-clock {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 9px;
+  margin-top: 16px;
+  color: #666;
+}
+.standings-clock > span {
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  gap: 8px;
+}
+.standings-clock time {
+  color: #222;
+  font: 10px var(--mono);
+  white-space: nowrap;
+}
+.standings-note {
+  color: #999;
+  font-size: 9px;
+  line-height: 1.6;
+  margin-top: 8px;
+}
+.stream-mode .country-standings {
+  display: none;
+}
+@media (max-width: 640px) {
+  .country-standings {
+    top: auto;
+    right: 16px;
+    left: 16px;
+    bottom: 92px;
+    width: auto;
+    max-height: 43%;
+    padding: 13px 16px;
+  }
+  .country-standings h2 {
+    font-size: 18px;
+    margin-top: 3px;
+  }
+  .standings-status {
+    margin: 5px 0 10px;
+  }
+  .contender-list {
+    max-height: 110px;
+    margin-bottom: 10px;
+    flex-shrink: 1;
+  }
+  .contender {
+    padding: 10px 0;
+  }
+  .standings-empty {
+    padding: 12px 0;
+    gap: 5px;
+  }
+  .standings-empty > svg {
+    display: none;
+  }
+  .standings-empty p {
+    max-width: none;
+    font-size: 10px;
+  }
+  .standings-clock {
+    margin-top: 9px;
+  }
+  .standings-note {
+    display: none;
+  }
+}
