@@ -338,7 +338,7 @@ export default function WorldMap({
           {selected &&
             (() => {
               const c = countries.find((c) => c.id === selected);
-              if (!c) return null;
+              if (!c || byId.get(c.id)?.sponsor) return null;
               return (
                 <g
                   pointerEvents="none"

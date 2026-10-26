@@ -113,6 +113,9 @@
 .map-sponsor.dimmed {
   opacity: 0.13;
 }
+.map-sponsor {
+  mix-blend-mode: multiply;
+}
 .country-path.is-sponsored:hover,
 .country-path.is-sponsored.selected {
   fill: #e3e3de;
