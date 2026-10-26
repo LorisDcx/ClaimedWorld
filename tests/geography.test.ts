@@ -120,8 +120,8 @@ test('French overseas conquests and advertising slots are independent', async ()
     'paid',
     at,
   );
-  await run('INSERT INTO sponsor_wallets(user_id,balance_cents) VALUES(?,?)', 'geo-player', 1000);
-  await placeSponsorFunds('geo-player', 'geo-ad', '250', 1000, true, at);
+  await run('INSERT INTO sponsor_wallets(user_id,balance_cents) VALUES(?,?)', 'geo-player', 6000);
+  await placeSponsorFunds('geo-player', 'geo-ad', '250', 6000, true, at);
   const world = await territories(s.id, at);
   assert.equal(world.find((t) => t.id === '250')!.owner?.id, 'geo-player');
   assert.equal(world.find((t) => t.id === '250')!.sponsor?.id, 'geo-ad');

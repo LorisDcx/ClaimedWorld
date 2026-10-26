@@ -450,6 +450,27 @@ export async function snapshot(userId: string | null): Promise<Snapshot> {
       ),
       sponsorAuctions: await sponsorMarket(now),
       sponsorWallet: userId ? await sponsorWallet(userId) : null,
+      sponsorCampaigns: userId
+        ? ((await all(
+            "SELECT * FROM sponsors WHERE user_id=? AND status='approved' ORDER BY created_at",
+            userId,
+          )) as unknown as Snapshot['sponsorCampaigns'])
+        : [],
+      alliedCampIds: userId
+        ? (
+            await all<{ id: string }>(
+              'SELECT id FROM users WHERE alliance_id=(SELECT alliance_id FROM users WHERE id=?) AND banned=0',
+              userId,
+            )
+          )
+            .map((member) => member.id)
+            .concat(
+              String(
+                (await get('SELECT alliance_id FROM users WHERE id=?', userId))?.alliance_id || '',
+              ),
+            )
+            .filter(Boolean)
+        : [],
       archived: (
         await all<{ id: number; starts_at: number; ends_at: number; snapshot: string }>(
           'SELECT * FROM seasons WHERE archived_at IS NOT NULL ORDER BY id DESC',

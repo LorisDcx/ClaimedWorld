@@ -4,6 +4,13 @@ import { mkdirSync } from 'node:fs';
 import type { Snapshot } from '../../src/lib/types';
 
 const password = 'Progress-password-123!';
+test.beforeEach(() => {
+  const path = process.env.E2E_DATABASE_PATH!;
+  expect(path).toMatch(/^\.\/data\/test-\d+\.sqlite$/);
+  const db = new DatabaseSync(path);
+  db.prepare("DELETE FROM rate_limits WHERE key='auth:local'").run();
+  db.close();
+});
 
 test('guests can skip or replay the tutorial, explore progression and find the creator support link', async ({
   page,
@@ -81,6 +88,7 @@ test('progression, cosmetic equipment, offline objectives and targeted frontier 
   const panel = page.getByRole('complementary', { name: 'Conquête de Libye' });
   await panel.getByRole('tab', { name: 'Attaquer', exact: true }).click();
   await expect(page.getByLabel('Pays de départ')).toHaveValue('012');
+  await page.getByLabel('Origine des forces').selectOption('country');
   await page.getByLabel('Rival ciblé').selectOption(rivalWorld.player!.id);
   await page.getByLabel('Troupes à envoyer').fill('30');
   await expect(page.getByLabel('Résultat prévu')).toContainText('40 Influence brûlée');

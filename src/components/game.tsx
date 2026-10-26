@@ -43,6 +43,8 @@ import Dialog from './dialog';
 import data from '@/data/countries.json';
 import type { Country, Snapshot, Sponsor, Territory } from '@/lib/types';
 import { requiredInfluence } from '@/lib/rules';
+import { sponsorMinimum } from '@/lib/sponsor-pricing';
+import AdminMapReset from './admin-map-reset';
 const countries = data as Country[];
 const number = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
 const colors = ['#ff5d35', '#7972e8', '#4aaf83', '#e4ac3a', '#39a5c5', '#e66d9e'];
@@ -686,6 +688,9 @@ export default function Game() {
               }
               onSponsor={() => participate({ type: 'my-sponsors', id: country.id })}
               paymentsMode={state?.paymentsMode}
+              sponsorWallet={state?.sponsorWallet}
+              sponsorCampaigns={state?.sponsorCampaigns}
+              act={act}
               onClose={() => setSelected(null)}
               attackPanel={
                 <BorderAttack
@@ -696,6 +701,8 @@ export default function Game() {
                   mode={mode}
                   canCommand={attackAllowed}
                   restriction={claimRestriction}
+                  reserve={mode === 'alliance' ? alliance?.treasury || 0 : player?.wallet || 0}
+                  alliedCampIds={state?.alliedCampIds || []}
                   busy={!!busy}
                   act={act}
                   onSignup={() => participate()}
@@ -985,7 +992,7 @@ export default function Game() {
                 </div>
                 <div className="pricing-row">
                   {[
-                    [5, 'Première enchère'],
+                    [2, 'Première enchère dès'],
                     [30, 'Jours par placement'],
                     [1, 'Crédit = 1 €'],
                   ].map(([price, label]) => (
@@ -994,16 +1001,16 @@ export default function Game() {
                       <strong>
                         {price}
                         <small>
-                          {price === 5
-                            ? ' crédits minimum par pays'
+                          {price === 2
+                            ? ' crédits · minimum selon le pays'
                             : price === 30
                               ? ' jours, même après déplacement'
                               : ' € par crédit'}
                         </small>
                       </strong>
                       <p>
-                        {price === 5
-                          ? 'Le plus haut montant actif affiche son logo'
+                        {price === 2
+                          ? 'Surface et visibilité déterminent le minimum'
                           : price === 30
                             ? 'Aucun retour des fonds engagés au portefeuille'
                             : 'Le solde non engagé n’expire pas'}
@@ -1775,7 +1782,7 @@ function GameModal({
               <small>Premier pays envisagé · le visuel sera réutilisable</small>
             </span>
             <strong>
-              5 €<small>minimum par pays</small>
+              {sponsorMinimum(country.id) / 100} €<small>minimum pour ce pays</small>
             </strong>
           </div>
           <form
@@ -1894,7 +1901,7 @@ function GameModal({
                 icon: Megaphone,
                 n: '05',
                 title: 'Sponsor',
-                text: 'Les sponsors ont une enchère séparée, dès 5 crédits par pays (1 crédit = 1 €). Le plus haut montant actif affiche son logo. Les crédits engagés sont déplaçables, sans retour au portefeuille, et disparaissent 30 jours après leur premier placement. Le portefeuille est conservé, même entre saisons. Aucun gain d’Influence.',
+                text: 'Les sponsors ont une enchère séparée, dès 2 crédits pour les plus petits territoires (1 crédit = 1 €). Le minimum dépend de la surface et de la visibilité du pays. Le plus haut montant actif éligible affiche son logo. Les crédits engagés sont déplaçables, sans retour au portefeuille, et disparaissent 30 jours après leur premier placement. Le portefeuille est conservé, même entre saisons. Aucun gain d’Influence.',
               },
               {
                 icon: Swords,
@@ -2063,6 +2070,13 @@ function GameModal({
       {type === 'admin' && (
         <>
           {loadError && <p className="notice">{loadError}</p>}
+          <AdminMapReset
+            seasonId={state?.season.id || 0}
+            resetBefore={Number(details?.resetCutoff || 0)}
+            act={act}
+            busy={!!busy}
+            onComplete={loadDetails}
+          />
           <h3 className="list-heading">Propositions de sponsoring</h3>
           {(details?.sponsors as (Sponsor & { username: string })[] | undefined)?.map((s) => (
             <div className="admin-sponsor" key={s.id}>

@@ -17,6 +17,8 @@ export default function BorderAttack({
   busy,
   act,
   onSignup,
+  reserve = 0,
+  alliedCampIds = [],
 }: {
   countryId: string;
   world: Territory[];
@@ -27,10 +29,14 @@ export default function BorderAttack({
   busy: boolean;
   act: Action;
   onSignup: () => void;
+  reserve?: number;
+  alliedCampIds?: string[];
 }) {
   const [sourceChoice, setSourceChoice] = useState('');
   const [targetChoice, setTargetChoice] = useState('');
   const [amount, setAmount] = useState(1);
+  const [useStock, setUseStock] = useState(true);
+  const [acknowledgeAlly, setAcknowledgeAlly] = useState(false);
   const pending = useRef<{ key: string; id: string } | null>(null);
   const neighbors = (adjacency as Record<string, string[]>)[countryId] || [];
   const sources = world.filter((t) => campId && t.owner?.id === campId && neighbors.includes(t.id));
@@ -38,7 +44,11 @@ export default function BorderAttack({
   const destination = world.find((t) => t.id === countryId);
   const enemies = destination?.scores.filter((c) => c.id !== campId) || [];
   const target = enemies.find((e) => e.id === targetChoice) || enemies[0];
-  const available = source?.scores.find((c) => c.id === campId)?.score || 0;
+  const garrison = source?.scores.find((c) => c.id === campId)?.score || 0;
+  const available = garrison + (useStock ? reserve : 0);
+  const fromStock = useStock ? Math.min(amount, reserve) : 0;
+  const fromCountry = amount - fromStock;
+  const friendly = !!target && alliedCampIds.includes(target.id);
   const validAmount = Number.isInteger(amount) && amount > 0 && amount <= available;
   const destroyed = Math.min(Math.max(0, amount), target?.score || 0);
   const survivors = Math.max(0, amount - destroyed);
@@ -60,7 +70,7 @@ export default function BorderAttack({
   const originOwner =
     source &&
     chooseOwner(
-      source.scores.map((c) => ({ ...c, score: c.score - (c.id === campId ? amount : 0) })),
+      source.scores.map((c) => ({ ...c, score: c.score - (c.id === campId ? fromCountry : 0) })),
       source.owner?.id || null,
     );
   const name = (id: string) => countries.find((c) => c.id === id)?.name || id;
@@ -70,8 +80,9 @@ export default function BorderAttack({
         <Swords size={22} strokeWidth={1.3} />
         <h3>Faites bouger la frontière.</h3>
         <p>
-          Déplacez l’Influence d’un pays que vous contrôlez vers un voisin terrestre. Chaque point
-          envoyé détruit un point du rival choisi. Seuls vos survivants s’installent.
+          Attaquez depuis un pays que vous contrôlez vers un voisin terrestre, en utilisant votre
+          stock ou les forces sur place. Chaque point envoyé détruit un point du rival choisi. Seuls
+          vos survivants s’installent.
         </p>
       </div>
       {!campId ? (
@@ -102,7 +113,14 @@ export default function BorderAttack({
             <form
               onSubmit={async (event) => {
                 event.preventDefault();
-                if (!source || !target || !validAmount || !canCommand) return;
+                if (
+                  !source ||
+                  !target ||
+                  !validAmount ||
+                  !canCommand ||
+                  (friendly && !acknowledgeAlly)
+                )
+                  return;
                 const body = {
                   action: 'border-attack',
                   source: source.id,
@@ -110,6 +128,8 @@ export default function BorderAttack({
                   target: target.id,
                   amount,
                   mode,
+                  useStock,
+                  acknowledgeAlly: friendly && acknowledgeAlly,
                 };
                 const key = JSON.stringify(body);
                 if (pending.current?.key !== key)
@@ -147,7 +167,10 @@ export default function BorderAttack({
                 <select
                   aria-label="Rival ciblé"
                   value={target.id}
-                  onChange={(e) => setTargetChoice(e.target.value)}
+                  onChange={(e) => {
+                    setTargetChoice(e.target.value);
+                    setAcknowledgeAlly(false);
+                  }}
                 >
                   {enemies.map((e) => (
                     <option key={e.id} value={e.id}>
@@ -156,6 +179,36 @@ export default function BorderAttack({
                   ))}
                 </select>
               </label>
+              <label>
+                Origine des forces
+                <select
+                  aria-label="Origine des forces"
+                  value={useStock ? 'stock' : 'country'}
+                  onChange={(event) => setUseStock(event.target.value === 'stock')}
+                >
+                  <option value="stock">
+                    {mode === 'alliance' ? 'Trésorerie' : 'Stock'} en priorité · {reserve}{' '}
+                    disponibles
+                  </option>
+                  <option value="country">
+                    Troupes du pays uniquement · {garrison} disponibles
+                  </option>
+                </select>
+              </label>
+              {friendly && (
+                <div className="attack-warning" role="alert">
+                  Attention : {target.name} fait partie de votre alliance. Vous n’appartenez qu’à
+                  une alliance à la fois.
+                  <label className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={acknowledgeAlly}
+                      onChange={(event) => setAcknowledgeAlly(event.target.checked)}
+                    />
+                    Je confirme l’attaque contre un allié
+                  </label>
+                </div>
+              )}
               <label>
                 Troupes à envoyer
                 <input
@@ -176,9 +229,17 @@ export default function BorderAttack({
                     <div>
                       <dt>{name(source.id)}</dt>
                       <dd>
-                        {available} → <b>{available - amount}</b>
+                        {garrison} → <b>{garrison - fromCountry}</b>
                       </dd>
                     </div>
+                    {useStock && (
+                      <div>
+                        <dt>{mode === 'alliance' ? 'Trésorerie' : 'Stock personnel'}</dt>
+                        <dd>
+                          {reserve} → <b>{reserve - fromStock}</b>
+                        </dd>
+                      </div>
+                    )}
                     <div>
                       <dt>{target.name} en défense</dt>
                       <dd>
@@ -209,7 +270,10 @@ export default function BorderAttack({
                   )}
                 </div>
               )}
-              <button className="primary full" disabled={busy || !validAmount || !canCommand}>
+              <button
+                className="primary full"
+                disabled={busy || !validAmount || !canCommand || (friendly && !acknowledgeAlly)}
+              >
                 <Swords size={14} />
                 Envoyer {Number.isFinite(amount) ? amount : 0} troupes
               </button>
@@ -218,8 +282,9 @@ export default function BorderAttack({
         </>
       )}
       <p className="standings-note">
-        Les troupes partent du pays de départ, sans débit du portefeuille ni de la trésorerie. Elles
-        gardent leurs dates d’expiration d’origine. En alliance, seuls le chef et les généraux
+        Le stock personnel ou la trésorerie peut compléter les troupes du pays de départ. Les
+        troupes déjà sur la carte gardent leurs dates d’expiration d’origine ; les forces prises
+        dans le stock commencent leur délai de 72 h. En alliance, seuls le chef et les généraux
         attaquent, vers les cibles autorisées.
       </p>
     </div>

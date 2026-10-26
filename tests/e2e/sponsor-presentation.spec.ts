@@ -12,7 +12,7 @@ test('country-sized logos remain inside land and expose a compact sponsor attrib
     url: 'https://www.instagram.com/projettest/',
     initials: 'PT',
     color: '#841b3c',
-    logo_url: '/sponsors/waant.webp',
+    logo_url: '/sponsors/waant-symbol.png',
     status: 'approved',
     amount: 500,
   };

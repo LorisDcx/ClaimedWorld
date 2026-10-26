@@ -40,6 +40,7 @@ export function database(): DatabaseSync {
     CREATE TABLE IF NOT EXISTS rate_limits (key TEXT PRIMARY KEY, count INTEGER NOT NULL, resets_at INTEGER NOT NULL);
     CREATE TABLE IF NOT EXISTS uploads (id TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id), created_at INTEGER NOT NULL);
     CREATE TABLE IF NOT EXISTS schema_migrations (id TEXT PRIMARY KEY, applied_at INTEGER NOT NULL);
+    CREATE TABLE IF NOT EXISTS admin_resets (id TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id),season_id INTEGER NOT NULL REFERENCES seasons(id),created_at INTEGER NOT NULL);
     CREATE TABLE IF NOT EXISTS alliance_memberships (id INTEGER PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, alliance_id TEXT NOT NULL REFERENCES alliances(id) ON DELETE CASCADE, joined_at INTEGER NOT NULL, left_at INTEGER);
     CREATE TABLE IF NOT EXISTS alliance_ledger (id TEXT PRIMARY KEY, alliance_id TEXT NOT NULL REFERENCES alliances(id) ON DELETE CASCADE, user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, season_id INTEGER NOT NULL, kind TEXT NOT NULL, amount INTEGER NOT NULL CHECK(amount >= 0), country_id TEXT, created_at INTEGER NOT NULL);
     CREATE TABLE IF NOT EXISTS treasury_lots (id TEXT PRIMARY KEY, alliance_id TEXT NOT NULL REFERENCES alliances(id) ON DELETE CASCADE, user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, season_id INTEGER NOT NULL, amount INTEGER NOT NULL, remaining INTEGER NOT NULL CHECK(remaining >= 0), created_at INTEGER NOT NULL);

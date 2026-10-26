@@ -2,9 +2,9 @@ import { randomUUID } from 'node:crypto';
 import { all, get, run, transaction } from './db';
 import type { Sponsor, SponsorBid, SponsorStake } from './types';
 import countries from '@/data/countries.json';
+import { sponsorMinimum, SPONSOR_BASE_MINIMUM, SPONSOR_MINIMUMS } from './sponsor-pricing';
 const countryIds = new Set(countries.map((country) => country.id));
 
-export const SPONSOR_MINIMUM = 500; // All monetary values are integer euro cents.
 export const SPONSOR_DURATION = 30 * 86400000;
 export class SponsorError extends Error {
   constructor(
@@ -89,7 +89,7 @@ async function ranked(at: number, record: boolean): Promise<SponsorBid[]> {
   const winners = new Map<string, string>();
   for (const country of new Set(bids.map((bid) => bid.country_id))) {
     const eligible = bids.filter(
-      (bid) => bid.country_id === country && bid.amount >= SPONSOR_MINIMUM,
+      (bid) => bid.country_id === country && bid.amount >= sponsorMinimum(country),
     );
     if (!eligible.length) continue;
     const top = eligible[0].amount;
@@ -183,8 +183,8 @@ export async function placeSponsorFunds(
       )?.n || 0,
     );
     ensure(
-      existing + amount >= SPONSOR_MINIMUM,
-      'Une enchère sur un pays commence à 5 crédits (5 €).',
+      existing + amount >= sponsorMinimum(country),
+      `L’enchère de ce pays commence à ${sponsorMinimum(country) / 100} crédits (${sponsorMinimum(country) / 100} €).`,
     );
     ensure(wallet.balance_cents >= amount, 'Solde de crédits sponsor insuffisant.');
     await run(
@@ -240,8 +240,8 @@ export async function moveSponsorFunds(
     const available = lots.reduce((sum, lot) => sum + lot.amount_cents, 0);
     ensure(available >= amount, 'Ces fonds ne sont pas disponibles ou ont expiré.');
     ensure(
-      available === amount || available - amount >= SPONSOR_MINIMUM,
-      'Laissez zéro ou au moins 5 crédits sur le pays de départ.',
+      available === amount || available - amount >= sponsorMinimum(source),
+      `Laissez zéro ou au moins ${sponsorMinimum(source) / 100} crédits sur le pays de départ.`,
     );
     const existing = Number(
       (
@@ -255,8 +255,8 @@ export async function moveSponsorFunds(
       )?.n || 0,
     );
     ensure(
-      existing + amount >= SPONSOR_MINIMUM,
-      'La destination doit atteindre au moins 5 crédits.',
+      existing + amount >= sponsorMinimum(destination),
+      `La destination doit atteindre au moins ${sponsorMinimum(destination) / 100} crédits.`,
     );
     let remaining = amount;
     for (const lot of lots) {
@@ -304,7 +304,8 @@ export async function ownSponsoring(user: string, at = Date.now()) {
     const market = await resolve(at);
     return {
       wallet: await sponsorWallet(user),
-      minimumBidCents: SPONSOR_MINIMUM,
+      minimumBidCents: SPONSOR_BASE_MINIMUM,
+      minimumBids: SPONSOR_MINIMUMS,
       campaigns: await all<Sponsor>(
         'SELECT * FROM sponsors WHERE user_id=? ORDER BY created_at DESC',
         user,
