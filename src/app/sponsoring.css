@@ -30,6 +30,19 @@
   pointer-events: auto;
   box-shadow: 0 8px 30px #00000008;
 }
+.country-inspection:has(.sponsor-attribution) .standings-note {
+  display: none;
+}
+.country-inspection:has(.sponsor-attribution) .standings-empty {
+  padding: 12px 0;
+  gap: 6px;
+}
+.country-inspection:has(.sponsor-attribution) .standings-empty > svg {
+  display: none;
+}
+.country-inspection:has(.sponsor-attribution) .standings-status {
+  margin-bottom: 12px;
+}
 .sponsor-attribution-label {
   display: flex;
   justify-content: space-between;
