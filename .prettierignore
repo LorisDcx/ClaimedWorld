@@ -1,0 +1,11 @@
+node_modules
+.next
+.next-test
+.next-build
+.npm-cache
+src/data
+public/flags
+data
+artifacts
+package-lock.json
+test-results

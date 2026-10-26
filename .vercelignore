@@ -1,0 +1,11 @@
+.git
+.next
+.next-test
+.next-build
+.npm-cache
+node_modules
+data
+artifacts
+test-results
+playwright-report
+.env*

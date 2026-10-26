@@ -1,0 +1,268 @@
+.house-ad {
+  padding: 16px;
+  border: 1px solid #ddd;
+  margin: 12px 0 18px;
+}
+.house-ad h3 {
+  font-size: 18px;
+  letter-spacing: -0.5px;
+  margin: 12px 0 7px;
+}
+.house-ad p {
+  font-size: 11px;
+  line-height: 1.7;
+  color: #888;
+}
+.house-ad a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  border-bottom: 1px solid #aaa;
+  padding-bottom: 4px;
+  margin: 12px 0;
+}
+.house-ad small {
+  display: block;
+  font: 8px/1.8 var(--mono);
+  color: #999;
+}
+.payment-test-note {
+  padding: 12px;
+  border: 1px dashed #999;
+  font-size: 11px;
+  line-height: 1.7;
+  margin: 15px 0;
+}
+.auction-tabs {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  margin: 14px 0 5px;
+  flex-shrink: 0;
+}
+.auction-tabs button {
+  flex: 1;
+  font: 9px var(--mono);
+  padding: 9px 5px;
+  color: #999;
+  border-bottom: 2px solid transparent;
+}
+.auction-tabs button[aria-selected='true'] {
+  color: #111;
+  border-bottom-color: #111;
+}
+.sponsor-auction-intro {
+  font-size: 10px;
+  line-height: 1.7;
+  color: #888;
+  margin: 12px 0 18px;
+}
+.country-sponsor-auction {
+  min-height: 0;
+  overflow: auto;
+}
+.sponsor-ranking {
+  margin-bottom: 12px;
+}
+.sponsor-winner-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
+  padding: 10px 0 17px;
+  text-decoration: none;
+}
+.sponsor-expiry-note {
+  display: block;
+}
+.sponsor-console {
+  margin-top: 8px;
+}
+.sponsor-wallet {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  padding: 18px 0;
+  border-bottom: 1px solid #ddd;
+}
+.sponsor-wallet > div > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 7px var(--mono);
+  letter-spacing: 0.7px;
+  color: #888;
+}
+.sponsor-wallet strong {
+  display: block;
+  margin-top: 12px;
+  font: 25px var(--heading);
+  font-weight: 550;
+}
+.sponsor-wallet small {
+  font: 9px var(--font);
+  color: #888;
+}
+.sponsor-money-rule {
+  font-size: 11px;
+  line-height: 1.8;
+  color: #777;
+  margin: 17px 0 20px;
+}
+.sponsor-section {
+  border-top: 1px solid #ddd;
+  padding: 18px 0;
+  margin: 0;
+}
+.sponsor-section > summary {
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 550;
+}
+.sponsor-section > h3,
+.sponsor-section-title h3 {
+  font-size: 15px;
+  font-weight: 550;
+}
+.sponsor-section h3 {
+  margin-bottom: 17px;
+}
+.sponsor-section label {
+  font-size: 11px;
+}
+.sponsor-section label > input:not([type='checkbox']),
+.sponsor-section label > select {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #ddd;
+  padding: 10px;
+  background: #fff;
+  margin-top: 8px;
+  font-size: 11px;
+}
+.sponsor-section .muted {
+  font-size: 10px;
+  line-height: 1.7;
+  margin: 10px 0 15px;
+}
+.sponsor-section form {
+  margin-top: 18px;
+}
+.sponsor-section .primary,
+.sponsor-section .secondary {
+  font-size: 11px;
+}
+.sponsor-section-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+.sponsor-section-title .text-button {
+  font-size: 10px;
+}
+.sponsor-asset {
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+}
+.sponsor-asset strong {
+  display: block;
+  font-size: 11px;
+  font-weight: 550;
+}
+.sponsor-asset span {
+  display: block;
+  font-size: 9px;
+  color: #888;
+  margin-top: 5px;
+}
+.sponsor-bid-context {
+  font-size: 10px;
+  color: #888;
+  line-height: 1.8;
+  margin: 12px 0;
+}
+.sponsor-bid-context > span {
+  display: block;
+}
+.sponsor-bid-context b {
+  color: #444;
+  font-weight: 550;
+}
+.sponsor-position {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 15px 0;
+  border-bottom: 1px solid #eee;
+}
+.sponsor-position strong {
+  font-size: 12px;
+  font-weight: 550;
+}
+.sponsor-position small {
+  display: block;
+  color: #888;
+  font-size: 9px;
+  margin-top: 5px;
+}
+.sponsor-position div > span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  color: #999;
+  font-size: 9px;
+}
+.sponsor-position > b {
+  font: 14px var(--mono);
+  white-space: nowrap;
+}
+.sponsor-fund-lot {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 11px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 10px;
+}
+.sponsor-fund-lot > span:last-child {
+  text-align: right;
+}
+.sponsor-fund-lot small {
+  display: block;
+  font-size: 8px;
+  color: #999;
+  margin-top: 5px;
+}
+.sponsor-fund-lot b {
+  font: 11px var(--mono);
+  white-space: nowrap;
+}
+@media (max-width: 640px) {
+  .country-standings {
+    max-height: 58%;
+  }
+  .auction-tabs {
+    margin: 8px 0 3px;
+  }
+  .auction-tabs button {
+    padding: 7px 3px;
+    font-size: 8px;
+  }
+  .sponsor-money-rule {
+    font-size: 10px;
+  }
+  .sponsor-wallet strong {
+    font-size: 23px;
+  }
+  .sponsor-wallet {
+    gap: 10px;
+  }
+  .sponsor-wallet > div > span {
+    font-size: 6px;
+  }
+}

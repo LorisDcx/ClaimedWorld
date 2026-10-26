@@ -1,6 +1,0 @@
-{
-  "name": "test-webhook",
-  "version": "1.0",
-  "description": "Test webhook for diagnosing Stripe webhook issues",
-  "public_access": true
-}
