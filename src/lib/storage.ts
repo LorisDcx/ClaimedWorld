@@ -1,6 +1,7 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 import postgres from 'postgres';
 import type { SQLInputValue } from 'node:sqlite';
+import { sponsorEnvironmentQuery, sponsorFinancialTables } from './sponsor-environment';
 
 type Row = Record<string, string | number | null>;
 export const usesPostgres = () => {
@@ -35,6 +36,7 @@ const context = new AsyncLocalStorage<{ executor?: Executor; depth: number }>();
 let localQueue: Promise<unknown> = Promise.resolve();
 
 const tables = new Set([
+  ...sponsorFinancialTables.map((name) => `live_${name}`),
   'users',
   'sessions',
   'seasons',
@@ -72,11 +74,12 @@ const tables = new Set([
 ]);
 
 export function postgresQuery(source: string) {
+  source = sponsorEnvironmentQuery(source);
   let statement = source
     .replace(/\bINSERT OR IGNORE INTO\b/gi, 'INSERT INTO')
     .replace(/\bAS\s+([a-z][a-zA-Z]*[A-Z][a-zA-Z]*)\b/g, 'AS "$1"');
   const ignore = /\bINSERT OR IGNORE INTO\b/i.test(source);
-  if (/INSERT OR REPLACE INTO sponsor_clock/i.test(statement))
+  if (/INSERT OR REPLACE INTO (?:live_)?sponsor_clock/i.test(statement))
     statement =
       statement.replace(/INSERT OR REPLACE INTO/i, 'INSERT INTO') +
       ' ON CONFLICT(id) DO UPDATE SET processed_at=excluded.processed_at';
@@ -141,11 +144,15 @@ export async function get<T = Row>(
   ...params: SQLInputValue[]
 ): Promise<T | undefined> {
   if (usesPostgres()) return (await query<T>(sql, params))[0];
-  return local(async () => (await import('./sqlite-store')).get<T>(sql, ...params));
+  return local(async () =>
+    (await import('./sqlite-store')).get<T>(sponsorEnvironmentQuery(sql), ...params),
+  );
 }
 export async function all<T = Row>(sql: string, ...params: SQLInputValue[]): Promise<T[]> {
   if (usesPostgres()) return query<T>(sql, params);
-  return local(async () => (await import('./sqlite-store')).all<T>(sql, ...params));
+  return local(async () =>
+    (await import('./sqlite-store')).all<T>(sponsorEnvironmentQuery(sql), ...params),
+  );
 }
 export async function run(sql: string, ...params: SQLInputValue[]): Promise<{ changes: number }> {
   if (usesPostgres()) {
@@ -157,7 +164,9 @@ export async function run(sql: string, ...params: SQLInputValue[]): Promise<{ ch
     return { changes: result.count };
   }
   return local(async () => ({
-    changes: Number((await import('./sqlite-store')).run(sql, ...params).changes),
+    changes: Number(
+      (await import('./sqlite-store')).run(sponsorEnvironmentQuery(sql), ...params).changes,
+    ),
   }));
 }
 

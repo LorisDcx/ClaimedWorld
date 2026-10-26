@@ -5,7 +5,12 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { postgresQuery, withTestDatabase } from '../src/lib/storage';
 import { run, currentSeason, snapshot } from '../src/lib/db';
 import { launchAttack } from '../src/lib/combat';
-import { placeSponsorFunds, moveSponsorFunds } from '../src/lib/sponsoring';
+import {
+  placeSponsorFunds,
+  moveSponsorFunds,
+  sponsorWallet,
+  sponsorMarket,
+} from '../src/lib/sponsoring';
 import { resetConquestMap } from '../src/lib/admin';
 import { hashPassword } from '../src/lib/password';
 Object.assign(process.env, { NODE_ENV: 'test' });
@@ -24,6 +29,10 @@ test('PostgreSQL schema protects private tables and the adapter preserves parame
       name.endsWith('_admin_map_resets.sql'),
     )!;
     await db.exec(readFileSync(`supabase/migrations/${adminMigration}`, 'utf8'));
+    const liveMigration = readdirSync('supabase/migrations').find((name) =>
+      name.endsWith('_sponsor_live_isolation.sql'),
+    )!;
+    await db.exec(readFileSync(`supabase/migrations/${liveMigration}`, 'utf8'));
     const q = async (sql: string, params: unknown[] = []) =>
       (await db.query(postgresQuery(sql), params)).rows as Record<string, unknown>[];
     await q(
@@ -50,7 +59,7 @@ test('PostgreSQL schema protects private tables and the adapter preserves parame
     const privateTables = await db.query<{ n: number }>(
       "SELECT count(*)::int AS n FROM pg_tables WHERE schemaname='game' AND rowsecurity=true",
     );
-    assert.equal(privateTables.rows[0].n, 33);
+    assert.equal(privateTables.rows[0].n, 41);
     const bucket = await db.query<{ public: boolean }>(
       "SELECT public FROM storage.buckets WHERE id='sponsor-logos'",
     );
@@ -152,9 +161,33 @@ test('PostgreSQL schema protects private tables and the adapter preserves parame
       const cleared = await snapshot('pg-player');
       assert.equal(cleared.territories.filter((t) => t.owner).length, 0);
       assert.equal(cleared.territories.find((t) => t.id === '276')?.sponsor?.id, 'pg-ad');
+      const previousKey = process.env.STRIPE_SECRET_KEY;
+      try {
+        process.env.STRIPE_SECRET_KEY = 'sk_live_pg_contract_only';
+        assert.equal((await sponsorWallet('pg-player')).balance_cents, 0);
+        assert.deepEqual(await sponsorMarket(at + 2), []);
+        await run('UPDATE sponsor_wallets SET balance_cents=2000 WHERE user_id=?', 'pg-player');
+        await placeSponsorFunds('pg-player', 'pg-ad', '262', 500, true, at + 2);
+        assert.equal((await sponsorWallet('pg-player')).balance_cents, 1500);
+        process.env.STRIPE_SECRET_KEY = 'sk_test_pg_contract_only';
+        assert.equal((await sponsorWallet('pg-player')).balance_cents, 0);
+        const testMarket = await sponsorMarket(at + 2);
+        assert.equal(testMarket.find((b) => b.country_id === '276')?.amount, 6000);
+        assert.equal(
+          testMarket.some((b) => b.country_id === '262'),
+          false,
+        );
+      } finally {
+        if (previousKey === undefined) delete process.env.STRIPE_SECRET_KEY;
+        else process.env.STRIPE_SECRET_KEY = previousKey;
+      }
     });
     await db.exec('SET ROLE anon');
     await assert.rejects(() => db.query('SELECT * FROM game.users'), /permission denied/);
+    await assert.rejects(
+      () => db.query('SELECT * FROM game.live_sponsor_wallets'),
+      /permission denied/,
+    );
     await db.exec('RESET ROLE');
   } finally {
     await db.close();

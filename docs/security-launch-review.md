@@ -15,7 +15,9 @@ Le jeu gratuit peut être essayé. **Le sponsoring payant réel n’est pas enco
 
 ## État cloud constaté
 
-Sur le projet Supabase dédié : 33 tables du jeu protégées par RLS, aucun droit d’usage du schéma privé pour le rôle anonyme, bucket des logos privé. Seul le signal de révision du monde est public. L’audit n’a modifié ni les comptes ni la carte.
+Sur le projet Supabase dédié : les tables du jeu sont protégées par RLS, aucun droit d’usage du schéma privé pour le rôle anonyme, bucket des logos privé. Seul le signal de révision du monde est public. L’audit n’a modifié ni les comptes ni la carte.
+
+La préparation du passage en production ajoute huit tables financières privées, vides et protégées par RLS, soit 41 tables protégées au total. Les tables historiques restent le registre de test. Le serveur sélectionne les tables financières réelles uniquement à partir d’une clé Stripe live ; une donnée envoyée par le client ne peut pas choisir l’environnement. Comptes et visuels restent partagés. Soldes, recharges, mises, propriétaires publicitaires, horloges, historiques, événements et litiges sont distincts. Aucune donnée de test n’est copiée ou convertie en euros réels.
 
 Les sondes publiques ont retourné 404 pour `.env.local` et `.git/config`, 403 pour l’administration sans session et 401 pour le portefeuille privé sans session. Aucun test de déni de service n’a été envoyé en production.
 
@@ -24,7 +26,7 @@ L’audit des dépendances de production n’a signalé aucune vulnérabilité c
 ## Ce qui bloque les paiements réels
 
 1. **Compte Stripe non activé** : l’API consultée indique `charges_enabled=false`, `payouts_enabled=false`, `details_submitted=false`. L’onboarding du titulaire reste à effectuer.
-2. **Argent de test à isoler** : la base partagée contient une recharge de test créditée, 15 € de solde et 5 € de mises actives. Les portefeuilles ne distinguent pas encore test/live. Il faut archiver ou isoler ce registre, avec sauvegarde et rapprochement, avant tout premier crédit réel. Aucune somme n’a été effacée ou convertie pendant cette revue.
+2. **Isolation des fonds préparée** : les crédits fictifs sont conservés dans les tables historiques. Le registre live démarre vide et n’utilise ni leurs soldes ni leurs mises. Les tests couvrent aussi l’isolation des remboursements, litiges et identifiants d’événements identiques entre environnements. Cette préparation ne suffit pas à activer Stripe.
 3. Configurer les clés live et le webhook live, puis vérifier le parcours réel de paiement, livraison des crédits, répétition du webhook, remboursement et litige. Les tests locaux et les précédentes sessions Stripe test ne remplacent pas cette validation.
 4. Renseigner les informations exactes de l’exploitant, le contact support, les conditions du sponsoring et les durées de conservation. Faire valider les engagements commerciaux avant encaissement.
 5. Prévoir la récupération des comptes et renforcer l’accès administrateur. L’authentification actuelle est propre au jeu ; elle n’offre ni récupération par e-mail ni MFA.
@@ -34,7 +36,9 @@ Le choix du créateur de rester pour l’instant sur Vercel Hobby est conservé.
 
 ## Validation automatisée
 
-47 tests de domaine passent : conquêtes et expirations hors ligne, combats ciblés, trésorerie/permissions, bonus, sponsoring, paiements idempotents et remboursements, schéma PostgreSQL, contrôle d’origine, limites JSON, cache public et réauthentification administrateur. Les scénarios navigateur couvrent aussi les interfaces, le montant direct dans un pays, le thème et la visite guidée facultative après inscription.
+49 tests de domaine passent : conquêtes et expirations hors ligne, combats ciblés, trésorerie/permissions, bonus, sponsoring, paiements idempotents et remboursements, schéma PostgreSQL, séparation test/live, contrôle d’origine, limites JSON, cache public et réauthentification administrateur. Les scénarios navigateur couvrent aussi les interfaces, le montant direct dans un pays, le thème et la visite guidée facultative après inscription.
+
+`node scripts/check-live-payments.mjs` vérifie sans mutation le mode configuré, les capacités du compte Stripe, les tables privées et l’enregistrement du webhook live. La présence du secret est contrôlée, mais seule une validation complète auprès de Stripe confirme la livraison réelle des événements et le rapprochement des fonds. Ce script n’ouvre jamais les paiements et ne débite aucune carte.
 
 Les tests utilisent une base SQLite isolée et une émulation PostgreSQL locale ; ils ne chargent pas la base de production. La CI vérifie également lint, types et build.
 
