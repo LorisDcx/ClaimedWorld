@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { invalidateWorldCache } from '@/lib/world-cache';
+import { stripeEnvironment } from '@/lib/payments-config';
 import {
   creditSponsorTopup,
   refundSponsorTopup,
@@ -23,6 +25,8 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json({ error: 'Signature invalide.' }, { status: 400 });
   }
+  if (!stripeEnvironment() || event.livemode !== (stripeEnvironment() === 'live'))
+    return NextResponse.json({ error: 'Environnement Stripe incohérent.' }, { status: 400 });
   try {
     if (
       event.type === 'checkout.session.completed' ||
@@ -73,6 +77,7 @@ export async function POST(request: Request) {
           : dispute.payment_intent?.id || '';
       if (intent) await closeSponsorDispute(intent, dispute.status === 'won', event.id);
     }
+    invalidateWorldCache();
     return NextResponse.json({ received: true });
   } catch (error) {
     console.error('Stripe fulfilment failed', error);

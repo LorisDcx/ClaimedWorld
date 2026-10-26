@@ -85,6 +85,8 @@ test('admin reset exposes a warning and typed confirmation while cancellation le
   const confirm = section.getByRole('button', { name: 'Confirmer la remise à zéro' });
   await expect(confirm).toBeDisabled();
   await section.getByLabel('Confirmation de remise à zéro').fill('REINITIALISER');
+  await expect(confirm).toBeDisabled();
+  await section.getByLabel('Mot de passe pour confirmer le reset').fill('Admin-password-123!');
   await expect(confirm).toBeEnabled();
   await page.screenshot({ path: 'artifacts/admin-reset-warning.png' });
   await section.getByRole('button', { name: 'Annuler', exact: true }).click();

@@ -17,6 +17,8 @@ export default function CountryStandings({
   campId,
   now,
   needed,
+  amount,
+  onAmount,
   busy,
   wallet,
   onClose,
@@ -38,6 +40,8 @@ export default function CountryStandings({
   campId?: string;
   now: number;
   needed: number;
+  amount: number;
+  onAmount: (value: number) => void;
   busy: boolean;
   wallet?: number;
   onClose: () => void;
@@ -162,24 +166,87 @@ export default function CountryStandings({
               <p>Une seule Influence suffit pour devenir le premier propriétaire.</p>
             </div>
           )}
-          <button
-            className="primary standings-bid"
-            onClick={onBid}
-            disabled={busy || !attackAllowed || (wallet !== undefined && wallet < needed)}
+          <form
+            className="country-claim-form"
+            onSubmit={(event) => {
+              event.preventDefault();
+              if (
+                !busy &&
+                attackAllowed &&
+                Number.isInteger(amount) &&
+                amount >= 1 &&
+                (wallet === undefined || amount <= wallet)
+              )
+                onBid();
+            }}
           >
-            <span>
-              {isOwner ? 'Renforcer' : owner ? 'Passer devant' : 'Revendiquer'}{' '}
-              <b>· {number(needed)} Influence</b>
-            </span>
-            <ArrowUpRight size={15} />
-          </button>
+            <label>
+              Combien d’Influence voulez-vous envoyer ?
+              <input
+                aria-label="Influence dans ce pays"
+                type="number"
+                min={1}
+                max={wallet}
+                step={1}
+                value={amount}
+                onChange={(event) => onAmount(Number(event.target.value))}
+                required
+              />
+            </label>
+            <div className="claim-presets" aria-label="Montants rapides">
+              {[...new Set([1, 10, 50, needed])]
+                .filter((value) => value > 0 && (wallet === undefined || value <= wallet))
+                .sort((a, b) => a - b)
+                .map((value) => (
+                  <button
+                    key={value}
+                    type="button"
+                    aria-label={`Choisir ${value} Influence`}
+                    aria-pressed={amount === value}
+                    onClick={() => onAmount(value)}
+                  >
+                    {value}
+                    {value === needed ? ' · minimum' : ''}
+                  </button>
+                ))}
+            </div>
+            <p className="standings-balance">
+              {wallet !== undefined ? `${number(wallet)} disponibles · ` : ''}
+              {isOwner
+                ? 'Chaque ajout renforce votre position.'
+                : `${number(needed)} nécessaires pour prendre le contrôle. Vous pouvez aussi contribuer moins.`}
+            </p>
+            <button
+              type="submit"
+              className="primary standings-bid"
+              disabled={
+                busy ||
+                !attackAllowed ||
+                !Number.isInteger(amount) ||
+                amount < 1 ||
+                (wallet !== undefined && wallet < amount)
+              }
+            >
+              <span>
+                {isOwner
+                  ? 'Renforcer'
+                  : amount < needed
+                    ? 'Contribuer'
+                    : owner
+                      ? 'Passer devant'
+                      : 'Revendiquer'}{' '}
+                <b>· {number(amount)} Influence</b>
+              </span>
+              <ArrowUpRight size={15} />
+            </button>
+          </form>
           {restriction && (
             <p className="standings-balance">{restriction} Le mode personnel reste libre.</p>
           )}
           {wallet !== undefined && wallet < needed && (
             <p className="standings-balance">
               Il vous manque {number(needed - wallet)} Influence. Vous pouvez aussi contribuer dès 1
-              depuis le header.
+              en choisissant un montant dans ce panneau.
             </p>
           )}
           <div className="standings-clock">

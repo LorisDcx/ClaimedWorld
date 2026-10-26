@@ -52,6 +52,7 @@ test('sponsor credits fund competing ads and move without wallet refunds or exte
     const payload = JSON.stringify({
       id: `evt-${id}`,
       object: 'event',
+      livemode: false,
       type: 'checkout.session.completed',
       data: {
         object: {

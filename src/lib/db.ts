@@ -23,6 +23,7 @@ import { appearance, progression } from './progression';
 import { activeInfluence } from './influence';
 import { houseSponsor } from './house-ads';
 import { usesPostgres } from './storage';
+import { paymentStatus } from './payments-config';
 
 import { all, get, run, transaction } from './storage';
 export { all, get, run, transaction } from './storage';
@@ -420,12 +421,7 @@ export async function snapshot(userId: string | null): Promise<Snapshot> {
               key: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
             }
           : null,
-      paymentsMode:
-        process.env.ENABLE_PAYMENTS !== 'true' || !process.env.STRIPE_WEBHOOK_SECRET
-          ? 'disabled'
-          : process.env.STRIPE_SECRET_KEY?.startsWith('sk_test_')
-            ? 'test'
-            : 'live',
+      paymentsMode: paymentStatus().mode,
       progression: playerProgression,
       territories: map,
       alliances,
@@ -441,10 +437,7 @@ export async function snapshot(userId: string | null): Promise<Snapshot> {
         (total, t) => total + t.scores.reduce((sum, c) => sum + c.score, 0),
         0,
       ),
-      paymentsEnabled:
-        process.env.ENABLE_PAYMENTS === 'true' &&
-        !!process.env.STRIPE_SECRET_KEY &&
-        !!process.env.STRIPE_WEBHOOK_SECRET,
+      paymentsEnabled: paymentStatus().enabled,
       leaderboard: [...leaders.values()].sort(
         (a, b) => b.score - a.score || a.name.localeCompare(b.name),
       ),

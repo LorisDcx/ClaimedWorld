@@ -12,21 +12,17 @@ test.beforeEach(() => {
   db.close();
 });
 
-test('guests can skip or replay the tutorial, explore progression and find the creator support link', async ({
+test('guests explore the game without a tutorial and find the creator support link', async ({
   page,
 }) => {
   await page.goto('/');
   const guide = page.getByRole('complementary', { name: 'Didacticiel' });
-  await expect(guide).toBeVisible();
-  await page.getByRole('button', { name: 'Masquer le didacticiel' }).click();
-  await page.reload();
   await expect(guide).toHaveCount(0);
   await page.getByRole('button', { name: 'Succès & objectifs', exact: true }).click();
   await page.getByRole('tab', { name: 'Objectifs', exact: true }).click();
   await expect(page.locator('.objective-card')).toHaveCount(4);
   await expect(page.getByRole('button', { name: 'Suivre cet objectif' }).first()).toBeDisabled();
-  await page.getByRole('button', { name: 'Rejouer le didacticiel' }).click();
-  await expect(guide).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Rejouer le didacticiel' })).toHaveCount(0);
   await page.getByRole('button', { name: 'Sponsors', exact: true }).click();
   const support = page.getByRole('link', { name: /Soutenir Loris/ });
   await expect(support).toHaveAttribute('href', 'https://buymeacoffee.com/LorisDc');
@@ -49,6 +45,9 @@ test('progression, cosmetic equipment, offline objectives and targeted frontier 
   expect(response.ok()).toBeTruthy();
   const initial = (await response.json()) as Snapshot;
   const userId = initial.player!.id;
+  await page.request.post('/api/game', {
+    data: { action: 'tutorial', step: 4, dismissed: false },
+  });
   expect(initial.progression!.unlocks).toHaveLength(0);
   expect(
     (
