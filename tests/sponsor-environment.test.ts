@@ -9,6 +9,7 @@ import {
   refundSponsorTopup,
   sponsorMarket,
   sponsorWallet,
+  publicSponsorLogo,
 } from '../src/lib/sponsoring';
 import { sponsorEnvironmentQuery, sponsorFinancialTables } from '../src/lib/sponsor-environment';
 import { postgresQuery } from '../src/lib/storage';
@@ -97,13 +98,17 @@ test('live funds, placements, refunds and disputes stay independent from the pre
       );
     };
     await topup();
+    await run('INSERT INTO uploads VALUES(?,?,?)', 'isolation-logo', 'isolation-player', at);
+    await run('UPDATE sponsors SET logo_id=? WHERE id=?', 'isolation-logo', 'isolation-ad');
     await placeSponsorFunds('isolation-player', 'isolation-ad', '262', 500, true, at);
+    assert.equal(await publicSponsorLogo('isolation-logo', at), true);
     assert.equal((await sponsorWallet('isolation-player')).balance_cents, 500);
     assert.equal((await sponsorMarket(at))[0].amount, 500);
 
     process.env.STRIPE_SECRET_KEY = 'sk_live_isolation_unit_only';
     assert.equal((await sponsorWallet('isolation-player')).balance_cents, 0);
     assert.deepEqual(await sponsorMarket(at), []);
+    assert.equal(await publicSponsorLogo('isolation-logo', at), false);
     const empty = await ownSponsoring('isolation-player', at);
     assert.equal(empty.campaigns.length, 1);
     assert.equal(empty.stakes.length, 0);
@@ -118,6 +123,7 @@ test('live funds, placements, refunds and disputes stay independent from the pre
     );
     await topup();
     await placeSponsorFunds('isolation-player', 'isolation-ad', '262', 500, true, at);
+    assert.equal(await publicSponsorLogo('isolation-logo', at), true);
     assert.equal((await sponsorMarket(at))[0].amount, 500);
     await freezeSponsorAccount('identical-intent-id', 'live-dispute', at);
     assert.equal((await sponsorWallet('isolation-player')).frozen, 1);
@@ -130,10 +136,12 @@ test('live funds, placements, refunds and disputes stay independent from the pre
       at,
     );
     assert.equal((await sponsorWallet('isolation-player')).balance_cents, 0);
+    assert.equal(await publicSponsorLogo('isolation-logo', at), false);
 
     process.env.STRIPE_SECRET_KEY = 'sk_test_isolation_unit_only';
     assert.equal((await sponsorWallet('isolation-player')).balance_cents, 500);
     assert.equal((await sponsorWallet('isolation-player')).frozen, 0);
+    assert.equal(await publicSponsorLogo('isolation-logo', at), true);
     const preserved = await ownSponsoring('isolation-player', at);
     assert.equal(preserved.stakes[0].amount_cents, 500);
     assert.equal(preserved.bids[0].winning, true);

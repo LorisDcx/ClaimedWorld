@@ -52,6 +52,16 @@ export async function sponsorWallet(user: string) {
     user,
   ))!;
 }
+export async function publicSponsorLogo(logoId: string, at = Date.now()) {
+  return !!(await get(
+    `SELECT s.id FROM sponsors s JOIN sponsor_stakes b ON b.campaign_id=s.id
+    WHERE s.logo_id=? AND s.status='approved' AND b.status='active'
+    AND b.amount_cents>0 AND b.placed_at<=? AND b.expires_at>? LIMIT 1`,
+    logoId,
+    at,
+    at,
+  ));
+}
 async function approved(user: string, campaign: string) {
   const wallet = await sponsorWallet(user);
   ensure(
