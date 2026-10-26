@@ -132,6 +132,10 @@ export default function WorldMap({
           transform={`translate(${view.x} ${view.y}) scale(${view.scale})`}
         >
           <defs>
+            <filter id={`${mapId}-logo-matte`} colorInterpolationFilters="sRGB">
+              <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -5 -5 -5 0 14" />
+              <feComposite in2="SourceGraphic" operator="in" />
+            </filter>
             {countries
               .filter((c) => byId.get(c.id)?.owner || byId.get(c.id)?.sponsor)
               .map((c) => (
@@ -210,6 +214,7 @@ export default function WorldMap({
                     {sponsor.logo_id || sponsor.logo_url ? (
                       <image
                         href={sponsor.logo_url || `/api/media/${sponsor.logo_id}`}
+                      filter={sponsor.id === 'house-cramdesk' ? `url(#${mapId}-logo-matte)` : undefined}
                         x={x}
                         y={y}
                         width={width}
