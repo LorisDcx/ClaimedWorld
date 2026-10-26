@@ -4,6 +4,7 @@ import { feature, neighbors } from 'topojson-client';
 import { presimplify, quantile, simplify } from 'topojson-simplify';
 import { geoProjection, geoPath, geoArea, geoGraticule10 } from 'd3-geo';
 import { loadGeography } from './geography.mjs';
+import { logoPlacement } from './logo-placement.mjs';
 const source = loadGeography();
 const weighted = presimplify(topology({ territories: source }, 1e7));
 // Shared source arcs define land borders, independently of projection or zoom.
@@ -66,6 +67,10 @@ const countries = collection.features
       area: path.area({ type: 'Polygon', coordinates }),
     }));
     const largestArea = Math.max(...polygons.map((p) => p.area));
+    const mainland = polygons.reduce((largest, polygon) =>
+      polygon.area > largest.area ? polygon : largest,
+    );
+    const sponsorBox = logoPlacement(mainland.coordinates.map((ring) => ring.map(projection)));
     const visiblePath = (minimumArea) =>
       path({
         type: 'MultiPolygon',
@@ -90,6 +95,7 @@ const countries = collection.features
       regionalPath: visiblePath(0.03),
       center: rounded(projection(label)),
       bounds: path.bounds(f).map(rounded),
+      sponsorBox,
       anchors,
       overviewMarker:
         anchors.length > 0 && ['MH', 'FM', 'KI', 'TV', 'NR', 'PW', 'SC', 'MV'].includes(code),
