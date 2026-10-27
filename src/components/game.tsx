@@ -46,6 +46,7 @@ import { requiredInfluence } from '@/lib/rules';
 import { sponsorMinimum } from '@/lib/sponsor-pricing';
 import AdminMapReset from './admin-map-reset';
 import ThemeToggle from './theme-toggle';
+import { OPERATOR } from '@/lib/operator';
 const countries = data as Country[];
 const number = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
 const colors = ['#ff5d35', '#7972e8', '#4aaf83', '#e4ac3a', '#39a5c5', '#e66d9e'];
@@ -1999,6 +2000,11 @@ function GameModal({
       {type === 'privacy' && (
         <div className="prose">
           <p>
+            CLAIMED.WORLD est édité par {OPERATOR.name}, {OPERATOR.status.toLowerCase()}, en{' '}
+            {OPERATOR.country}. Pour une question sur le service, le sponsoring ou vos données :{' '}
+            <a href={`mailto:${OPERATOR.email}`}>{OPERATOR.email}</a>.
+          </p>
+          <p>
             Le jeu conserve votre pseudonyme, votre couleur, un mot de passe dérivé avec scrypt, vos
             contributions, vos alliances et vos propositions publicitaires. La version hébergée
             utilise une base PostgreSQL privée chez Supabase et un espace privé pour les logos.
@@ -2013,9 +2019,10 @@ function GameModal({
             informations de paiement si l’exploitant active cette option.
           </p>
           <p>
-            Avant une ouverture au public, l’exploitant devra publier ses coordonnées, ses
-            conditions de vente, ses durées de conservation et la procédure d’exercice des droits.
-            Cette version locale ne dispose pas encore d’un service de récupération de mot de passe.
+            Les conditions de vente et les informations détaillées de conservation seront publiées
+            avant l’ouverture des paiements réels. Pour demander l’accès, la rectification ou la
+            suppression de vos données, contactez l’adresse ci-dessus. Le jeu ne dispose pas encore
+            d’un service de récupération de mot de passe.
           </p>
         </div>
       )}

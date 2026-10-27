@@ -25,10 +25,10 @@ L’audit des dépendances de production n’a signalé aucune vulnérabilité c
 
 ## Ce qui bloque les paiements réels
 
-1. **Compte Stripe non activé** : l’API consultée indique `charges_enabled=false`, `payouts_enabled=false`, `details_submitted=false`. L’onboarding du titulaire reste à effectuer.
+1. **Configuration Stripe réelle à vérifier** : l’exploitant indique avoir terminé l’activation du compte le 27 octobre 2026. L’installation utilise encore une clé de test ; la clé réelle n’est pas encore renseignée dans le fichier privé de préparation. Les capacités du compte en mode réel seront vérifiées avec cette clé avant ouverture.
 2. **Isolation des fonds préparée** : les crédits fictifs sont conservés dans les tables historiques. Le registre live démarre vide et n’utilise ni leurs soldes ni leurs mises. Les tests couvrent aussi l’isolation des remboursements, litiges et identifiants d’événements identiques entre environnements. Cette préparation ne suffit pas à activer Stripe.
 3. Configurer les clés live et le webhook live, puis vérifier le parcours réel de paiement, livraison des crédits, répétition du webhook, remboursement et litige. Les tests locaux et les précédentes sessions Stripe test ne remplacent pas cette validation.
-4. Renseigner les informations exactes de l’exploitant, le contact support, les conditions du sponsoring et les durées de conservation. Faire valider les engagements commerciaux avant encaissement.
+4. L’exploitant a fourni les informations publiques suivantes : Loris Ducroux, entrepreneur individuel en France, contact `lorisdcx.pro@gmail.com`. Elles figurent dans les écrans d’information et de sponsoring. Le numéro d’immatriculation, la domiciliation professionnelle et le numéro de contact restent à fournir pour compléter les mentions ; les conditions du sponsoring et les durées de conservation restent à finaliser avant encaissement.
 5. Prévoir la récupération des comptes et renforcer l’accès administrateur. L’authentification actuelle est propre au jeu ; elle n’offre ni récupération par e-mail ni MFA.
 6. Vérifier une restauration de sauvegarde et la capacité en charge avant une audience importante. Les limites de fréquence et le cache n’ont pas été validés à l’échelle d’une communauté de streamers.
 

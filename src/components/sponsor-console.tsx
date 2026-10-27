@@ -5,6 +5,7 @@ import countries from '@/data/countries.json';
 import type { SponsorConsoleData } from '@/lib/types';
 import SupportCreator from './support-creator';
 import { sponsorMinimum } from '@/lib/sponsor-pricing';
+import { OPERATOR } from '@/lib/operator';
 
 const credits = (amount: number) =>
   (amount / 100).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -215,7 +216,7 @@ export default function SponsorConsole({
           </button>
           <p className="muted">
             {!paymentsEnabled
-              ? 'Les paiements sont désactivés sur cette installation locale.'
+              ? 'Les paiements sont actuellement désactivés.'
               : !approved.length
                 ? 'Faites d’abord valider un visuel.'
                 : 'Le portefeuille est crédité après confirmation du paiement par Stripe.'}
@@ -526,6 +527,10 @@ export default function SponsorConsole({
           </div>
         ))}
       </details>
+      <p className="muted">
+        Service édité par {OPERATOR.name} — {OPERATOR.status}, {OPERATOR.country}. Assistance
+        sponsoring : <a href={`mailto:${OPERATOR.email}`}>{OPERATOR.email}</a>.
+      </p>
       <SupportCreator />
     </div>
   );
