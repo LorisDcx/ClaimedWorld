@@ -1,3 +1,4 @@
+import { gamePost, testEmail, confirmEmailUI } from './email-helpers';
 import { test, expect } from '@playwright/test';
 import { DatabaseSync } from 'node:sqlite';
 import type { Snapshot } from '../../src/lib/types';
@@ -15,8 +16,11 @@ test('sponsor entry requires an account then opens the correct wallet without st
   const signup = page.getByRole('dialog', { name: 'Votre place dans le monde.' });
   await expect(signup).toBeVisible();
   await signup.getByLabel('Pseudonyme').fill('SponsorDirectEntry');
+  await signup.getByLabel('Adresse e-mail').fill(testEmail('SponsorDirectEntry'));
   await signup.getByLabel('Mot de passe').fill(password);
   await signup.getByRole('button', { name: 'Créer mon compte gratuit' }).click();
+  await page.getByLabel('Code de vérification').waitFor();
+  await confirmEmailUI(page, testEmail('SponsorDirectEntry'));
   const wallet = page.getByRole('dialog', { name: 'Crédits et enchères sponsor' });
   await expect(wallet).toBeVisible();
   await expect(wallet.getByRole('button', { name: 'Créer un visuel' })).toBeVisible();
@@ -33,7 +37,7 @@ test.beforeEach(() => {
   expect(path).toMatch(/^\.\/data\/test-\d+\.sqlite$/);
   const db = new DatabaseSync(path);
   db.exec('PRAGMA busy_timeout=5000');
-  db.prepare("DELETE FROM rate_limits WHERE key='auth:local'").run();
+  db.exec('DELETE FROM rate_limits');
   db.close();
 });
 
@@ -46,9 +50,12 @@ test('registration starts an optional guided visit that works with an empty stoc
   await page.getByRole('button', { name: 'Entrer dans le jeu', exact: true }).click();
   const signup = page.getByRole('dialog');
   await signup.getByLabel('Pseudonyme').fill('GuidedNewcomer');
+  await signup.getByLabel('Adresse e-mail').fill(testEmail('GuidedNewcomer'));
   await signup.getByLabel('Mot de passe').fill(password);
   await expect(guide).toHaveCount(0);
   await signup.getByRole('button', { name: 'Créer mon compte gratuit' }).click();
+  await page.getByLabel('Code de vérification').waitFor();
+  await confirmEmailUI(page, testEmail('GuidedNewcomer'));
   await expect(guide).toBeVisible();
   await expect(guide).toContainText('Bienvenue');
   const initial = (await page.request.get('/api/game').then((r) => r.json())) as Snapshot;
@@ -94,12 +101,15 @@ test('registration starts an optional guided visit that works with an empty stoc
 test('country pane stakes any chosen amount and dark mode persists while keeping player and sponsor colors', async ({
   page,
 }) => {
-  const signup = await page.request.post('/api/game', {
-    data: { action: 'signup', username: 'PaneInvestor', password, color: '#39a5c5' },
+  const signup = await gamePost(page.request, {
+    action: 'signup',
+    username: 'PaneInvestor',
+    password,
+    color: '#39a5c5',
   });
   expect(signup.ok()).toBeTruthy();
   const initial = (await signup.json()) as Snapshot;
-  await page.request.post('/api/game', { data: { action: 'tutorial', step: 4, dismissed: false } });
+  await gamePost(page.request, { action: 'tutorial', step: 4, dismissed: false });
   await page.goto('/?country=554');
   const pane = page.getByRole('complementary', { name: /Conquête de Nouvelle-Zélande/ });
   await pane.getByLabel('Influence dans ce pays').fill('37');

@@ -39,6 +39,7 @@ const tables = new Set([
   ...sponsorFinancialTables.map((name) => `live_${name}`),
   'users',
   'sessions',
+  'email_challenges',
   'seasons',
   'alliances',
   'contributions',

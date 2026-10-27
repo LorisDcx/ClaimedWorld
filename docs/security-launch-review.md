@@ -4,7 +4,7 @@ Le jeu gratuit est disponible. La configuration des recharges sponsor passe sur 
 
 ## Vérifications et protections
 
-- Comptes : mots de passe hachés avec scrypt, sessions aléatoires stockées sous forme de condensats, cookies HttpOnly/Secure en production et SameSite=Lax. Les nouvelles inscriptions exigent 12 caractères ; les anciens mots de passe restent compatibles.
+- Comptes : mots de passe hachés avec scrypt, sessions aléatoires stockées sous forme de condensats, cookies HttpOnly/Secure en production et SameSite=Lax. Les nouvelles inscriptions exigent 8 caractères et une adresse e-mail vérifiée avant création du compte ; les mots de passe évidents sont refusés. Les anciens mots de passe restent compatibles.
 - Actions serveur : validation des données, calcul des scores, contrôles des rôles, de l’appartenance aux alliances et de la trésorerie côté serveur. Origine des écritures contrôlée avec refus des requêtes cross-site ; le Host fourni par le client ne sert plus de liste d’autorisation.
 - Les corps JSON du jeu et du checkout sont limités pendant leur lecture à 12 000 octets, même sans Content-Length. Les actions, connexions, lectures et uploads ont des limites de fréquence. Le cache public ne contient aucun compte connecté, dure une seconde et fusionne les lectures concurrentes d’une même instance.
 - La remise à zéro exige le rôle administrateur, une confirmation écrite récente **et le mot de passe actuel**. Les échecs de réauthentification restent comptés même si la transaction échoue. Le reset conserve le sponsoring et reste protégé contre les répétitions de la même demande.
@@ -17,7 +17,7 @@ Le jeu gratuit est disponible. La configuration des recharges sponsor passe sur 
 
 Sur le projet Supabase dédié : les tables du jeu sont protégées par RLS, aucun droit d’usage du schéma privé pour le rôle anonyme, bucket des logos privé. Seul le signal de révision du monde est public. L’audit n’a modifié ni les comptes ni la carte.
 
-La préparation du passage en production ajoute huit tables financières privées, vides et protégées par RLS, soit 41 tables protégées au total. Les tables historiques restent le registre de test. Le serveur sélectionne les tables financières réelles uniquement à partir d’une clé Stripe live ; une donnée envoyée par le client ne peut pas choisir l’environnement. Comptes et visuels restent partagés. Soldes, recharges, mises, propriétaires publicitaires, horloges, historiques, événements et litiges sont distincts. Aucune donnée de test n’est copiée ou convertie en euros réels.
+La préparation du passage en production ajoute huit tables financières privées, vides et protégées par RLS, soit 41 tables protégées avant la migration e-mail, qui porte ce total à 42. Les tables historiques restent le registre de test. Le serveur sélectionne les tables financières réelles uniquement à partir d’une clé Stripe live ; une donnée envoyée par le client ne peut pas choisir l’environnement. Comptes et visuels restent partagés. Soldes, recharges, mises, propriétaires publicitaires, horloges, historiques, événements et litiges sont distincts. Aucune donnée de test n’est copiée ou convertie en euros réels.
 
 Les sondes publiques ont retourné 404 pour `.env.local` et `.git/config`, 403 pour l’administration sans session et 401 pour le portefeuille privé sans session. Aucun test de déni de service n’a été envoyé en production.
 
@@ -36,7 +36,7 @@ Le choix du créateur de rester pour l’instant sur Vercel Hobby est conservé.
 
 ## Validation automatisée
 
-49 tests de domaine passent : conquêtes et expirations hors ligne, combats ciblés, trésorerie/permissions, bonus, sponsoring, paiements idempotents et remboursements, schéma PostgreSQL, séparation test/live, contrôle d’origine, limites JSON, cache public et réauthentification administrateur. Les scénarios navigateur couvrent aussi les interfaces, le montant direct dans un pays, le thème et la visite guidée facultative après inscription.
+61 tests de domaine passent : conquêtes et expirations hors ligne, combats ciblés, trésorerie/permissions, bonus, sponsoring, paiements idempotents et remboursements, schéma PostgreSQL, séparation test/live, contrôle d’origine, limites JSON, cache public et réauthentification administrateur. Les scénarios navigateur couvrent aussi les interfaces, le montant direct dans un pays, le thème et la visite guidée facultative après inscription.
 
 `node scripts/check-live-payments.mjs` vérifie sans mutation le mode configuré, les capacités du compte Stripe, les tables privées et l’enregistrement du webhook live. La présence du secret est contrôlée, mais seule une validation complète auprès de Stripe confirme la livraison réelle des événements et le rapprochement des fonds. Ce script n’ouvre jamais les paiements et ne débite aucune carte.
 
@@ -48,4 +48,12 @@ Les tests utilisent une base SQLite isolée et une émulation PostgreSQL locale 
 - [Stripe — webhooks](https://docs.stripe.com/webhooks)
 - [Vercel — conditions du plan Hobby](https://vercel.com/docs/plans/hobby)
 
-La campagne Reddit est préparée dans `reddit-campaign.md`. Aucun post n’a été envoyé et aucune carte n’a été débitée par l’agent. L’entrée `/?sponsor=1` ouvre le portefeuille du compte connecté, ou l’inscription puis ce portefeuille, sans créer de checkout tant que l’utilisateur ne valide pas une recharge.
+La campagne Reddit et ses liens sont consignés dans reddit-campaign.md : deux invitations à tester gratuitement ont été publiées le 27 octobre 2026, sur r/playmygame et r/Entreprenariat. Aucune carte bancaire débitée par cette campagne. L’entrée `/?sponsor=1` ouvre le portefeuille du compte connecté, ou l’inscription puis ce portefeuille, sans créer de checkout tant que l’utilisateur ne valide pas une recharge.
+
+## Vérification e-mail et limitation des comptes multiples
+
+Le parcours et ses limites sont détaillés dans [email-account-security.md](email-account-security.md). La migration additive est appliquée : adresse privée unique, horodatage de validation et demandes de code protégées par RLS. Aucun compte, territoire, rôle ou crédit existant n’a été supprimé. Gmail SMTP a accepté la vérification de connexion avec le mot de passe d’application fourni ; les variables sont chiffrées dans Vercel.
+
+Les anciens comptes doivent confirmer leur mot de passe et leur adresse pour effectuer des actions. Le serveur refuse les écritures de jeu, les uploads et la création de checkout tant que l’adresse n’est pas vérifiée. Les webhooks financiers déjà signés continuent de fonctionner. La création d’un nouveau compte ne donne aucune Influence avant validation. La liste des domaines jetables, la normalisation des variantes Gmail, les limites d’inscription et d’envoi et les cinq essais maximum par code réduisent les abus ; plusieurs vraies boîtes et connexions peuvent toujours contourner une partie de ces protections.
+
+Les 21 scénarios navigateur ont été validés (20 dans la suite complète, puis le parcours historique d’inscription mis à jour et rejoué). La vérification PostgreSQL exécute aussi une vraie confirmation de code dans la base de contrat isolée. Les transports de test ne fonctionnent ni en production ni sur Vercel. La récupération de compte par e-mail reste à développer.

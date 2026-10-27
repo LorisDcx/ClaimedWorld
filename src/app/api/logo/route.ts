@@ -3,7 +3,13 @@ import { randomUUID } from 'node:crypto';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
-import { assertSameOrigin, GameError, rateLimit, sessionUser } from '@/lib/auth';
+import {
+  assertSameOrigin,
+  GameError,
+  rateLimit,
+  sessionUser,
+  requireVerifiedEmail,
+} from '@/lib/auth';
 import { run } from '@/lib/db';
 import { usesPostgres } from '@/lib/storage';
 import { saveCloudLogo } from '@/lib/supabase-storage';
@@ -13,6 +19,7 @@ export async function POST(request: Request) {
     assertSameOrigin(request);
     const uid = await sessionUser();
     if (!uid) throw new GameError('Connexion requise.', 401);
+    await requireVerifiedEmail(uid);
     await rateLimit(`upload:${uid}`, 10, 3600000);
     if (Number(request.headers.get('content-length')) > 1500000)
       throw new GameError('Le logo doit peser moins de 1 Mo.');

@@ -47,6 +47,7 @@ import { sponsorMinimum } from '@/lib/sponsor-pricing';
 import AdminMapReset from './admin-map-reset';
 import ThemeToggle from './theme-toggle';
 import { OPERATOR } from '@/lib/operator';
+import AccountAuth from './account-auth';
 const countries = data as Country[];
 const number = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
 const colors = ['#ff5d35', '#7972e8', '#4aaf83', '#e4ac3a', '#39a5c5', '#e66d9e'];
@@ -162,6 +163,18 @@ export default function Game() {
   }, [refresh]);
   const sessionId = state?.player?.id || 'guest';
   const worldReady = !!state;
+  const verificationPrompted = useRef<string | null>(null);
+  useEffect(() => {
+    if (
+      !state?.player ||
+      state.account?.emailVerified ||
+      verificationPrompted.current === sessionId
+    )
+      return;
+    verificationPrompted.current = sessionId;
+    const timer = setTimeout(() => setModal({ type: 'verify-email' }), 0);
+    return () => clearTimeout(timer);
+  }, [sessionId, state?.player, state?.account?.emailVerified]);
   useEffect(() => {
     if (!worldReady || !new URLSearchParams(window.location.search).has('sponsor')) return;
     if (sponsorEntry.current === 'opened') return;
@@ -275,8 +288,13 @@ export default function Game() {
     document.addEventListener('keydown', key);
     return () => document.removeEventListener('keydown', key);
   }, [modal]);
+  const emailVerificationRequired = !!state?.player && !state.account?.emailVerified;
   const act: Action = useCallback(
     async (body, success) => {
+      if (emailVerificationRequired && !['login', 'logout'].includes(String(body.action))) {
+        setModal({ type: 'verify-email' });
+        return false;
+      }
       setBusy(String(body.action));
       try {
         const response = await fetch('/api/game', {
@@ -290,6 +308,10 @@ export default function Game() {
           previous && previous.serverTime > result.serverTime ? previous : result,
         );
         syncClock(result.serverTime);
+        if (body.action === 'login' && !result.account?.emailVerified) {
+          setModal({ type: 'verify-email' });
+          return false;
+        }
         if (body.action === 'contribute') {
           const target = result.territories.find((t: Territory) => t.id === body.countryId);
           const camp = body.mode === 'alliance' ? result.player?.alliance_id : result.player?.id;
@@ -319,10 +341,11 @@ export default function Game() {
         setBusy('');
       }
     },
-    [notify, syncClock],
+    [notify, syncClock, emailVerificationRequired],
   );
   function participate(next?: Modal) {
     if (!state?.player) setModal({ type: 'signup' });
+    else if (!state.account?.emailVerified) setModal({ type: 'verify-email' });
     else if (next) setModal(next);
   }
   function chooseCountry(id: string, zoom = false) {
@@ -752,7 +775,7 @@ export default function Game() {
         <Tutorial
           state={state}
           selected={selected}
-          hidden={tab !== 'map' || !!modal || stream}
+          hidden={tab !== 'map' || !!modal || stream || !state?.account?.emailVerified}
           replay={tutorialReplay}
           busy={!!busy}
           act={act}
@@ -1163,6 +1186,7 @@ export default function Game() {
           chooseCountry={chooseCountry}
           notify={notify}
           replayTutorial={replayTutorial}
+          refresh={refresh}
         />
       )}
     </div>
@@ -1181,6 +1205,7 @@ function GameModal({
   chooseCountry,
   notify,
   replayTutorial,
+  refresh,
 }: {
   modal: Modal;
   state: Snapshot | null;
@@ -1193,6 +1218,7 @@ function GameModal({
   chooseCountry: (id: string, zoom?: boolean) => void;
   notify: (s: string, error?: boolean) => void;
   replayTutorial: () => void;
+  refresh: () => Promise<void>;
 }) {
   const [selectedColor, setSelectedColor] = useState(state?.player?.color || colors[0]);
   const [emblem, setEmblem] = useState('✳');
@@ -1284,6 +1310,7 @@ function GameModal({
   const titles: Record<string, string> = {
     signup: 'Votre place dans le monde.',
     login: 'Bon retour sur la carte.',
+    'verify-email': 'Vérifiez votre adresse e-mail.',
     profile: 'Votre profil',
     progression: 'Votre progression',
     'create-alliance': 'Les grandes conquêtes commencent à plusieurs.',
@@ -1320,74 +1347,32 @@ function GameModal({
           onTutorial={replayTutorial}
         />
       )}
-      {(type === 'signup' || type === 'login') && (
-        <>
-          <p className="modal-intro">
-            {type === 'signup'
-              ? 'Une couleur, un pseudo et le monde devant vous. 100 Influence vous attendent pour votre première conquête.'
-              : 'Votre communauté et vos territoires vous attendent.'}
-          </p>
-          <form
-            onSubmit={(e) =>
-              void submit(
-                e,
-                type,
-                type === 'signup'
-                  ? 'Bienvenue ! Vos 100 Influence sont prêtes.'
-                  : 'Vous êtes de retour. À vous de jouer.',
-                { color: selectedColor },
-              )
-            }
-          >
-            <label>
-              Pseudonyme
-              <input
-                name="username"
-                autoComplete="username"
-                required
-                minLength={3}
-                maxLength={24}
-                placeholder="Votre nom sur la carte"
-              />
-            </label>
-            <label>
-              Mot de passe
-              <input
-                name="password"
-                type="password"
-                autoComplete={type === 'signup' ? 'new-password' : 'current-password'}
-                required
-                minLength={type === 'signup' ? 12 : 8}
-                maxLength={128}
-                placeholder={type === 'signup' ? '12 caractères minimum' : 'Votre mot de passe'}
-              />
-            </label>
-            {type === 'signup' && <label>Votre couleur{colorPicker()}</label>}
-            <button className="primary full" disabled={!!busy}>
-              {busy ? (
-                <LoaderCircle size={17} className="spin" />
-              ) : type === 'signup' ? (
-                'Créer mon compte gratuit'
-              ) : (
-                'Me connecter'
-              )}
-              <ArrowUpRight size={16} />
-            </button>
-          </form>
-          <p className="form-switch">
-            {type === 'signup' ? 'Déjà dans la partie ?' : 'Pas encore de compte ?'}{' '}
-            <button onClick={() => setModal({ type: type === 'signup' ? 'login' : 'signup' })}>
-              {type === 'signup' ? 'Se connecter' : 'Rejoindre la conquête'}
-            </button>
-          </p>
-          <div className="form-note">
-            <ShieldCheck size={16} />
-            <span>La conquête est gratuite. Aucun achat ne donne d’avantage en jeu.</span>
-          </div>
-        </>
+      {['signup', 'login', 'verify-email'].includes(type) && (
+        <AccountAuth
+          mode={type as 'signup' | 'login' | 'verify-email'}
+          color={selectedColor}
+          colorPicker={colorPicker()}
+          onLogin={(body) => act(body)}
+          onMode={(type) => setModal({ type })}
+          onComplete={async () => {
+            await refresh();
+            close();
+            notify('Votre compte est prêt. À vous de jouer !');
+          }}
+        />
       )}
       {type === 'profile' && player && (
         <>
+          <div className="form-note">
+            <ShieldCheck size={16} />
+            {state?.account?.emailVerified ? (
+              'Adresse e-mail vérifiée · privée'
+            ) : (
+              <button onClick={() => setModal({ type: 'verify-email' })}>
+                Vérifier mon adresse pour participer
+              </button>
+            )}
+          </div>
           <button
             className="text-button"
             onClick={() => void share(`${window.location.origin}/?player=${player.id}`)}
@@ -2016,9 +2001,10 @@ function GameModal({
             sponsoring ou vos données : <a href={`mailto:${OPERATOR.email}`}>{OPERATOR.email}</a>.
           </p>
           <p>
-            Le jeu conserve votre pseudonyme, votre couleur, un mot de passe dérivé avec scrypt, vos
-            contributions, vos alliances et vos propositions publicitaires. La version hébergée
-            utilise une base PostgreSQL privée chez Supabase et un espace privé pour les logos.
+            Le jeu conserve votre pseudonyme, votre adresse e-mail vérifiée et privée, votre
+            couleur, un mot de passe dérivé avec scrypt, vos contributions, vos alliances et vos
+            propositions publicitaires. La version hébergée utilise une base PostgreSQL privée chez
+            Supabase et un espace privé pour les logos.
           </p>
           <p>
             Un cookie strictement nécessaire, HttpOnly et SameSite, maintient votre connexion
@@ -2026,8 +2012,11 @@ function GameModal({
           </p>
           <p>
             Les pseudonymes, couleurs, titres, succès, alliances et scores sont publics. Les mots de
-            passe et jetons de session ne sont jamais transmis aux autres joueurs. Stripe traite les
-            informations de paiement si l’exploitant active cette option.
+            passe, adresses e-mail, codes de vérification et jetons de session ne sont jamais
+            transmis aux autres joueurs. Les codes expirent après 10 minutes et les demandes
+            expirées sont purgées lors des demandes suivantes. Gmail assure l’envoi des e-mails de
+            vérification. Stripe traite les informations de paiement si l’exploitant active cette
+            option.
           </p>
           <p>
             Retrouvez les{' '}

@@ -34,6 +34,11 @@ export async function endSession() {
   if (token) await run('DELETE FROM sessions WHERE token=?', digest(token));
   jar.delete(SESSION_COOKIE);
 }
+export async function requireVerifiedEmail(userId: string) {
+  const account = await get('SELECT email_verified_at FROM users WHERE id=? AND banned=0', userId);
+  if (!account || account.email_verified_at === null)
+    throw new GameError('Vérifiez votre adresse e-mail pour participer.', 403);
+}
 export class GameError extends Error {
   constructor(
     message: string,

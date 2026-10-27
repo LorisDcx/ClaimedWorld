@@ -1,3 +1,4 @@
+import { gamePost, testEmail, confirmEmailUI } from './email-helpers';
 import { test, expect } from '@playwright/test';
 import sharp from 'sharp';
 import countries from '../../src/data/countries.json';
@@ -5,6 +6,13 @@ import { DatabaseSync } from 'node:sqlite';
 import Stripe from 'stripe';
 import { randomUUID } from 'node:crypto';
 const password = 'Test-password-123!';
+test.beforeEach(() => {
+  const p = process.env.E2E_DATABASE_PATH!;
+  if (!/^\.\/data\/test-\d+\.sqlite$/.test(p)) throw new Error('Isolated database required');
+  const db = new DatabaseSync(p);
+  db.exec('DELETE FROM rate_limits');
+  db.close();
+});
 test('sponsor credits fund competing ads and move without wallet refunds or extended expiry', async ({
   page,
   playwright,
@@ -12,8 +20,7 @@ test('sponsor credits fund competing ads and move without wallet refunds or exte
   const first = page.request;
   const second = await playwright.request.newContext({ baseURL: 'http://127.0.0.1:3001' });
   const admin = await playwright.request.newContext({ baseURL: 'http://127.0.0.1:3001' });
-  const post = (context: typeof first, data: Record<string, unknown>) =>
-    context.post('/api/game', { data });
+  const post = (context: typeof first, data: Record<string, unknown>) => gamePost(context, data);
   const accountA = await post(first, { action: 'signup', username: 'SponsorOne', password }).then(
     (r) => r.json(),
   );
@@ -208,14 +215,14 @@ test('one-point claims, live contender rankings and overtaking work on every ter
   page,
   playwright,
 }) => {
-  let response = await page.request.post('/api/game', {
-    data: { action: 'signup', username: 'FirstBidder', password },
+  let response = await gamePost(page.request, {
+    action: 'signup',
+    username: 'FirstBidder',
+    password,
   });
   expect(response.ok()).toBeTruthy();
   for (const countryId of ['064', '276']) {
-    response = await page.request.post('/api/game', {
-      data: { action: 'contribute', countryId, amount: 1 },
-    });
+    response = await gamePost(page.request, { action: 'contribute', countryId, amount: 1 });
     expect(response.ok()).toBeTruthy();
     const world = await response.json();
     expect(world.territories.find((t: { id: string }) => t.id === countryId).owner.score).toBe(1);
@@ -229,18 +236,12 @@ test('one-point claims, live contender rankings and overtaking work on every ter
     '1',
   );
   const challenger = await playwright.request.newContext({ baseURL: 'http://127.0.0.1:3001' });
-  await challenger.post('/api/game', {
-    data: { action: 'signup', username: 'SecondBidder', password },
-  });
-  response = await challenger.post('/api/game', {
-    data: { action: 'contribute', countryId: '064', amount: 1 },
-  });
+  await gamePost(challenger, { action: 'signup', username: 'SecondBidder', password });
+  response = await gamePost(challenger, { action: 'contribute', countryId: '064', amount: 1 });
   expect(
     (await response.json()).territories.find((t: { id: string }) => t.id === '064').owner.name,
   ).toBe('FirstBidder');
-  await challenger.post('/api/game', {
-    data: { action: 'contribute', countryId: '064', amount: 1 },
-  });
+  await gamePost(challenger, { action: 'contribute', countryId: '064', amount: 1 });
   await expect(panel.locator('.contender-list li').first()).toContainText('SecondBidder');
   await expect(panel.locator('.contender-list li').nth(1)).toContainText('+2 pour passer devant');
   await expect(panel.locator('.standings-clock time')).toBeVisible();
@@ -422,8 +423,11 @@ test('visitor exploration and a complete account, conquest, and alliance journey
   expect(await page.locator('.country-path').count()).toBe(countries.length);
   await page.getByRole('button', { name: 'Entrer dans le jeu' }).click();
   await page.getByLabel('Pseudonyme', { exact: true }).fill('ExplorerTest');
+  await page.getByLabel('Adresse e-mail').fill(testEmail('ExplorerTest'));
   await page.getByLabel('Mot de passe', { exact: true }).fill(password);
   await page.getByRole('button', { name: 'Créer mon compte gratuit' }).click();
+  await page.getByLabel('Code de vérification').waitFor();
+  await confirmEmailUI(page, testEmail('ExplorerTest'));
   await expect(page.getByRole('dialog')).toHaveCount(0);
   await expect(page.locator('.wallet strong')).toHaveText('100');
   const search = page.getByRole('textbox', { name: 'Rechercher un pays' });
@@ -474,23 +478,20 @@ test('visitor exploration and a complete account, conquest, and alliance journey
 test('server rejects unauthorized actions, overspending, spoofed origins and unmoderated payments', async ({
   request,
 }) => {
-  let r = await request.post('/api/game', {
-    data: { action: 'contribute', countryId: '352', amount: 50 },
-  });
+  let r = await gamePost(request, { action: 'contribute', countryId: '352', amount: 50 });
   expect(r.status()).toBe(401);
-  r = await request.post('/api/game', {
-    data: { action: 'signup', username: 'SecurityTest', password, color: '#7972e8' },
+  r = await gamePost(request, {
+    action: 'signup',
+    username: 'SecurityTest',
+    password,
+    color: '#7972e8',
   });
   expect(r.ok()).toBeTruthy();
-  r = await request.post('/api/game', {
-    data: { action: 'contribute', countryId: '352', amount: 101 },
-  });
+  r = await gamePost(request, { action: 'contribute', countryId: '352', amount: 101 });
   expect(r.status()).toBe(400);
-  r = await request.post('/api/game', {
-    data: { action: 'contribute', countryId: '352', amount: -50 },
-  });
+  r = await gamePost(request, { action: 'contribute', countryId: '352', amount: -50 });
   expect(r.status()).toBe(400);
-  r = await request.post('/api/game', { data: { action: 'collect' } });
+  r = await gamePost(request, { action: 'collect' });
   expect(r.status()).toBe(400);
   r = await request.post('/api/game', {
     headers: { origin: 'https://evil.example' },
@@ -501,14 +502,12 @@ test('server rejects unauthorized actions, overspending, spoofed origins and unm
   expect(r.status()).toBe(403);
   r = await request.post('/api/checkout', { data: { sponsorId: 'fake' } });
   expect(r.status()).toBe(503);
-  r = await request.post('/api/game', {
-    data: {
-      action: 'sponsor-proposal',
-      countryId: '352',
-      name: 'Unsafe',
-      description: 'Invalid insecure destination',
-      url: 'javascript:alert(1)',
-    },
+  r = await gamePost(request, {
+    action: 'sponsor-proposal',
+    countryId: '352',
+    name: 'Unsafe',
+    description: 'Invalid insecure destination',
+    url: 'javascript:alert(1)',
   });
   expect(r.status()).toBe(400);
   const s = await request.get('/api/game').then((r) => r.json());
@@ -549,8 +548,7 @@ test('alliance treasury, strategy, personal freedom, generals and succession are
 }) => {
   const leader = await playwright.request.newContext({ baseURL: 'http://127.0.0.1:3001' });
   const member = await playwright.request.newContext({ baseURL: 'http://127.0.0.1:3001' });
-  const post = (ctx: typeof leader, data: Record<string, unknown>) =>
-    ctx.post('/api/game', { data });
+  const post = (ctx: typeof leader, data: Record<string, unknown>) => gamePost(ctx, data);
   let r = await post(leader, { action: 'signup', username: 'TeamLeader', password });
   expect(r.ok()).toBeTruthy();
   const leaderId = (await r.json()).player.id;
@@ -716,7 +714,7 @@ test('logos stay private until moderation/payment and only provisioned admins ca
   const owner = await playwright.request.newContext({ baseURL: 'http://127.0.0.1:3001' });
   const admin = await playwright.request.newContext({ baseURL: 'http://127.0.0.1:3001' });
   const visitor = await playwright.request.newContext({ baseURL: 'http://127.0.0.1:3001' });
-  await owner.post('/api/game', { data: { action: 'signup', username: 'CampaignTest', password } });
+  await gamePost(owner, { action: 'signup', username: 'CampaignTest', password });
   const logo = await sharp({
     create: { width: 24, height: 24, channels: 4, background: '#ff5d35' },
   })
@@ -742,37 +740,31 @@ test('logos stay private until moderation/payment and only provisioned admins ca
     },
   });
   expect(r.status()).toBe(400);
-  r = await owner.post('/api/game', {
-    data: {
-      action: 'sponsor-proposal',
-      countryId: '470',
-      name: 'Brand Test',
-      description: 'A moderated campaign for a test brand.',
-      url: 'https://example.com',
-      logoId,
-    },
+  r = await gamePost(owner, {
+    action: 'sponsor-proposal',
+    countryId: '470',
+    name: 'Brand Test',
+    description: 'A moderated campaign for a test brand.',
+    url: 'https://example.com',
+    logoId,
   });
   expect(r.ok()).toBeTruthy();
   let mine = await owner.get('/api/game?mine=1').then((r) => r.json());
   const campaignId = mine.sponsors[0].id;
-  r = await owner.post('/api/game', {
-    data: { action: 'moderate', id: campaignId, decision: 'approve' },
-  });
+  r = await gamePost(owner, { action: 'moderate', id: campaignId, decision: 'approve' });
   expect(r.status()).toBe(403);
-  r = await owner.post('/api/game', {
-    data: { action: 'profile', username: 'AdminTest', color: '#7972e8' },
-  });
+  r = await gamePost(owner, { action: 'profile', username: 'AdminTest', color: '#7972e8' });
   expect(r.status()).toBe(409);
-  r = await admin.post('/api/game', {
-    data: { action: 'login', username: 'AdminTest', password: 'Admin-password-123!' },
+  r = await gamePost(admin, {
+    action: 'login',
+    username: 'AdminTest',
+    password: 'Admin-password-123!',
   });
   expect(r.ok()).toBeTruthy();
   expect((await r.json()).player.isAdmin).toBeTruthy();
   r = await admin.get(`/api/media/${logoId}`);
   expect(r.status()).toBe(200);
-  r = await admin.post('/api/game', {
-    data: { action: 'moderate', id: campaignId, decision: 'approve' },
-  });
+  r = await gamePost(admin, { action: 'moderate', id: campaignId, decision: 'approve' });
   expect(r.ok()).toBeTruthy();
   mine = await owner.get('/api/game?mine=1').then((r) => r.json());
   expect(mine.sponsors[0].status).toBe('approved');
@@ -792,13 +784,9 @@ test('a second browser receives conquests over the live event stream', async ({
   const watcher = await context.newPage();
   await watcher.goto('/?country=020');
   await expect(watcher.locator('.selection-name')).toContainText('Andorre');
-  let r = await request.post('/api/game', {
-    data: { action: 'signup', username: 'RealtimeTest', password },
-  });
+  let r = await gamePost(request, { action: 'signup', username: 'RealtimeTest', password });
   expect(r.ok()).toBeTruthy();
-  r = await request.post('/api/game', {
-    data: { action: 'contribute', countryId: '020', amount: 50 },
-  });
+  r = await gamePost(request, { action: 'contribute', countryId: '020', amount: 50 });
   expect(r.ok()).toBeTruthy();
   await expect(watcher.locator('.selection-name small')).toHaveText('RealtimeTest', {
     timeout: 7000,

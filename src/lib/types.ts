@@ -135,6 +135,7 @@ export interface Season {
   archived_at: number | null;
 }
 export interface Snapshot {
+  account?: { email: string | null; emailVerified: boolean } | null;
   realtime?: { url: string; key: string } | null;
   paymentsMode?: 'disabled' | 'test' | 'live';
   progression: Progression | null;

@@ -13,6 +13,9 @@ import {
 } from '../src/lib/sponsoring';
 import { resetConquestMap } from '../src/lib/admin';
 import { hashPassword } from '../src/lib/password';
+import { beginEmailVerification, confirmEmailVerification } from '../src/lib/email-verification';
+import { createHash } from 'node:crypto';
+import path from 'node:path';
 Object.assign(process.env, { NODE_ENV: 'test' });
 
 test('PostgreSQL schema protects private tables and the adapter preserves parameters and numeric functions', async () => {
@@ -33,6 +36,10 @@ test('PostgreSQL schema protects private tables and the adapter preserves parame
       name.endsWith('_sponsor_live_isolation.sql'),
     )!;
     await db.exec(readFileSync(`supabase/migrations/${liveMigration}`, 'utf8'));
+    const emailMigration = readdirSync('supabase/migrations').find((name) =>
+      name.endsWith('_verified_email_accounts.sql'),
+    )!;
+    await db.exec(readFileSync(`supabase/migrations/${emailMigration}`, 'utf8'));
     const q = async (sql: string, params: unknown[] = []) =>
       (await db.query(postgresQuery(sql), params)).rows as Record<string, unknown>[];
     await q(
@@ -59,7 +66,7 @@ test('PostgreSQL schema protects private tables and the adapter preserves parame
     const privateTables = await db.query<{ n: number }>(
       "SELECT count(*)::int AS n FROM pg_tables WHERE schemaname='game' AND rowsecurity=true",
     );
-    assert.equal(privateTables.rows[0].n, 41);
+    assert.equal(privateTables.rows[0].n, 42);
     const bucket = await db.query<{ public: boolean }>(
       "SELECT public FROM storage.buckets WHERE id='sponsor-logos'",
     );
@@ -76,6 +83,16 @@ test('PostgreSQL schema protects private tables and the adapter preserves parame
       },
     } as unknown as Parameters<typeof withTestDatabase>[0];
     await withTestDatabase(driver, async () => {
+      process.env.EMAIL_TEST_OUTBOX = path.resolve('data/pg-email-outbox');
+      const pendingEmail = 'pg-email-contract@example.com';
+      const challenge = await beginEmailVerification({ email: pendingEmail, username: 'PgVerified', password: 'Carte-42', color: '#111111', ip: 'pg-test' });
+      const codeFile = createHash('sha256').update(pendingEmail).digest('hex');
+      const code = JSON.parse(readFileSync(path.join(process.env.EMAIL_TEST_OUTBOX, `${codeFile}.json`), 'utf8')).code;
+      const confirmed = await confirmEmailVerification(challenge.token, code, null);
+      const own = await snapshot(confirmed);
+      assert.equal(own.account?.emailVerified, true);
+      assert.equal(own.account?.email, pendingEmail);
+      await assert.rejects(() => confirmEmailVerification(challenge.token, code, null));
       await run(
         'INSERT INTO users(id,username,password,color,created_at,generation_anchor) VALUES(?,?,?,?,?,?)',
         'pg-enemy',

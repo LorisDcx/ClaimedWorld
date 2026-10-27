@@ -21,6 +21,8 @@ export default defineConfig({
       NEXT_DIST_DIR: '.next-test',
       DATABASE_PATH: testDatabasePath,
       DATABASE_URL: '',
+      EMAIL_TEST_OUTBOX: './data/e2e-email-outbox',
+      SMTP_PASSWORD: '',
       POSTGRES_URL: '',
       VERCEL: '',
       NEXT_PUBLIC_SUPABASE_URL: '',

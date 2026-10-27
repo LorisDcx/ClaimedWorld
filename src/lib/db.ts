@@ -412,6 +412,12 @@ export async function snapshot(userId: string | null): Promise<Snapshot> {
       }
     return {
       player: userId ? await publicPlayer(userId, now) : null,
+      account: userId
+        ? await get<{ email: string | null; emailVerified: number }>(
+            'SELECT email,CASE WHEN email_verified_at IS NULL THEN 0 ELSE 1 END AS emailVerified FROM users WHERE id=?',
+            userId,
+          ).then((a) => (a ? { email: a.email, emailVerified: !!a.emailVerified } : null))
+        : null,
       realtime:
         usesPostgres() &&
         process.env.NEXT_PUBLIC_SUPABASE_URL &&
