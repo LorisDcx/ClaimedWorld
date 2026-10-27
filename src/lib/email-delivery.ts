@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import { verificationEmail } from './email-template';
 
 export function testEmailOutbox() {
   return (
@@ -39,6 +40,7 @@ export function smtpTransport() {
 }
 
 export async function sendVerificationEmail(email: string, code: string) {
+  const message = verificationEmail(code);
   if (!emailDeliveryConfigured()) throw new Error('Email delivery unavailable');
   const outbox = testEmailOutbox();
   if (outbox) {
@@ -58,8 +60,7 @@ export async function sendVerificationEmail(email: string, code: string) {
     await transporter.sendMail({
       from: { name: 'CLAIMED.WORLD', address: process.env.SMTP_FROM! },
       to: email,
-      subject: 'Votre code de vérification CLAIMED.WORLD',
-      text: `Votre code de vérification : ${code}\n\nIl expire dans 10 minutes et ne peut être utilisé qu’une seule fois. Saisissez-le dans la fenêtre du jeu où vous avez demandé ce code.\n\nUn seul compte de jeu par personne. Ne partagez jamais ce code.\nSi vous n’avez pas demandé ce message, ignorez-le.`,
+      ...message,
     });
   } finally {
     transporter.close();
