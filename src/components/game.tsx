@@ -120,6 +120,7 @@ export default function Game() {
   const announcedUnlocks = useRef<{ user: string; ids: Set<string> } | null>(null);
   const queryRef = useRef<HTMLInputElement>(null);
   const serverOffset = useRef(0);
+  const sponsorEntry = useRef<'new' | 'awaiting-account' | 'opened'>('new');
   const syncClock = useCallback((serverTime: number) => {
     serverOffset.current = serverTime - Date.now();
     setNow(serverTime);
@@ -161,6 +162,16 @@ export default function Game() {
   }, [refresh]);
   const sessionId = state?.player?.id || 'guest';
   const worldReady = !!state;
+  useEffect(() => {
+    if (!worldReady || !new URLSearchParams(window.location.search).has('sponsor')) return;
+    if (sponsorEntry.current === 'opened') return;
+    if (sessionId === 'guest' && sponsorEntry.current === 'awaiting-account') return;
+    const timer = setTimeout(() => {
+      sponsorEntry.current = sessionId === 'guest' ? 'awaiting-account' : 'opened';
+      setModal({ type: sessionId === 'guest' ? 'signup' : 'my-sponsors' });
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [worldReady, sessionId]);
   const realtimeUrl = state?.realtime?.url;
   const realtimeKey = state?.realtime?.key;
   useEffect(() => {
@@ -2001,8 +2012,8 @@ function GameModal({
         <div className="prose">
           <p>
             CLAIMED.WORLD est édité par {OPERATOR.name}, {OPERATOR.status.toLowerCase()}, en{' '}
-            {OPERATOR.country}. Pour une question sur le service, le sponsoring ou vos données :{' '}
-            <a href={`mailto:${OPERATOR.email}`}>{OPERATOR.email}</a>.
+            {OPERATOR.country}. SIRET : {OPERATOR.siret}. Pour une question sur le service, le
+            sponsoring ou vos données : <a href={`mailto:${OPERATOR.email}`}>{OPERATOR.email}</a>.
           </p>
           <p>
             Le jeu conserve votre pseudonyme, votre couleur, un mot de passe dérivé avec scrypt, vos
@@ -2019,10 +2030,13 @@ function GameModal({
             informations de paiement si l’exploitant active cette option.
           </p>
           <p>
-            Les conditions de vente et les informations détaillées de conservation seront publiées
-            avant l’ouverture des paiements réels. Pour demander l’accès, la rectification ou la
-            suppression de vos données, contactez l’adresse ci-dessus. Le jeu ne dispose pas encore
-            d’un service de récupération de mot de passe.
+            Retrouvez les{' '}
+            <a href="/sponsoring" target="_blank" rel="noopener noreferrer">
+              informations sur le sponsoring
+            </a>
+            . Pour demander l’accès, la rectification ou la suppression de vos données, contactez
+            l’adresse ci-dessus. Le jeu ne dispose pas encore d’un service de récupération de mot de
+            passe.
           </p>
         </div>
       )}

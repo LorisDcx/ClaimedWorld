@@ -9,6 +9,8 @@ if (process.argv.includes('--pending')) {
   process.env.STRIPE_SECRET_KEY = process.env.STRIPE_LIVE_SECRET_KEY || '';
   process.env.STRIPE_WEBHOOK_SECRET = process.env.STRIPE_LIVE_WEBHOOK_SECRET || '';
 }
+const appUrlIndex = process.argv.indexOf('--app-url');
+const appUrl = appUrlIndex >= 0 ? process.argv[appUrlIndex + 1] : process.env.NEXT_PUBLIC_APP_URL;
 const mode = process.env.STRIPE_SECRET_KEY?.match(/^(?:sk|rk)_(test|live)_/)?.[1] || 'missing';
 const report = {
   mode,
@@ -53,7 +55,8 @@ try {
     report.accountCanPayOut = !!account.payouts_enabled;
     report.accountDetailsSubmitted = !!account.details_submitted;
     if (mode === 'live') {
-      const expected = new URL('/api/webhooks/stripe', process.env.NEXT_PUBLIC_APP_URL).href;
+      if (!appUrl) throw new Error('APP_URL_REQUIRED');
+      const expected = new URL('/api/webhooks/stripe', appUrl).href;
       const events = [
         'checkout.session.completed',
         'checkout.session.async_payment_succeeded',

@@ -3,6 +3,31 @@ import { DatabaseSync } from 'node:sqlite';
 import type { Snapshot } from '../../src/lib/types';
 
 const password = 'Onboarding-password-123!';
+
+test('sponsor entry requires an account then opens the correct wallet without starting a payment', async ({
+  page,
+}) => {
+  const checkouts: string[] = [];
+  page.on('request', (request) => {
+    if (request.url().endsWith('/api/checkout')) checkouts.push(request.url());
+  });
+  await page.goto('/?sponsor=1');
+  const signup = page.getByRole('dialog', { name: 'Votre place dans le monde.' });
+  await expect(signup).toBeVisible();
+  await signup.getByLabel('Pseudonyme').fill('SponsorDirectEntry');
+  await signup.getByLabel('Mot de passe').fill(password);
+  await signup.getByRole('button', { name: 'Créer mon compte gratuit' }).click();
+  const wallet = page.getByRole('dialog', { name: 'Crédits et enchères sponsor' });
+  await expect(wallet).toBeVisible();
+  await expect(wallet.getByRole('button', { name: 'Créer un visuel' })).toBeVisible();
+  expect(checkouts).toEqual([]);
+  await page.goto('/sponsoring');
+  await expect(page.getByRole('heading', { name: 'Les crédits sponsor.' })).toBeVisible();
+  await expect(page.getByRole('main')).toContainText('92017831600021');
+  await page.getByRole('link', { name: 'Accéder à mes crédits sponsor →' }).click();
+  await expect(wallet).toBeVisible();
+  expect(checkouts).toEqual([]);
+});
 test.beforeEach(() => {
   const path = process.env.E2E_DATABASE_PATH!;
   expect(path).toMatch(/^\.\/data\/test-\d+\.sqlite$/);

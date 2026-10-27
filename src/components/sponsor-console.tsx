@@ -204,8 +204,13 @@ export default function SponsorConsole({
               onChange={(event) => setTerms(event.target.checked)}
               required
             />
-            J’ai compris : les crédits ne donnent aucune Influence de conquête ; leur validité de 30
-            jours commence lors de leur placement.
+            <span>
+              J’ai lu les{' '}
+              <a href="/sponsoring" target="_blank" rel="noopener noreferrer">
+                informations sur le sponsoring
+              </a>
+              . Les crédits ne donnent aucune Influence ; les fonds placés expirent après 30 jours.
+            </span>
           </label>
           <button
             className="primary full"
