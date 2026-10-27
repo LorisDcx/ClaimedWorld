@@ -1,4 +1,7 @@
 'use client';
+import { countryLabel } from '@/i18n/countries';
+import { useT, useLocale } from '@/i18n/provider';
+
 import { useState, type FormEvent } from 'react';
 import { ArrowUpRight, Crosshair, Wallet } from 'lucide-react';
 import countries from '@/data/countries.json';
@@ -40,6 +43,8 @@ const pacific = new Set([
 ]);
 
 function ObjectiveEditor({ alliance, busy, act }: { alliance: Alliance; busy: boolean; act: Act }) {
+  const t = useT();
+  const locale = useLocale();
   const [targets, setTargets] = useState(alliance.targets);
   const [query, setQuery] = useState('');
   async function save(event: FormEvent<HTMLFormElement>) {
@@ -47,7 +52,7 @@ function ObjectiveEditor({ alliance, busy, act }: { alliance: Alliance; busy: bo
     const data = new FormData(event.currentTarget);
     await act(
       { action: 'alliance-objective', objective: data.get('objective'), targets },
-      'Objectifs de l’alliance enregistrés.',
+      t("Objectifs de l’alliance enregistrés."),
     );
   }
   const matches = countries.filter((c) =>
@@ -56,18 +61,17 @@ function ObjectiveEditor({ alliance, busy, act }: { alliance: Alliance; busy: bo
   return (
     <form className="objective-editor" onSubmit={(event) => void save(event)}>
       <label>
-        But de l’alliance
-        <textarea
+        {t("\n        But de l’alliance\n        ")}<textarea
           name="objective"
           rows={2}
           maxLength={180}
           defaultValue={alliance.objective}
-          placeholder="Contrôler le Pacifique, défendre nos îles…"
+          placeholder={t("Contrôler le Pacifique, défendre nos îles…")}
         />
       </label>
       <div className="objective-toolbar">
         <strong>
-          Cibles autorisées · {targets.length}/{countries.length}
+          {t("\n          Cibles autorisées · ")}{targets.length}/{countries.length}
         </strong>
         <button
           type="button"
@@ -78,12 +82,11 @@ function ObjectiveEditor({ alliance, busy, act }: { alliance: Alliance; busy: bo
             )
           }
         >
-          Sélection Pacifique
-        </button>
+          {t("\n          Sélection Pacifique\n        ")}</button>
       </div>
       <input
-        aria-label="Filtrer les cibles de l’alliance"
-        placeholder="Rechercher un pays cible…"
+        aria-label={t("Filtrer les cibles de l’alliance")}
+        placeholder={t("Rechercher un pays cible…")}
         value={query}
         onChange={(event) => setQuery(event.target.value)}
       />
@@ -102,16 +105,14 @@ function ObjectiveEditor({ alliance, busy, act }: { alliance: Alliance; busy: bo
                 )
               }
             />
-            <span>{country.name}</span>
+            <span>{countryLabel(country, locale)}</span>
           </label>
         ))}
       </div>
       <p className="muted">
-        Les attaques d’alliance sont limitées à cette liste. Sans cible, aucune attaque collective
-        n’est possible. Vos attaques personnelles restent libres.
-      </p>
+        {t("\n        Les attaques d’alliance sont limitées à cette liste. Sans cible, aucune attaque collective\n        n’est possible. Vos attaques personnelles restent libres.\n      ")}</p>
       <button className="secondary full" disabled={busy}>
-        Enregistrer la stratégie <Crosshair size={14} />
+        {t("\n        Enregistrer la stratégie ")}<Crosshair size={14} />
       </button>
     </form>
   );
@@ -130,30 +131,30 @@ export default function AllianceManagement({
   busy: boolean;
   ledger: Ledger[];
 }) {
+  const t = useT();
+  const locale = useLocale();
   const [amount, setAmount] = useState(20);
   const max = Math.min(player.wallet, alliance.treasuryCap - alliance.treasury);
   return (
     <section className="alliance-management">
       <div className="treasury-overview">
         <span>
-          <Wallet size={17} /> TRÉSORERIE COMMUNE
-        </span>
+          <Wallet size={17} /> {t(" TRÉSORERIE COMMUNE\n        ")}</span>
         <strong>
-          {number(alliance.treasury)} <small>/ {number(alliance.treasuryCap)} Influence</small>
+          {number(alliance.treasury)} <small>/ {number(alliance.treasuryCap)} {t(" Influence")}</small>
         </strong>
       </div>
       <form
         className="treasury-deposit"
         onSubmit={(event) => {
           event.preventDefault();
-          void act({ action: 'alliance-deposit', amount }, 'Contribution versée à la trésorerie.');
+          void act({ action: 'alliance-deposit', amount }, t("Contribution versée à la trésorerie."));
         }}
       >
         <label>
-          Votre contribution
-          <input
+          {t("\n          Votre contribution\n          ")}<input
             type="number"
-            aria-label="Influence à verser à la trésorerie"
+            aria-label={t("Influence à verser à la trésorerie")}
             min={1}
             max={max}
             step={1}
@@ -165,26 +166,24 @@ export default function AllianceManagement({
           className="primary"
           disabled={busy || amount < 1 || !Number.isInteger(amount) || amount > max}
         >
-          Verser à l’alliance <ArrowUpRight size={14} />
+          {t("\n          Verser à l’alliance ")}<ArrowUpRight size={14} />
         </button>
       </form>
       <p className="muted">
-        Les dons sont définitifs. Seuls le chef et les généraux peuvent engager ces fonds sur les
-        cibles autorisées. La trésorerie repart à zéro à chaque saison.
-      </p>
+        {t("\n        Les dons sont définitifs. Seuls le chef et les généraux peuvent engager ces fonds sur les\n        cibles autorisées. La trésorerie repart à zéro à chaque saison.\n      ")}</p>
       <div className="alliance-objective">
-        <span className="eyebrow">OBJECTIF COMMUN</span>
-        <p>{alliance.objective || 'Le chef doit définir la stratégie et les pays cibles.'}</p>
+        <span className="eyebrow">{t("OBJECTIF COMMUN")}</span>
+        <p>{alliance.objective || t("Le chef doit définir la stratégie et les pays cibles.")}</p>
         <small>
-          {alliance.targets.length} cibles ·{' '}
+          {alliance.targets.length} {t(" cibles ·")}{' '}
           {alliance.targets.filter((id) => countries.some((c) => c.id === id)).length
-            ? 'Attaques limitées à la stratégie'
-            : 'Attaques collectives suspendues'}
+            ? t("Attaques limitées à la stratégie")
+            : t("Attaques collectives suspendues")}
         </small>
       </div>
       {player.id === alliance.leader_id ? (
         <details className="strategy-settings" open={!alliance.targets.length}>
-          <summary>Définir les objectifs</summary>
+          <summary>{t("Définir les objectifs")}</summary>
           <ObjectiveEditor
             key={`${alliance.objective}-${alliance.targets.join(',')}`}
             alliance={alliance}
@@ -195,15 +194,15 @@ export default function AllianceManagement({
       ) : (
         alliance.targets.length > 0 && (
           <details className="strategy-settings">
-            <summary>Voir les pays cibles</summary>
+            <summary>{t("Voir les pays cibles")}</summary>
             <p className="target-names">
-              {alliance.targets.map((id) => countries.find((c) => c.id === id)?.name).join(' · ')}
+              {alliance.targets.map((id) => (countries.find((c) => c.id === id) ? countryLabel(countries.find((c) => c.id === id)!, locale) : '')).join(' · ')}
             </p>
           </details>
         )
       )}
       <details className="strategy-settings">
-        <summary>Journal de la trésorerie</summary>
+        <summary>{t("Journal de la trésorerie")}</summary>
         <div className="treasury-ledger">
           {ledger.length ? (
             ledger.map((entry) => (
@@ -212,33 +211,30 @@ export default function AllianceManagement({
                   {entry.username}
                   <small>
                     {entry.kind === 'deposit'
-                      ? 'Don à la trésorerie'
+                      ? t("Don à la trésorerie")
                       : entry.kind === 'border-attack'
-                        ? `Offensive frontalière · ${countries.find((c) => c.id === entry.country_id)?.name || 'Territoire'}`
+                        ? t("Offensive frontalière · {0}", [countries.find((c) => c.id === entry.country_id)?.name || 'Territoire'])
                         : entry.kind === 'attack'
-                          ? `Attaque · ${countries.find((c) => c.id === entry.country_id)?.name || 'Territoire'}`
-                          : 'Stratégie mise à jour'}
+                          ? t("Attaque · {0}", [countries.find((c) => c.id === entry.country_id)?.name || 'Territoire'])
+                          : t("Stratégie mise à jour")}
                   </small>
                 </span>
                 <strong>
                   {entry.kind === 'objective'
                     ? '—'
                     : entry.kind === 'border-attack'
-                      ? `${number(entry.amount)} troupes`
+                      ? t("{0} troupes", [number(entry.amount)])
                       : `${entry.kind === 'deposit' ? '+' : '−'}${number(entry.amount)}`}
                 </strong>
               </div>
             ))
           ) : (
-            <p className="muted">Les premières opérations apparaîtront ici.</p>
+            <p className="muted">{t("Les premières opérations apparaîtront ici.")}</p>
           )}
         </div>
       </details>
       <p className="alliance-reward-note">
-        Les récompenses individuelles dépendent des fonds réellement engagés, du contrôle soutenu et
-        de votre temps de participation. Un don inutilisé ne rapporte pas de bonus. Les petites
-        alliances partagent leur contrôle entre moins de joueurs.
-      </p>
+        {t("\n        Les récompenses individuelles dépendent des fonds réellement engagés, du contrôle soutenu et\n        de votre temps de participation. Un don inutilisé ne rapporte pas de bonus. Les petites\n        alliances partagent leur contrôle entre moins de joueurs.\n      ")}</p>
     </section>
   );
 }

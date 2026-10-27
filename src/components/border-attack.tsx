@@ -1,4 +1,6 @@
 'use client';
+import { useT } from '@/i18n/provider';
+
 import { useRef, useState } from 'react';
 import { Flame, Swords } from 'lucide-react';
 import adjacency from '@/data/neighbors.json';
@@ -32,6 +34,7 @@ export default function BorderAttack({
   reserve?: number;
   alliedCampIds?: string[];
 }) {
+  const t = useT();
   const [sourceChoice, setSourceChoice] = useState('');
   const [targetChoice, setTargetChoice] = useState('');
   const [amount, setAmount] = useState(1);
@@ -59,7 +62,7 @@ export default function BorderAttack({
   if (campId && myScore + survivors > 0)
     hypothetical.push({
       id: campId,
-      name: 'Votre camp',
+      name: t("Votre camp"),
       color: '#111111',
       emblem: '',
       alliance: mode === 'alliance',
@@ -78,37 +81,28 @@ export default function BorderAttack({
     <div className="border-attack-panel">
       <div className="attack-intro">
         <Swords size={22} strokeWidth={1.3} />
-        <h3>Faites bouger la frontière.</h3>
+        <h3>{t("Faites bouger la frontière.")}</h3>
         <p>
-          Attaquez depuis un pays que vous contrôlez vers un voisin terrestre, en utilisant votre
-          stock ou les forces sur place. Chaque point envoyé détruit un point du rival choisi. Seuls
-          vos survivants s’installent.
-        </p>
+          {t("\r\n          Attaquez depuis un pays que vous contrôlez vers un voisin terrestre, en utilisant votre\r\n          stock ou les forces sur place. Chaque point envoyé détruit un point du rival choisi. Seuls\r\n          vos survivants s’installent.\r\n        ")}</p>
       </div>
       {!campId ? (
         <button className="primary full" onClick={onSignup}>
-          Jouer gratuitement
-        </button>
+          {t("\r\n          Jouer gratuitement\r\n        ")}</button>
       ) : (
         <>
           {restriction && (
-            <p className="attack-warning">{restriction} Vous pouvez toujours jouer en votre nom.</p>
+            <p className="attack-warning">{restriction} {t(" Vous pouvez toujours jouer en votre nom.")}</p>
           )}
           {!neighbors.length ? (
             <p className="attack-empty">
-              Ce territoire n’a pas de frontière terrestre. Vous pouvez le revendiquer ou le
-              renforcer dans Conquête.
-            </p>
+              {t("\r\n              Ce territoire n’a pas de frontière terrestre. Vous pouvez le revendiquer ou le\r\n              renforcer dans Conquête.\r\n            ")}</p>
           ) : !sources.length ? (
             <p className="attack-empty">
-              Contrôlez d’abord un pays limitrophe en{' '}
-              {mode === 'alliance' ? 'alliance' : 'votre nom'} pour lancer une attaque. La
-              revendication classique reste possible dans Conquête.
-            </p>
+              {t("\r\n              Contrôlez d’abord un pays limitrophe en")}{' '}
+              {mode === 'alliance' ? 'alliance' : 'votre nom'} {t(" pour lancer une attaque. La\r\n              revendication classique reste possible dans Conquête.\r\n            ")}</p>
           ) : !enemies.length ? (
             <p className="attack-empty">
-              Aucun rival à attaquer dans ce pays. Pour vous y installer, utilisez Conquête.
-            </p>
+              {t("\r\n              Aucun rival à attaquer dans ce pays. Pour vous y installer, utilisez Conquête.\r\n            ")}</p>
           ) : (
             <form
               onSubmit={async (event) => {
@@ -137,7 +131,7 @@ export default function BorderAttack({
                 if (
                   await act(
                     { ...body, requestId: pending.current.id },
-                    `Attaque exécutée : ${destroyed * 2} Influence brûlée et ${survivors} survivants déployés.`,
+                    t("Attaque exécutée : {0} Influence brûlée et {1} survivants déployés.", [destroyed * 2, survivors]),
                   )
                 ) {
                   pending.current = null;
@@ -146,9 +140,8 @@ export default function BorderAttack({
               }}
             >
               <label>
-                Pays de départ
-                <select
-                  aria-label="Pays de départ"
+                {t("\r\n                Pays de départ\r\n                ")}<select
+                  aria-label={t("Pays de départ")}
                   value={source.id}
                   onChange={(e) => {
                     setSourceChoice(e.target.value);
@@ -157,15 +150,13 @@ export default function BorderAttack({
                 >
                   {sources.map((s) => (
                     <option key={s.id} value={s.id}>
-                      {name(s.id)} · {s.owner?.score} Influence
-                    </option>
+                      {name(s.id)} · {s.owner?.score} {t(" Influence\r\n                    ")}</option>
                   ))}
                 </select>
               </label>
               <label>
-                Rival ciblé
-                <select
-                  aria-label="Rival ciblé"
+                {t("\r\n                Rival ciblé\r\n                ")}<select
+                  aria-label={t("Rival ciblé")}
                   value={target.id}
                   onChange={(e) => {
                     setTargetChoice(e.target.value);
@@ -174,45 +165,37 @@ export default function BorderAttack({
                 >
                   {enemies.map((e) => (
                     <option key={e.id} value={e.id}>
-                      {e.name} · {e.score} Influence
-                    </option>
+                      {e.name} · {e.score} {t(" Influence\r\n                    ")}</option>
                   ))}
                 </select>
               </label>
               <label>
-                Origine des forces
-                <select
-                  aria-label="Origine des forces"
+                {t("\r\n                Origine des forces\r\n                ")}<select
+                  aria-label={t("Origine des forces")}
                   value={useStock ? 'stock' : 'country'}
                   onChange={(event) => setUseStock(event.target.value === 'stock')}
                 >
                   <option value="stock">
-                    {mode === 'alliance' ? 'Trésorerie' : 'Stock'} en priorité · {reserve}{' '}
-                    disponibles
-                  </option>
+                    {mode === 'alliance' ? t("Trésorerie") : 'Stock'} {t(" en priorité · ")}{reserve}{' '}
+                    {t("\r\n                    disponibles\r\n                  ")}</option>
                   <option value="country">
-                    Troupes du pays uniquement · {garrison} disponibles
-                  </option>
+                    {t("\r\n                    Troupes du pays uniquement · ")}{garrison} {t(" disponibles\r\n                  ")}</option>
                 </select>
               </label>
               {friendly && (
                 <div className="attack-warning" role="alert">
-                  Attention : {target.name} fait partie de votre alliance. Vous n’appartenez qu’à
-                  une alliance à la fois.
-                  <label className="checkbox-label">
+                  {t("\r\n                  Attention : ")}{target.name} {t(" fait partie de votre alliance. Vous n’appartenez qu’à\r\n                  une alliance à la fois.\r\n                  ")}<label className="checkbox-label">
                     <input
                       type="checkbox"
                       checked={acknowledgeAlly}
                       onChange={(event) => setAcknowledgeAlly(event.target.checked)}
                     />
-                    Je confirme l’attaque contre un allié
-                  </label>
+                    {t("\r\n                    Je confirme l’attaque contre un allié\r\n                  ")}</label>
                 </div>
               )}
               <label>
-                Troupes à envoyer
-                <input
-                  aria-label="Troupes à envoyer"
+                {t("\r\n                Troupes à envoyer\r\n                ")}<input
+                  aria-label={t("Troupes à envoyer")}
                   type="number"
                   min={1}
                   max={available}
@@ -223,8 +206,8 @@ export default function BorderAttack({
                 />
               </label>
               {validAmount && (
-                <div className="attack-preview" aria-label="Résultat prévu">
-                  <span className="eyebrow">SI LES SCORES RESTENT IDENTIQUES</span>
+                <div className="attack-preview" aria-label={t("Résultat prévu")}>
+                  <span className="eyebrow">{t("SI LES SCORES RESTENT IDENTIQUES")}</span>
                   <dl>
                     <div>
                       <dt>{name(source.id)}</dt>
@@ -234,20 +217,20 @@ export default function BorderAttack({
                     </div>
                     {useStock && (
                       <div>
-                        <dt>{mode === 'alliance' ? 'Trésorerie' : 'Stock personnel'}</dt>
+                        <dt>{mode === 'alliance' ? t("Trésorerie") : t("Stock personnel")}</dt>
                         <dd>
                           {reserve} → <b>{reserve - fromStock}</b>
                         </dd>
                       </div>
                     )}
                     <div>
-                      <dt>{target.name} en défense</dt>
+                      <dt>{target.name} {t(" en défense")}</dt>
                       <dd>
                         {target.score} → <b>{target.score - destroyed}</b>
                       </dd>
                     </div>
                     <div>
-                      <dt>Votre score à l’arrivée</dt>
+                      <dt>{t("Votre score à l’arrivée")}</dt>
                       <dd>
                         {myScore} → <b>{myScore + survivors}</b>
                       </dd>
@@ -255,17 +238,15 @@ export default function BorderAttack({
                   </dl>
                   <p>
                     <Flame size={13} />
-                    {destroyed * 2} Influence brûlée au total
-                  </p>
+                    {destroyed * 2} {t(" Influence brûlée au total\r\n                  ")}</p>
                   <small>
                     {winner
-                      ? `${winner.id === campId ? 'Votre camp' : winner.name} serait en tête avec ${winner.score} Influence.`
-                      : 'Le pays deviendrait neutre.'}{' '}
-                    Les autres rivaux ne perdent aucun point.
-                  </small>
+                      ? t("{0} serait en tête avec {1} Influence.", [winner.id === campId ? t("Votre camp") : winner.name, winner.score])
+                      : t("Le pays deviendrait neutre.")}{' '}
+                    {t("\r\n                    Les autres rivaux ne perdent aucun point.\r\n                  ")}</small>
                   {originOwner !== campId && (
                     <p className="attack-warning">
-                      Attention : vous pourriez perdre le contrôle de {name(source.id)}.
+                      {t("\r\n                      Attention : vous pourriez perdre le contrôle de ")}{name(source.id)}.
                     </p>
                   )}
                 </div>
@@ -275,18 +256,13 @@ export default function BorderAttack({
                 disabled={busy || !validAmount || !canCommand || (friendly && !acknowledgeAlly)}
               >
                 <Swords size={14} />
-                Envoyer {Number.isFinite(amount) ? amount : 0} troupes
-              </button>
+                {t("\r\n                Envoyer ")}{Number.isFinite(amount) ? amount : 0} {t(" troupes\r\n              ")}</button>
             </form>
           )}
         </>
       )}
       <p className="standings-note">
-        Le stock personnel ou la trésorerie peut compléter les troupes du pays de départ. Les
-        troupes déjà sur la carte gardent leurs dates d’expiration d’origine ; les forces prises
-        dans le stock commencent leur délai de 72 h. En alliance, seuls le chef et les généraux
-        attaquent, vers les cibles autorisées.
-      </p>
+        {t("\r\n        Le stock personnel ou la trésorerie peut compléter les troupes du pays de départ. Les\r\n        troupes déjà sur la carte gardent leurs dates d’expiration d’origine ; les forces prises\r\n        dans le stock commencent leur délai de 72 h. En alliance, seuls le chef et les généraux\r\n        attaquent, vers les cibles autorisées.\r\n      ")}</p>
     </div>
   );
 }

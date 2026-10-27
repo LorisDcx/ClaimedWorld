@@ -1,4 +1,7 @@
 'use client';
+import { countryLabel } from '@/i18n/countries';
+import { useT, useLocale } from '@/i18n/provider';
+
 import { ArrowUpRight, Clock3, Flag, X } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import type { Country, Territory, SponsorBid, Sponsor } from '@/lib/types';
@@ -58,6 +61,8 @@ export default function CountryStandings({
   sponsorCampaigns?: Sponsor[];
   act?: (body: Record<string, unknown>, success?: string) => Promise<boolean>;
 }) {
+  const t = useT();
+  const locale = useLocale();
   const [layer, setLayer] = useState<'players' | 'sponsors' | 'combat'>('players');
   const owner = territory?.owner;
   const ranked = [...(territory?.scores || [])].sort(
@@ -71,28 +76,25 @@ export default function CountryStandings({
     Infinity,
   );
   return (
-    <aside className="country-standings" aria-label={`Conquête de ${country.name}`}>
+    <aside className="country-standings" aria-label={t("Conquête de {0}", [country.name])}>
       <div className="standings-heading">
-        <span className="eyebrow">LA CONQUÊTE / EN DIRECT</span>
-        <button className="icon-button" onClick={onClose} aria-label="Fermer le classement du pays">
+        <span className="eyebrow">{t("LA CONQUÊTE / EN DIRECT")}</span>
+        <button className="icon-button" onClick={onClose} aria-label={t("Fermer le classement du pays")}>
           <X size={15} />
         </button>
       </div>
-      <h2>{country.name}</h2>
-      <div className="auction-tabs" role="tablist" aria-label="Enchères du pays">
+      <h2>{countryLabel(country, locale)}</h2>
+      <div className="auction-tabs" role="tablist" aria-label={t("Enchères du pays")}>
         <button role="tab" aria-selected={layer === 'players'} onClick={() => setLayer('players')}>
-          Conquête
-        </button>
+          {t("\r\n          Conquête\r\n        ")}</button>
         <button role="tab" aria-selected={layer === 'combat'} onClick={() => setLayer('combat')}>
-          Attaquer
-        </button>
+          {t("\r\n          Attaquer\r\n        ")}</button>
         <button
           role="tab"
           aria-selected={layer === 'sponsors'}
           onClick={() => setLayer('sponsors')}
         >
-          Sponsoring
-        </button>
+          {t("\r\n          Sponsoring\r\n        ")}</button>
       </div>
       {layer !== 'sponsors' && modeSwitcher && (
         <div className="standings-mode-switcher">{modeSwitcher}</div>
@@ -104,18 +106,17 @@ export default function CountryStandings({
             <i style={{ background: owner?.color || '#b0b0b0' }} />
             {owner ? (
               <>
-                <strong>{owner.name}</strong> contrôle ce territoire
-              </>
+                <strong>{owner.name}</strong> {t(" contrôle ce territoire\r\n              ")}</>
             ) : (
-              'Territoire libre · dès 1 Influence'
+              t("Territoire libre · dès 1 Influence")
             )}
           </p>
           <div className="standings-label">
-            <span>CLASSEMENT</span>
-            <span>INFLUENCE ACTIVE</span>
+            <span>{t("CLASSEMENT")}</span>
+            <span>{t("INFLUENCE ACTIVE")}</span>
           </div>
           {ranked.length ? (
-            <ol className="contender-list" aria-label="Classement des prétendants">
+            <ol className="contender-list" aria-label={t("Classement des prétendants")}>
               {ranked.map((camp, index) => {
                 const leader = camp.id === owner?.id;
                 const gap = Math.max(1, (owner?.score || ranked[0].score) - camp.score + 1);
@@ -133,7 +134,7 @@ export default function CountryStandings({
                           {camp.appearance?.title && (
                             <em className="contender-cosmetic-title">{camp.appearance.title}</em>
                           )}
-                          {camp.id === campId && <small>VOUS</small>}
+                          {camp.id === campId && <small>{t("VOUS")}</small>}
                         </strong>
                         <b>{number(camp.score)}</b>
                       </div>
@@ -148,10 +149,9 @@ export default function CountryStandings({
                       <p>
                         {leader ? (
                           <>
-                            <Flag size={10} /> Propriétaire actuel
-                          </>
+                            <Flag size={10} /> {t(" Propriétaire actuel\r\n                          ")}</>
                         ) : (
-                          `${camp.alliance ? 'Alliance' : 'Indépendant'} · +${number(gap)} pour passer devant`
+                          t("{0} · +{1} pour passer devant", [camp.alliance ? 'Alliance' : t("Indépendant"), number(gap)])
                         )}
                       </p>
                     </div>
@@ -162,8 +162,8 @@ export default function CountryStandings({
           ) : (
             <div className="standings-empty">
               <Flag size={22} strokeWidth={1.3} />
-              <strong>À vous d’ouvrir le jeu.</strong>
-              <p>Une seule Influence suffit pour devenir le premier propriétaire.</p>
+              <strong>{t("À vous d’ouvrir le jeu.")}</strong>
+              <p>{t("Une seule Influence suffit pour devenir le premier propriétaire.")}</p>
             </div>
           )}
           <form
@@ -181,9 +181,8 @@ export default function CountryStandings({
             }}
           >
             <label>
-              Combien d’Influence voulez-vous envoyer ?
-              <input
-                aria-label="Influence dans ce pays"
+              {t("\r\n              Combien d’Influence voulez-vous envoyer ?\r\n              ")}<input
+                aria-label={t("Influence dans ce pays")}
                 type="number"
                 min={1}
                 max={wallet}
@@ -193,7 +192,7 @@ export default function CountryStandings({
                 required
               />
             </label>
-            <div className="claim-presets" aria-label="Montants rapides">
+            <div className="claim-presets" aria-label={t("Montants rapides")}>
               {[...new Set([1, 10, 50, needed])]
                 .filter((value) => value > 0 && (wallet === undefined || value <= wallet))
                 .sort((a, b) => a - b)
@@ -201,7 +200,7 @@ export default function CountryStandings({
                   <button
                     key={value}
                     type="button"
-                    aria-label={`Choisir ${value} Influence`}
+                    aria-label={t("Choisir {0} Influence", [value])}
                     aria-pressed={amount === value}
                     onClick={() => onAmount(value)}
                   >
@@ -211,10 +210,10 @@ export default function CountryStandings({
                 ))}
             </div>
             <p className="standings-balance">
-              {wallet !== undefined ? `${number(wallet)} disponibles · ` : ''}
+              {wallet !== undefined ? t("{0} disponibles ·", [number(wallet)]) : ''}
               {isOwner
-                ? 'Chaque ajout renforce votre position.'
-                : `${number(needed)} nécessaires pour prendre le contrôle. Vous pouvez aussi contribuer moins.`}
+                ? t("Chaque ajout renforce votre position.")
+                : t("{0} nécessaires pour prendre le contrôle. Vous pouvez aussi contribuer moins.", [number(needed)])}
             </p>
             <button
               type="submit"
@@ -233,39 +232,35 @@ export default function CountryStandings({
                   : amount < needed
                     ? 'Contribuer'
                     : owner
-                      ? 'Passer devant'
+                      ? t("Passer devant")
                       : 'Revendiquer'}{' '}
-                <b>· {number(amount)} Influence</b>
+                <b>· {number(amount)} {t(" Influence")}</b>
               </span>
               <ArrowUpRight size={15} />
             </button>
           </form>
           {restriction && (
-            <p className="standings-balance">{restriction} Le mode personnel reste libre.</p>
+            <p className="standings-balance">{restriction} {t(" Le mode personnel reste libre.")}</p>
           )}
           {wallet !== undefined && wallet < needed && (
             <p className="standings-balance">
-              Il vous manque {number(needed - wallet)} Influence. Vous pouvez aussi contribuer dès 1
-              en choisissant un montant dans ce panneau.
-            </p>
+              {t("\r\n              Il vous manque ")}{number(needed - wallet)} {t(" Influence. Vous pouvez aussi contribuer dès 1\r\n              en choisissant un montant dans ce panneau.\r\n            ")}</p>
           )}
           <div className="standings-clock">
             <Clock3 size={13} />
             <span>
               {Number.isFinite(nextExpiry) ? (
                 <>
-                  Prochaine expiration{' '}
+                  {t("\r\n                  Prochaine expiration")}{' '}
                   <time data-expires={nextExpiry}>{countdown(nextExpiry, now)}</time>
                 </>
               ) : (
-                'Influence des joueurs : validité de 72 h.'
+                t("Influence des joueurs : validité de 72 h.")
               )}
             </span>
           </div>
           <p className="standings-note">
-            Conquête des joueurs : les mises d’Influence expirent actuellement après 72 h, même hors
-            ligne. En cas d’égalité, le propriétaire garde la main.
-          </p>
+            {t("\r\n            Conquête des joueurs : les mises d’Influence expirent actuellement après 72 h, même hors\r\n            ligne. En cas d’égalité, le propriétaire garde la main.\r\n          ")}</p>
         </>
       ) : layer === 'combat' ? (
         attackPanel

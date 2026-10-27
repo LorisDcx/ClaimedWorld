@@ -1,7 +1,8 @@
 import { EMAIL_LOGO_PNG } from './email-logo';
+import type { Locale } from '@/i18n/locales';
 
 export const EMAIL_LOGO_CID = 'claimed-world-mark';
-export function verificationEmail(code: string) {
+export function verificationEmail(code: string, locale: Locale = 'fr') {
   if (!/^\d{6}$/.test(code)) throw new Error('Invalid verification code');
   const text = `Le monde vous attend.\n\nVotre code CLAIMED.WORLD : ${code}\n\nSaisissez-le dans la fenêtre du jeu où vous avez demandé ce code pour vérifier votre adresse et rejoindre la carte. Il expire dans 10 minutes et ne peut être utilisé qu’une seule fois.\n\nGardez ce code pour vous. L’équipe ne vous le demandera jamais par message. Si vous n’avez rien demandé, vous pouvez ignorer cet e-mail.\n\nÀ vous de choisir votre place.\nCLAIMED.WORLD\nhttps://claimed-world.vercel.app/`;
   const html = `<!doctype html>
@@ -22,10 +23,51 @@ export function verificationEmail(code: string) {
 <tr><td class="footer" style="padding:24px 36px;border-top:1px solid #dedede;background-color:#fafafa;color:#777777"><p style="margin:0;font-size:11px;line-height:18px">Gardez ce code pour vous. L’équipe ne vous le demandera jamais par message. Si vous n’avez rien demandé, vous pouvez simplement ignorer cet e-mail.</p><p style="margin:16px 0 0;font-size:11px;line-height:18px"><a href="https://claimed-world.vercel.app/" style="color:#111111;text-decoration:underline">CLAIMED.WORLD</a> &nbsp;·&nbsp; La conquête est gratuite.</p></td></tr>
 </table><!--[if mso]></td></tr></table><![endif]-->
 </td></tr></table></body></html>`;
+  const localized: Record<Exclude<Locale, 'fr'>, { subject: string; text: string; replacements: [string, string][] }> = {
+    en: {
+      subject: 'Your CLAIMED.WORLD verification code',
+      text: `The world is waiting for you.\n\nYour CLAIMED.WORLD code: ${code}\n\nEnter it in the game window where you requested it to verify your email and join the map. It expires after 10 minutes and can only be used once.\n\nKeep this code private. Our team will never ask you for it by message. If you did not request it, you can ignore this email.\n\nFind your place in the world.\nCLAIMED.WORLD\nhttps://claimed-world.vercel.app/`,
+      replacements: [
+        ['Votre code CLAIMED.WORLD', 'Your CLAIMED.WORLD code'],
+        ['Votre code pour rejoindre la carte. Valable 10 minutes.', 'Your code to join the map. Valid for 10 minutes.'],
+        ['01 / ACCÈS', '01 / ACCESS'],
+        ['UNE CARTE. VOTRE COULEUR.', 'ONE MAP. YOUR COLOR.'],
+        ['Le monde<br>vous attend.', 'The world<br>is waiting.'],
+        ['Il ne reste qu’une étape : confirmer votre adresse e-mail pour rejoindre la carte.', 'One last step: verify your email address to join the map.'],
+        ['VOTRE CODE DE VÉRIFICATION', 'YOUR VERIFICATION CODE'],
+        ['USAGE UNIQUE', 'SINGLE USE'],
+        ['Saisissez ces six chiffres dans la fenêtre du jeu où vous avez demandé ce code. Ensuite, à vous de choisir votre place.', 'Enter these six digits in the game window where you requested the code. Then choose your place in the world.'],
+        ['Un pays pour commencer.<br>Une communauté pour aller plus loin.', 'One country to start.<br>A community to go further.'],
+        ['Gardez ce code pour vous. L’équipe ne vous le demandera jamais par message. Si vous n’avez rien demandé, vous pouvez simplement ignorer cet e-mail.', 'Keep this code private. Our team will never request it by message. If you did not request it, you can ignore this email.'],
+        ['La conquête est gratuite.', 'Conquest is free.'],
+      ],
+    },
+    es: {
+      subject: 'Tu código de verificación de CLAIMED.WORLD',
+      text: `El mundo te espera.\n\nTu código de CLAIMED.WORLD: ${code}\n\nIntrodúcelo en la ventana del juego donde lo solicitaste para verificar tu correo y unirte al mapa. Caduca en 10 minutos y solo puede utilizarse una vez.\n\nMantén este código en privado. Nuestro equipo nunca te lo pedirá por mensaje. Si no lo solicitaste, puedes ignorar este correo.\n\nEncuentra tu lugar en el mundo.\nCLAIMED.WORLD\nhttps://claimed-world.vercel.app/`,
+      replacements: [
+        ['Votre code CLAIMED.WORLD', 'Tu código de CLAIMED.WORLD'],
+        ['Votre code pour rejoindre la carte. Valable 10 minutes.', 'Tu código para unirte al mapa. Válido durante 10 minutos.'],
+        ['01 / ACCÈS', '01 / ACCESO'],
+        ['UNE CARTE. VOTRE COULEUR.', 'UN MAPA. TU COLOR.'],
+        ['Le monde<br>vous attend.', 'El mundo<br>te espera.'],
+        ['Il ne reste qu’une étape : confirmer votre adresse e-mail pour rejoindre la carte.', 'Solo queda un paso: verifica tu correo para unirte al mapa.'],
+        ['VOTRE CODE DE VÉRIFICATION', 'TU CÓDIGO DE VERIFICACIÓN'],
+        ['USAGE UNIQUE', 'UN SOLO USO'],
+        ['Saisissez ces six chiffres dans la fenêtre du jeu où vous avez demandé ce code. Ensuite, à vous de choisir votre place.', 'Introduce estos seis dígitos en la ventana del juego donde pediste el código. Después, elige tu lugar en el mundo.'],
+        ['Un pays pour commencer.<br>Une communauté pour aller plus loin.', 'Un país para empezar.<br>Una comunidad para llegar más lejos.'],
+        ['Gardez ce code pour vous. L’équipe ne vous le demandera jamais par message. Si vous n’avez rien demandé, vous pouvez simplement ignorer cet e-mail.', 'Mantén el código en privado. Nuestro equipo nunca te lo pedirá por mensaje. Si no lo solicitaste, puedes ignorar este correo.'],
+        ['La conquête est gratuite.', 'La conquista es gratuita.'],
+      ],
+    },
+  };
+  const copy = locale === 'fr' ? null : localized[locale];
+  let emailHtml = html.replace('<html lang="fr">', `<html lang="${locale}">`);
+  for (const [before, after] of copy?.replacements || []) emailHtml = emailHtml.replaceAll(before, after);
   return {
-    subject: 'Votre code pour rejoindre CLAIMED.WORLD',
-    text,
-    html,
+    subject: copy?.subject || 'Votre code pour rejoindre CLAIMED.WORLD',
+    text: copy?.text || text,
+    html: emailHtml,
     attachments: [
       {
         filename: 'claimed-world.png',

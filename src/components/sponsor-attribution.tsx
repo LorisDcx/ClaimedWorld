@@ -1,4 +1,7 @@
 'use client';
+import { countryLabel } from '@/i18n/countries';
+import { useT, useLocale } from '@/i18n/provider';
+
 import Image from 'next/image';
 import { ArrowUpRight } from 'lucide-react';
 import type { Country, Sponsor } from '@/lib/types';
@@ -10,6 +13,8 @@ export default function SponsorAttribution({
   country: Country;
   sponsor: Sponsor;
 }) {
+  const t = useT();
+  const locale = useLocale();
   let destination: URL;
   try {
     destination = new URL(sponsor.url);
@@ -22,16 +27,16 @@ export default function SponsorAttribution({
   const app = host === 'apps.apple.com' || host === 'play.google.com';
   const logo = sponsor.logo_url || (sponsor.logo_id ? `/api/media/${sponsor.logo_id}` : null);
   return (
-    <aside className="sponsor-attribution" aria-label={`Sponsor de ${country.name}`}>
+    <aside className="sponsor-attribution" aria-label={t("Sponsor de {0}", [country.name])}>
       <div className="sponsor-attribution-label">
-        <span>PAYS SPONSORISÉ PAR</span>
-        <span>{sponsor.house ? 'CAMPAGNE MAISON' : 'PUBLICITÉ'}</span>
+        <span>{t("PAYS SPONSORISÉ PAR")}</span>
+        <span>{sponsor.house ? t("CAMPAGNE MAISON") : t("PUBLICITÉ")}</span>
       </div>
       <div className="sponsor-attribution-brand">
-        {logo && <Image src={logo} alt="" width={42} height={36} unoptimized />}
+        {logo && <Image src={logo} alt={t("")} width={42} height={36} unoptimized />}
         <div>
           <h3>{sponsor.name}</h3>
-          <span>{country.name}</span>
+          <span>{countryLabel(country, locale)}</span>
         </div>
       </div>
       <p>{sponsor.description}</p>
@@ -39,9 +44,9 @@ export default function SponsorAttribution({
         href={destination.href}
         target="_blank"
         rel="noopener noreferrer sponsored"
-        aria-label={`${instagram ? 'Instagram' : app ? 'Application' : 'Site'} de ${sponsor.name} (nouvel onglet)`}
+        aria-label={t("{0} de {1} (nouvel onglet)", [instagram ? 'Instagram' : app ? 'Application' : 'Site', sponsor.name])}
       >
-        <span>{instagram ? 'Voir sur Instagram' : app ? 'Découvrir l’application' : host}</span>
+        <span>{instagram ? t("Voir sur Instagram") : app ? t("Découvrir l’application") : host}</span>
         <ArrowUpRight size={15} />
       </a>
     </aside>

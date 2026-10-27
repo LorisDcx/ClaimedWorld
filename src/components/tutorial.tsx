@@ -1,4 +1,6 @@
 'use client';
+import { useT } from '@/i18n/provider';
+
 import { useEffect, useRef } from 'react';
 import { ArrowLeft, ArrowRight, Check, X } from 'lucide-react';
 import type { Snapshot } from '@/lib/types';
@@ -39,6 +41,7 @@ export default function Tutorial({
   onExplore: () => void;
   onProgression: () => void;
 }) {
+  const t = useT();
   const lastReplay = useRef(replay);
   const userId = state?.player?.id;
   useEffect(() => {
@@ -56,11 +59,11 @@ export default function Tutorial({
     <aside
       className={`tutorial-coach ${selected ? 'with-selection' : ''}`}
       data-step={step}
-      aria-label="Didacticiel"
+      aria-label={t("Didacticiel")}
     >
       <div className="tutorial-top">
-        <span>VOTRE PREMIÈRE VISITE / {step + 1} SUR 4</span>
-        <button onClick={() => save(step, true)} aria-label="Masquer le didacticiel">
+        <span>{t("VOTRE PREMIÈRE VISITE / ")}{step + 1} {t(" SUR 4")}</span>
+        <button onClick={() => save(step, true)} aria-label={t("Masquer le didacticiel")}>
           <X size={14} />
         </button>
       </div>
@@ -69,35 +72,33 @@ export default function Tutorial({
           <i key={index} className={index <= step ? 'active' : ''} />
         ))}
       </div>
-      <h2>{lesson.title}</h2>
-      <p>{lesson.text}</p>
+      <h2>{t(lesson.title)}</h2>
+      <p>{t(lesson.text)}</p>
       {(step === 1 || (step === 2 && !selected)) && (
         <button className="tutorial-context" onClick={onExplore}>
-          Me montrer un pays <ArrowRight size={13} />
+          {t("\r\n          Me montrer un pays ")}<ArrowRight size={13} />
         </button>
       )}
       {step === 3 && (
         <button className="tutorial-context" onClick={onProgression}>
-          Voir mes objectifs et apparences <ArrowRight size={13} />
+          {t("\r\n          Voir mes objectifs et apparences ")}<ArrowRight size={13} />
         </button>
       )}
-      <small>Vous pouvez continuer sans revendiquer, dépenser ou attaquer.</small>
+      <small>{t("Vous pouvez continuer sans revendiquer, dépenser ou attaquer.")}</small>
       <div className="tutorial-navigation">
         {step > 0 && (
           <button className="text-button" disabled={busy} onClick={() => save(step - 1)}>
             <ArrowLeft size={13} />
-            Précédent
-          </button>
+            {t("\r\n            Précédent\r\n          ")}</button>
         )}
         <button className="tutorial-action" disabled={busy} onClick={() => save(step + 1)}>
-          {step === 3 ? 'Terminer la visite' : 'Suivant'}
+          {step === 3 ? t("Terminer la visite") : t('Suivant')}
           <ArrowRight size={14} />
         </button>
       </div>
       <button className="tutorial-skip" onClick={() => save(step, true)}>
         <Check size={11} />
-        Je connais déjà le jeu
-      </button>
+        {t("\r\n        Je connais déjà le jeu\r\n      ")}</button>
     </aside>
   );
 }

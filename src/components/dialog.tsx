@@ -1,4 +1,6 @@
 'use client';
+import { useT } from '@/i18n/provider';
+
 import { useEffect, useRef, type ReactNode } from 'react';
 import { X } from 'lucide-react';
 export default function Dialog({
@@ -12,6 +14,7 @@ export default function Dialog({
   onClose: () => void;
   wide?: boolean;
 }) {
+  const t = useT();
   const ref = useRef<HTMLDivElement>(null);
   const close = useRef(onClose);
   useEffect(() => {
@@ -72,7 +75,7 @@ export default function Dialog({
       >
         <div className="modal-heading">
           <h2 id="dialog-title">{title}</h2>
-          <button className="icon-button" onClick={onClose} aria-label="Fermer">
+          <button className="icon-button" onClick={onClose} aria-label={t("Fermer")}>
             <X size={20} />
           </button>
         </div>

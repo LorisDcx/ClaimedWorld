@@ -1,0 +1,2758 @@
+{
+  "Réessayez plus tard.": [
+    "Try again later.",
+    "Inténtalo de nuevo más tarde."
+  ],
+  "Un nouveau code a été envoyé. Utilisez le dernier reçu.": [
+    "A new code has been sent. Use the latest one you received.",
+    "Se ha enviado un nuevo código. Usa el último que recibiste."
+  ],
+  "Un code a été envoyé à": [
+    "A code has been sent to",
+    "Se ha enviado un código a"
+  ],
+  "Une couleur, un pseudo et une adresse vérifiée. Vos 100 Influence vous attendent après confirmation.": [
+    "One color, a username and a verified email address. Your 100 Influence await you after confirmation.",
+    "Un color, un nombre de usuario y un correo verificado. Tus 100 puntos de Influencia te esperan tras la confirmación."
+  ],
+  "Sécurisez votre compte existant. Vos territoires, votre alliance et vos crédits sont conservés.": [
+    "Secure your existing account. Your territories, alliance and credits are preserved.",
+    "Protege tu cuenta. Conservarás tus territorios, alianza y créditos."
+  ],
+  "Votre communauté et vos territoires vous attendent.": [
+    "Your community and territories are waiting for you.",
+    "Tu comunidad y tus territorios te esperan."
+  ],
+  "Code de vérification": [
+    "Verification code",
+    "Código de verificación"
+  ],
+  "Valable 10 minutes · 5 essais maximum. Pensez à vérifier les courriers indésirables.": [
+    "Valid for 10 minutes · maximum 5 attempts. Remember to check your spam folder.",
+    "Válido durante 10 minutos · máximo 5 intentos. Revisa también la carpeta de spam."
+  ],
+  "Pseudonyme": [
+    "Username",
+    "Nombre de usuario"
+  ],
+  "Votre nom sur la carte": [
+    "Your name on the map",
+    "Tu nombre en el mapa"
+  ],
+  "Adresse e-mail": [
+    "Email address",
+    "Correo electrónico"
+  ],
+  "Mot de passe actuel": [
+    "Current password",
+    "Contraseña actual"
+  ],
+  "Mot de passe": [
+    "Password",
+    "Contraseña"
+  ],
+  "Votre mot de passe": [
+    "Your password",
+    "Tu contraseña"
+  ],
+  "Votre couleur": [
+    "Your color",
+    "Tu color"
+  ],
+  "Un seul compte par personne. Les adresses temporaires sont refusées. Votre e-mail reste privé.": [
+    "One account per person. Temporary email addresses are not allowed. Your email remains private.",
+    "Una cuenta por persona. No se permiten correos temporales. Tu correo seguirá siendo privado."
+  ],
+  "Vérifier mon adresse": [
+    "Verify my email",
+    "Verificar mi correo"
+  ],
+  "Créer mon compte gratuit": [
+    "Create my free account",
+    "Crear mi cuenta gratis"
+  ],
+  "Recevoir mon code": [
+    "Get my code",
+    "Recibir mi código"
+  ],
+  "Me connecter": [
+    "Log in",
+    "Iniciar sesión"
+  ],
+  "Renvoyer un code": [
+    "Resend a code",
+    "Reenviar un código"
+  ],
+  "Changer d’adresse ou recommencer": [
+    "Change email or start again",
+    "Cambiar correo o empezar de nuevo"
+  ],
+  "Déjà dans la partie ?": [
+    "Already playing?",
+    "¿Ya estás jugando?"
+  ],
+  "Pas encore de compte ?": [
+    "Don't have an account yet?",
+    "¿Aún no tienes cuenta?"
+  ],
+  "Se connecter": [
+    "Log in",
+    "Iniciar sesión"
+  ],
+  "Rejoindre la conquête": [
+    "Join the conquest",
+    "Unirse a la conquista"
+  ],
+  "La conquête est gratuite. Aucun achat ne donne d’avantage en jeu.": [
+    "Conquest is free. Purchases never grant an in-game advantage.",
+    "La conquista es gratuita. Ninguna compra otorga ventajas en el juego."
+  ],
+  "Remise à zéro de la carte": [
+    "Reset the map",
+    "Reiniciar el mapa"
+  ],
+  "Rendre les pays neutres en retirant toute l’Influence actuellement placée.": [
+    "Make all countries neutral by removing all currently deployed Influence.",
+    "Hacer neutrales todos los países retirando la Influencia desplegada."
+  ],
+  "Remettre la carte à zéro": [
+    "Reset the map",
+    "Reiniciar el mapa"
+  ],
+  "La conquête de la carte a été remise à zéro.": [
+    "The map conquest has been reset.",
+    "Se ha reiniciado la conquista del mapa."
+  ],
+  "Pour confirmer, saisissez REINITIALISER": [
+    "To confirm, type REINITIALISER",
+    "Para confirmar, escribe REINITIALISER"
+  ],
+  "Confirmation de remise à zéro": [
+    "Reset confirmation",
+    "Confirmación del reinicio"
+  ],
+  "Votre mot de passe actuel": [
+    "Your current password",
+    "Tu contraseña actual"
+  ],
+  "Mot de passe pour confirmer le reset": [
+    "Password to confirm the reset",
+    "Contraseña para confirmar el reinicio"
+  ],
+  "Annuler": [
+    "Cancel",
+    "Cancelar"
+  ],
+  "Confirmer la remise à zéro": [
+    "Confirm map reset",
+    "Confirmar el reinicio del mapa"
+  ],
+  "Objectifs de l’alliance enregistrés.": [
+    "Alliance objectives saved.",
+    "Objetivos de la alianza guardados."
+  ],
+  "But de l’alliance": [
+    "Alliance goal",
+    "Objetivo de la alianza"
+  ],
+  "Contrôler le Pacifique, défendre nos îles…": [
+    "Control the Pacific, defend our islands…",
+    "Controlar el Pacífico, defender nuestras islas…"
+  ],
+  "Cibles autorisées ·": [
+    "Allowed targets ·",
+    "Objetivos permitidos ·"
+  ],
+  "Sélection Pacifique": [
+    "Pacific selection",
+    "Selección del Pacífico"
+  ],
+  "Filtrer les cibles de l’alliance": [
+    "Filter alliance targets",
+    "Filtrar objetivos de la alianza"
+  ],
+  "Rechercher un pays cible…": [
+    "Search for a target country…",
+    "Buscar un país objetivo…"
+  ],
+  "Les attaques d’alliance sont limitées à cette liste. Sans cible, aucune attaque collective n’est possible. Vos attaques personnelles restent libres.": [
+    "Alliance attacks are limited to this list. Without targets, collective attacks are impossible. Personal attacks remain available.",
+    "Los ataques de la alianza se limitan a esta lista. Sin objetivos no habrá ataques colectivos. Puedes seguir atacando por tu cuenta."
+  ],
+  "Enregistrer la stratégie": [
+    "Save strategy",
+    "Guardar estrategia"
+  ],
+  "TRÉSORERIE COMMUNE": [
+    "SHARED TREASURY",
+    "TESORERÍA COMPARTIDA"
+  ],
+  "Influence": [
+    "Influence",
+    "Influencia"
+  ],
+  "Contribution versée à la trésorerie.": [
+    "Contribution added to the treasury.",
+    "Contribución añadida a la tesorería."
+  ],
+  "Votre contribution": [
+    "Your contribution",
+    "Tu contribución"
+  ],
+  "Influence à verser à la trésorerie": [
+    "Influence to contribute to the treasury",
+    "Influencia que aportar a la tesorería"
+  ],
+  "Verser à l’alliance": [
+    "Contribute to the alliance",
+    "Aportar a la alianza"
+  ],
+  "Les dons sont définitifs. Seuls le chef et les généraux peuvent engager ces fonds sur les cibles autorisées. La trésorerie repart à zéro à chaque saison.": [
+    "Donations are final. Only the leader and generals can spend these funds on approved targets. The treasury resets each season.",
+    "Las donaciones son definitivas. Solo el líder y los generales pueden gastar estos fondos en objetivos permitidos. La tesorería se reinicia cada temporada."
+  ],
+  "OBJECTIF COMMUN": [
+    "SHARED OBJECTIVE",
+    "OBJETIVO COMÚN"
+  ],
+  "Le chef doit définir la stratégie et les pays cibles.": [
+    "The leader must set the strategy and target countries.",
+    "El líder debe definir la estrategia y los países objetivo."
+  ],
+  "cibles ·": [
+    "targets ·",
+    "objetivos ·"
+  ],
+  "Attaques limitées à la stratégie": [
+    "Attacks limited by strategy",
+    "Ataques limitados por la estrategia"
+  ],
+  "Attaques collectives suspendues": [
+    "Collective attacks suspended",
+    "Ataques colectivos suspendidos"
+  ],
+  "Définir les objectifs": [
+    "Set objectives",
+    "Definir objetivos"
+  ],
+  "Voir les pays cibles": [
+    "View target countries",
+    "Ver países objetivo"
+  ],
+  "Journal de la trésorerie": [
+    "Treasury history",
+    "Historial de tesorería"
+  ],
+  "Don à la trésorerie": [
+    "Treasury donation",
+    "Donación a la tesorería"
+  ],
+  "Stratégie mise à jour": [
+    "Strategy updated",
+    "Estrategia actualizada"
+  ],
+  "Les premières opérations apparaîtront ici.": [
+    "The first transactions will appear here.",
+    "Las primeras operaciones aparecerán aquí."
+  ],
+  "Les récompenses individuelles dépendent des fonds réellement engagés, du contrôle soutenu et de votre temps de participation. Un don inutilisé ne rapporte pas de bonus. Les petites alliances partagent leur contrôle entre moins de joueurs.": [
+    "Individual rewards depend on funds actually spent, sustained control and participation time. Unused donations do not count.",
+    "Las recompensas individuales dependen de los fondos utilizados, el control mantenido y el tiempo de participación. Las donaciones no utilizadas no cuentan."
+  ],
+  "Votre camp": [
+    "Your side",
+    "Tu bando"
+  ],
+  "Faites bouger la frontière.": [
+    "Move the border.",
+    "Mueve la frontera."
+  ],
+  "Attaquez depuis un pays que vous contrôlez vers un voisin terrestre, en utilisant votre stock ou les forces sur place. Chaque point envoyé détruit un point du rival choisi. Seuls vos survivants s’installent.": [
+    "Attack from a country you control into a land neighbor, using your stock or deployed forces. Each point sent counts.",
+    "Ataca desde un país que controles a uno vecino por tierra usando tus reservas o tropas desplegadas. Cada punto cuenta."
+  ],
+  "Jouer gratuitement": [
+    "Play for free",
+    "Jugar gratis"
+  ],
+  "Vous pouvez toujours jouer en votre nom.": [
+    "You can always play in your own name.",
+    "Siempre puedes jugar en tu propio nombre."
+  ],
+  "Ce territoire n’a pas de frontière terrestre. Vous pouvez le revendiquer ou le renforcer dans Conquête.": [
+    "This territory has no land border. You can claim or reinforce it in Conquest.",
+    "Este territorio no tiene frontera terrestre. Puedes reclamarlo o reforzarlo en Conquista."
+  ],
+  "Contrôlez d’abord un pays limitrophe en": [
+    "First control a neighboring country in",
+    "Primero controla un país vecino en"
+  ],
+  "pour lancer une attaque. La revendication classique reste possible dans Conquête.": [
+    "to launch an attack. Standard claiming is still available under Conquest.",
+    "para lanzar un ataque. También puedes reclamarlo desde Conquista."
+  ],
+  "Aucun rival à attaquer dans ce pays. Pour vous y installer, utilisez Conquête.": [
+    "No rivals to attack in this country. Use Conquest to establish yourself here.",
+    "No hay rivales a los que atacar en este país. Usa Conquista para establecerte aquí."
+  ],
+  "Pays de départ": [
+    "Origin country",
+    "País de origen"
+  ],
+  "Rival ciblé": [
+    "Target rival",
+    "Rival objetivo"
+  ],
+  "Origine des forces": [
+    "Force source",
+    "Origen de las fuerzas"
+  ],
+  "Trésorerie": [
+    "Treasury",
+    "Tesorería"
+  ],
+  "en priorité ·": [
+    "first ·",
+    "primero ·"
+  ],
+  "disponibles": [
+    "available",
+    "disponibles"
+  ],
+  "Troupes du pays uniquement ·": [
+    "Country troops only ·",
+    "Solo tropas del país ·"
+  ],
+  "Attention :": [
+    "Warning:",
+    "Atención:"
+  ],
+  "fait partie de votre alliance. Vous n’appartenez qu’à une alliance à la fois.": [
+    "belongs to your alliance. You can only belong to one alliance at a time.",
+    "pertenece a tu alianza. Solo puedes pertenecer a una alianza a la vez."
+  ],
+  "Je confirme l’attaque contre un allié": [
+    "I confirm the attack against an ally",
+    "Confirmo el ataque contra un aliado"
+  ],
+  "Troupes à envoyer": [
+    "Troops to send",
+    "Tropas que enviar"
+  ],
+  "Résultat prévu": [
+    "Predicted result",
+    "Resultado previsto"
+  ],
+  "SI LES SCORES RESTENT IDENTIQUES": [
+    "IF SCORES REMAIN UNCHANGED",
+    "SI LAS PUNTUACIONES NO CAMBIAN"
+  ],
+  "Stock personnel": [
+    "Personal stock",
+    "Reserva personal"
+  ],
+  "en défense": [
+    "defending",
+    "en defensa"
+  ],
+  "Votre score à l’arrivée": [
+    "Your score on arrival",
+    "Tu puntuación al llegar"
+  ],
+  "Influence brûlée au total": [
+    "Total Influence destroyed",
+    "Influencia destruida en total"
+  ],
+  "Le pays deviendrait neutre.": [
+    "The country would become neutral.",
+    "El país quedaría neutral."
+  ],
+  "Les autres rivaux ne perdent aucun point.": [
+    "Other rivals lose no points.",
+    "Los demás rivales no pierden puntos."
+  ],
+  "Attention : vous pourriez perdre le contrôle de": [
+    "Warning: you may lose control of",
+    "Atención: podrías perder el control de"
+  ],
+  "Envoyer": [
+    "Send",
+    "Enviar"
+  ],
+  "troupes": [
+    "troops",
+    "tropas"
+  ],
+  "Le stock personnel ou la trésorerie peut compléter les troupes du pays de départ. Les troupes déjà sur la carte gardent leurs dates d’expiration d’origine ; les forces prises dans le stock commencent leur délai de 72 h. En alliance, seuls le chef et les généraux attaquent, vers les cibles autorisées.": [
+    "Personal stock or treasury funds can supplement troops from the origin country. Troops already on the map retain their expiry dates.",
+    "Las reservas personales o la tesorería pueden complementar las tropas del país de origen. Las tropas desplegadas conservan sus fechas de vencimiento."
+  ],
+  "LA CONQUÊTE / EN DIRECT": [
+    "CONQUEST / LIVE",
+    "CONQUISTA / EN DIRECTO"
+  ],
+  "Fermer le classement du pays": [
+    "Close country rankings",
+    "Cerrar la clasificación del país"
+  ],
+  "Enchères du pays": [
+    "Country auctions",
+    "Subastas del país"
+  ],
+  "Conquête": [
+    "Conquest",
+    "Conquista"
+  ],
+  "Attaquer": [
+    "Attack",
+    "Atacar"
+  ],
+  "Sponsoring": [
+    "Sponsorship",
+    "Patrocinio"
+  ],
+  "contrôle ce territoire": [
+    "controls this territory",
+    "controla este territorio"
+  ],
+  "Territoire libre · dès 1 Influence": [
+    "Unclaimed territory · from 1 Influence",
+    "Territorio libre · desde 1 de Influencia"
+  ],
+  "CLASSEMENT": [
+    "RANKINGS",
+    "CLASIFICACIÓN"
+  ],
+  "INFLUENCE ACTIVE": [
+    "ACTIVE INFLUENCE",
+    "INFLUENCIA ACTIVA"
+  ],
+  "Classement des prétendants": [
+    "Contender rankings",
+    "Clasificación de aspirantes"
+  ],
+  "VOUS": [
+    "YOU",
+    "TÚ"
+  ],
+  "Propriétaire actuel": [
+    "Current owner",
+    "Propietario actual"
+  ],
+  "Indépendant": [
+    "Independent",
+    "Independiente"
+  ],
+  "À vous d’ouvrir le jeu.": [
+    "Be the first to make your move.",
+    "Sé el primero en actuar."
+  ],
+  "Une seule Influence suffit pour devenir le premier propriétaire.": [
+    "Just 1 Influence is enough to become the first owner.",
+    "Basta 1 punto de Influencia para ser el primer propietario."
+  ],
+  "Combien d’Influence voulez-vous envoyer ?": [
+    "How much Influence do you want to send?",
+    "¿Cuánta Influencia quieres enviar?"
+  ],
+  "Influence dans ce pays": [
+    "Influence in this country",
+    "Influencia en este país"
+  ],
+  "Montants rapides": [
+    "Quick amounts",
+    "Cantidades rápidas"
+  ],
+  "Chaque ajout renforce votre position.": [
+    "Each addition strengthens your position.",
+    "Cada aportación refuerza tu posición."
+  ],
+  "Passer devant": [
+    "Take the lead",
+    "Ponerse en cabeza"
+  ],
+  "Le mode personnel reste libre.": [
+    "You can still play independently.",
+    "Siempre puedes seguir jugando por tu cuenta."
+  ],
+  "Il vous manque": [
+    "You need",
+    "Te faltan"
+  ],
+  "Influence. Vous pouvez aussi contribuer dès 1 en choisissant un montant dans ce panneau.": [
+    "Influence. You can also contribute from 1 by choosing an amount in this panel.",
+    "de Influencia. También puedes contribuir desde 1 eligiendo una cantidad en este panel."
+  ],
+  "Prochaine expiration": [
+    "Next expiry",
+    "Próximo vencimiento"
+  ],
+  "Influence des joueurs : validité de 72 h.": [
+    "Player Influence: valid for 72 hours.",
+    "Influencia de jugadores: válida durante 72 horas."
+  ],
+  "Conquête des joueurs : les mises d’Influence expirent actuellement après 72 h, même hors ligne. En cas d’égalité, le propriétaire garde la main.": [
+    "Player conquest: Influence contributions expire after 72 hours, even offline. In a tie, the current owner stays in control.",
+    "Conquista de jugadores: las aportaciones de Influencia caducan a las 72 horas, incluso sin conexión. En caso de empate, el propietario conserva el control."
+  ],
+  "Fermer": [
+    "Close",
+    "Cerrar"
+  ],
+  "Le serveur est momentanément indisponible.": [
+    "The server is temporarily unavailable.",
+    "El servidor no está disponible temporalmente."
+  ],
+  "Vérification du paiement : le portefeuille sera crédité après confirmation de Stripe.": [
+    "Payment verification: the wallet will be credited after Stripe confirms it.",
+    "Verificación del pago: el saldo se abonará cuando Stripe lo confirme."
+  ],
+  "Une erreur est survenue.": [
+    "Something went wrong.",
+    "Se ha producido un error."
+  ],
+  "Votre contribution est active pendant 72 heures.": [
+    "Your contribution stays active for 72 hours.",
+    "Tu contribución estará activa durante 72 horas."
+  ],
+  "Lien copié. À vous de rassembler votre communauté !": [
+    "Link copied. Time to rally your community!",
+    "Enlace copiado. ¡Reúne a tu comunidad!"
+  ],
+  "La copie est indisponible dans ce navigateur.": [
+    "Copying is unavailable in this browser.",
+    "No se puede copiar en este navegador."
+  ],
+  "Seuls le chef et les généraux engagent la trésorerie.": [
+    "Only the leader and generals can spend treasury funds.",
+    "Solo el líder y los generales pueden gastar la tesorería."
+  ],
+  "Ce pays est hors des objectifs définis par le chef.": [
+    "This country is outside the leader's approved targets.",
+    "Este país está fuera de los objetivos definidos por el líder."
+  ],
+  "La carte": [
+    "The map",
+    "El mapa"
+  ],
+  "Claimed World — Carte": [
+    "Claimed World — Map",
+    "Claimed World — Mapa"
+  ],
+  "SAISON": [
+    "SEASON",
+    "TEMPORADA"
+  ],
+  "Navigation principale": [
+    "Main navigation",
+    "Navegación principal"
+  ],
+  "Rechercher un territoire…": [
+    "Search for a territory…",
+    "Buscar un territorio…"
+  ],
+  "Rechercher un pays": [
+    "Search for a country",
+    "Buscar un país"
+  ],
+  "Aucun territoire trouvé.": [
+    "No territory found.",
+    "No se encontró ningún territorio."
+  ],
+  "pays et territoires accessibles": [
+    "accessible countries and territories",
+    "países y territorios disponibles"
+  ],
+  "Influence investie.": [
+    "Influence invested.",
+    "Influencia invertida."
+  ],
+  "Influence à investir": [
+    "Influence to invest",
+    "Influencia que invertir"
+  ],
+  "Engager la trésorerie": [
+    "Spend treasury funds",
+    "Gastar fondos de la tesorería"
+  ],
+  "Investir mon Influence": [
+    "Invest my Influence",
+    "Invertir mi Influencia"
+  ],
+  "Renforcer votre territoire": [
+    "Reinforce your territory",
+    "Reforzar tu territorio"
+  ],
+  "Sponsoriser ce pays": [
+    "Sponsor this country",
+    "Patrocinar este país"
+  ],
+  "INFLUENCE /": [
+    "INFLUENCE /",
+    "INFLUENCIA /"
+  ],
+  "Stock plein": [
+    "Stock full",
+    "Reserva llena"
+  ],
+  "Ouvrir mon profil": [
+    "Open my profile",
+    "Abrir mi perfil"
+  ],
+  "Entrer dans le jeu": [
+    "Enter the game",
+    "Entrar en el juego"
+  ],
+  "Terrain de jeu mondial": [
+    "World game map",
+    "Mapa mundial del juego"
+  ],
+  "Filtrer les territoires": [
+    "Filter territories",
+    "Filtrar territorios"
+  ],
+  "Tous les territoires": [
+    "All territories",
+    "Todos los territorios"
+  ],
+  "Territoires neutres": [
+    "Unclaimed territories",
+    "Territorios neutrales"
+  ],
+  "Pays sponsorisés": [
+    "Sponsored countries",
+    "Países patrocinados"
+  ],
+  "En votre nom": [
+    "In your own name",
+    "En tu propio nombre"
+  ],
+  "Revendiquer au nom de": [
+    "Claim on behalf of",
+    "Reclamar en nombre de"
+  ],
+  "En mon nom": [
+    "In my own name",
+    "En mi propio nombre"
+  ],
+  "Pour l’alliance ·": [
+    "For the alliance ·",
+    "Para la alianza ·"
+  ],
+  "Réessayer": [
+    "Try again",
+    "Volver a intentar"
+  ],
+  "Connexion au monde…": [
+    "Connecting to the world…",
+    "Conectando con el mundo…"
+  ],
+  "EXPLORE /": [
+    "EXPLORE /",
+    "EXPLORAR /"
+  ],
+  "Fermer le panneau": [
+    "Close panel",
+    "Cerrar panel"
+  ],
+  "communautés, un seul monde": [
+    "communities, one world",
+    "comunidades, un mundo"
+  ],
+  "Créer une alliance": [
+    "Create an alliance",
+    "Crear una alianza"
+  ],
+  "VOTRE ALLIANCE": [
+    "YOUR ALLIANCE",
+    "TU ALIANZA"
+  ],
+  "Gérer et inviter": [
+    "Manage and invite",
+    "Gestionar e invitar"
+  ],
+  "Une nouvelle communauté prête à conquérir le monde.": [
+    "A new community ready to conquer the world.",
+    "Una nueva comunidad lista para conquistar el mundo."
+  ],
+  "territoires": [
+    "territories",
+    "territorios"
+  ],
+  "membre": [
+    "member",
+    "miembro"
+  ],
+  "La première alliance peut être la vôtre.": [
+    "You could start the first alliance.",
+    "Puedes crear la primera alianza."
+  ],
+  "Rassemblez vos amis : vos contributions s’additionnent pour conquérir ensemble.": [
+    "Bring your friends together: your contributions add up to conquer as a team.",
+    "Reúne a tus amigos: vuestras aportaciones se suman para conquistar en equipo."
+  ],
+  "Le classement de la saison": [
+    "Season rankings",
+    "Clasificación de la temporada"
+  ],
+  "Indépendants": [
+    "Independents",
+    "Independientes"
+  ],
+  "RANG": [
+    "RANK",
+    "POSICIÓN"
+  ],
+  "JOUEUR / ALLIANCE": [
+    "PLAYER / ALLIANCE",
+    "JUGADOR / ALIANZA"
+  ],
+  "TERRITOIRES": [
+    "TERRITORIES",
+    "TERRITORIOS"
+  ],
+  "PART DU MONDE": [
+    "SHARE OF THE WORLD",
+    "PARTE DEL MUNDO"
+  ],
+  "Joueur indépendant": [
+    "Independent player",
+    "Jugador independiente"
+  ],
+  "La place est libre": [
+    "The spot is yours for the taking",
+    "El puesto está disponible"
+  ],
+  "Revendiquer un seul territoire suffit pour entrer au classement.": [
+    "Claim just one territory to appear on the leaderboard.",
+    "Reclama un territorio para aparecer en la clasificación."
+  ],
+  "Classement par nombre de territoires contrôlés. Les scores évoluent avec les contributions et leur expiration.": [
+    "Rankings are based on the number of territories controlled. Scores change as contributions expire.",
+    "La clasificación depende del número de territorios controlados. Las puntuaciones cambian al caducar las aportaciones."
+  ],
+  "CONQUER FOR FREE. ADVERTISE TO THE WORLD.": [
+    "CONQUER FOR FREE. ADVERTISE TO THE WORLD.",
+    "CONQUISTA GRATIS. ANÚNCIATE AL MUNDO."
+  ],
+  "Un pays.": [
+    "One country.",
+    "Un país."
+  ],
+  "Une place pour votre projet.": [
+    "A place for your project.",
+    "Un espacio para tu proyecto."
+  ],
+  "Votre logo à l’intérieur. La couleur des joueurs à l’extérieur. Deux histoires qui partagent la même carte.": [
+    "Your logo inside. Player colors outside. Two stories on the same map.",
+    "Tu logotipo dentro. Los colores de los jugadores fuera. Dos historias en el mismo mapa."
+  ],
+  "Sélectionnez un pays, puis utilisez le bouton de sponsoring du header.": [
+    "Select a country, then use the sponsorship button in the header.",
+    "Selecciona un país y utiliza el botón de patrocinio de la cabecera."
+  ],
+  "Trouver mon territoire": [
+    "Find my territory",
+    "Encontrar mi territorio"
+  ],
+  "YOUR": [
+    "YOUR",
+    "TU"
+  ],
+  "BRAND": [
+    "BRAND",
+    "MARCA"
+  ],
+  "VOTRE PLACE SUR LA CARTE": [
+    "YOUR PLACE ON THE MAP",
+    "TU LUGAR EN EL MAPA"
+  ],
+  "Deux enchères indépendantes": [
+    "Two separate auctions",
+    "Dos subastas independientes"
+  ],
+  "L’Influence contrôle le pays ; les crédits sponsor déterminent le logo affiché.": [
+    "Influence controls the country; sponsor credits determine the displayed logo.",
+    "La Influencia controla el país; los créditos de patrocinio determinan qué logo se muestra."
+  ],
+  "Le jeu reste gratuit": [
+    "The game stays free",
+    "El juego sigue siendo gratuito"
+  ],
+  "Le sponsoring ne donne jamais d’Influence ni de territoire.": [
+    "Sponsorship never grants Influence or territory.",
+    "El patrocinio nunca concede Influencia ni territorios."
+  ],
+  "Des fonds mobiles pendant 30 jours": [
+    "Move funds for 30 days",
+    "Mueve fondos durante 30 días"
+  ],
+  "Déplacez vos fonds entre pays sans prolonger leur validité. Votre portefeuille est conservé.": [
+    "Move funds between countries without extending their validity. Your wallet stays intact.",
+    "Traslada fondos entre países sin prolongar su validez. Tu monedero se conserva."
+  ],
+  "Première enchère dès": [
+    "First bid from",
+    "Primera puja desde"
+  ],
+  "Jours par placement": [
+    "Days per placement",
+    "Días por colocación"
+  ],
+  "Crédit = 1 €": [
+    "Credit = €1",
+    "Crédito = 1 €"
+  ],
+  "crédits · minimum selon le pays": [
+    "credits · minimum varies by country",
+    "créditos · mínimo según el país"
+  ],
+  "jours, même après déplacement": [
+    "days, even after moving",
+    "días, incluso tras moverlos"
+  ],
+  "€ par crédit": [
+    "€ per credit",
+    "€ por crédito"
+  ],
+  "Surface et visibilité déterminent le minimum": [
+    "Area and visibility determine the minimum",
+    "La superficie y la visibilidad determinan el mínimo"
+  ],
+  "Aucun retour des fonds engagés au portefeuille": [
+    "Committed funds never return to your wallet",
+    "Los fondos comprometidos no vuelven al monedero"
+  ],
+  "Le solde non engagé n’expire pas": [
+    "Uncommitted balance never expires",
+    "El saldo no comprometido no caduca"
+  ],
+  "Mes crédits et enchères": [
+    "My credits and auctions",
+    "Mis créditos y subastas"
+  ],
+  "Stripe en mode test : aucun paiement réel. Utilisez uniquement une carte de test.": [
+    "Stripe test mode: no real payments. Use a test card only.",
+    "Stripe en modo de prueba: sin pagos reales. Usa solo una tarjeta de prueba."
+  ],
+  "Recharge par Stripe après validation d’un visuel. Aucun avantage de conquête.": [
+    "Top up with Stripe after your creative is approved. No conquest advantage.",
+    "Recarga con Stripe tras la aprobación de tu anuncio. Sin ventajas en la conquista."
+  ],
+  "Les visuels peuvent être soumis. Les paiements sont désactivés sur cette installation locale.": [
+    "Creatives may be submitted. Payments are disabled on this local installation.",
+    "Puedes enviar anuncios. Los pagos están desactivados en esta instalación local."
+  ],
+  "SAISON EN COURS": [
+    "CURRENT SEASON",
+    "TEMPORADA ACTUAL"
+  ],
+  "Saison": [
+    "Season",
+    "Temporada"
+  ],
+  "Il reste": [
+    "Time left",
+    "Queda"
+  ],
+  "pour écrire votre histoire.": [
+    "to write your story.",
+    "para escribir tu historia."
+  ],
+  "Revenir sur le terrain": [
+    "Back to the map",
+    "Volver al mapa"
+  ],
+  "Les légendes sont en train de s’écrire": [
+    "Legends are being written",
+    "Las leyendas se están escribiendo"
+  ],
+  "La carte finale et les champions de chaque saison seront conservés ici.": [
+    "The final map and champions of each season will be kept here.",
+    "Aquí se conservarán el mapa final y los campeones de cada temporada."
+  ],
+  "Règles du jeu ↗": [
+    "Game rules ↗",
+    "Reglas del juego ↗"
+  ],
+  "Confidentialité ↗": [
+    "Privacy ↗",
+    "Privacidad ↗"
+  ],
+  "pays et territoires": [
+    "countries and territories",
+    "países y territorios"
+  ],
+  "Tout reste à conquérir": [
+    "The whole world is still up for grabs",
+    "Todo el mundo está por conquistar"
+  ],
+  "Succès & objectifs": [
+    "Achievements & objectives",
+    "Logros y objetivos"
+  ],
+  "Didacticiel": [
+    "Tutorial",
+    "Tutorial"
+  ],
+  "Comment jouer": [
+    "How to play",
+    "Cómo jugar"
+  ],
+  "Journal": [
+    "History",
+    "Historial"
+  ],
+  "À propos de la carte": [
+    "About the map",
+    "Sobre el mapa"
+  ],
+  "Mode OBS": [
+    "OBS mode",
+    "Modo OBS"
+  ],
+  "Administration": [
+    "Administration",
+    "Administración"
+  ],
+  "Quitter le mode OBS": [
+    "Exit OBS mode",
+    "Salir del modo OBS"
+  ],
+  "Fermer la notification": [
+    "Close notification",
+    "Cerrar notificación"
+  ],
+  "Choisir une couleur": [
+    "Choose a color",
+    "Elegir un color"
+  ],
+  "Couleur personnalisée": [
+    "Custom color",
+    "Color personalizado"
+  ],
+  "Confirmer cette action": [
+    "Confirm this action",
+    "Confirmar esta acción"
+  ],
+  "Votre compte est prêt. À vous de jouer !": [
+    "Your account is ready. Let's play!",
+    "Tu cuenta está lista. ¡A jugar!"
+  ],
+  "Adresse e-mail vérifiée · privée": [
+    "Email verified · private",
+    "Correo verificado · privado"
+  ],
+  "Vérifier mon adresse pour participer": [
+    "Verify my email to participate",
+    "Verificar mi correo para participar"
+  ],
+  "Partager mon profil public": [
+    "Share my public profile",
+    "Compartir mi perfil público"
+  ],
+  "Succès, objectifs et apparences": [
+    "Achievements, objectives and appearance",
+    "Logros, objetivos y apariencia"
+  ],
+  "Reprendre le didacticiel": [
+    "Replay tutorial",
+    "Repetir tutorial"
+  ],
+  "toutes les 30 min, automatiquement, jusqu’à": [
+    "every 30 min, automatically, up to",
+    "cada 30 min, automáticamente, hasta"
+  ],
+  "Stock plein : dépensez pour reprendre la recharge.": [
+    "Stock full: spend Influence to resume refills.",
+    "Reserva llena: gasta Influencia para reanudar las recargas."
+  ],
+  "L’excédent n’est pas conservé.": [
+    "Surplus Influence is not saved.",
+    "La Influencia sobrante no se guarda."
+  ],
+  "RÉCOMPENSES DE SAISON": [
+    "SEASON REWARDS",
+    "RECOMPENSAS DE TEMPORADA"
+  ],
+  "Votre engagement a compté.": [
+    "Your dedication made a difference.",
+    "Tu dedicación ha contado."
+  ],
+  "Bonus de la saison": [
+    "Season bonus",
+    "Bono de temporada"
+  ],
+  ", valables uniquement cette saison.": [
+    ", valid for this season only.",
+    ", válidos solo durante esta temporada."
+  ],
+  "capacité": [
+    "capacity",
+    "capacidad"
+  ],
+  "/ 30 min": [
+    "/ 30 min",
+    "/ 30 min"
+  ],
+  "au départ": [
+    "at the start",
+    "al inicio"
+  ],
+  "jours utiles ·": [
+    "active days ·",
+    "días activos ·"
+  ],
+  "Influence utile ·": [
+    "useful Influence ·",
+    "Influencia útil ·"
+  ],
+  "jours-territoire partagés.": [
+    "shared territory-days.",
+    "días-territorio compartidos."
+  ],
+  "Le contrôle soutenu et votre participation utile peuvent accorder jusqu’à +20 de capacité, +2 par recharge et 20 Influence de départ pour la saison suivante. Ces bonus ne s’accumulent pas.": [
+    "Sustained control and active participation can grant up to +20 capacity, +2 per refill and 20 starting Influence for the following season.",
+    "El control mantenido y la participación activa pueden otorgar hasta +20 de capacidad, +2 por recarga y 20 de Influencia inicial para la temporada siguiente."
+  ],
+  "Profil enregistré.": [
+    "Profile saved.",
+    "Perfil guardado."
+  ],
+  "Enregistrer": [
+    "Save",
+    "Guardar"
+  ],
+  "Vos contributions actives": [
+    "Your active contributions",
+    "Tus aportaciones activas"
+  ],
+  "Expire dans": [
+    "Expires in",
+    "Caduca en"
+  ],
+  "Votre prochaine contribution apparaîtra ici.": [
+    "Your next contribution will appear here.",
+    "Tu próxima aportación aparecerá aquí."
+  ],
+  "Vous êtes déconnecté.": [
+    "You are logged out.",
+    "Has cerrado sesión."
+  ],
+  "Me déconnecter": [
+    "Log out",
+    "Cerrar sesión"
+  ],
+  "Rassemblez jusqu’à 12 joueurs. Chacun garde son jeu personnel ; le chef et les généraux engagent la trésorerie commune sur les objectifs de l’alliance.": [
+    "Gather up to 12 players. Everyone keeps their personal game; leaders and generals spend the shared treasury on agreed targets.",
+    "Reúne hasta 12 jugadores. Cada uno conserva su juego individual; el líder y los generales gastan la tesorería común en los objetivos acordados."
+  ],
+  "Vous faites déjà partie d’une alliance. Ouvrez sa fiche pour gérer votre départ.": [
+    "You already belong to an alliance. Open its profile to manage your departure.",
+    "Ya perteneces a una alianza. Abre su ficha para gestionar tu salida."
+  ],
+  "Votre alliance est prête. Invitez votre communauté !": [
+    "Your alliance is ready. Invite your community!",
+    "Tu alianza está lista. ¡Invita a tu comunidad!"
+  ],
+  "Nom de l’alliance": [
+    "Alliance name",
+    "Nombre de la alianza"
+  ],
+  "Le début d’un empire…": [
+    "The beginning of an empire…",
+    "El comienzo de un imperio…"
+  ],
+  "En quelques mots": [
+    "In a few words",
+    "En pocas palabras"
+  ],
+  "Qu’est-ce qui vous rassemble ?": [
+    "What brings you together?",
+    "¿Qué os une?"
+  ],
+  "Votre emblème": [
+    "Your emblem",
+    "Tu emblema"
+  ],
+  "Créer mon alliance": [
+    "Create my alliance",
+    "Crear mi alianza"
+  ],
+  "Vous pourrez rejoindre ou créer une alliance dans": [
+    "You can join or create an alliance in",
+    "Podrás unirte o crear una alianza dentro de"
+  ],
+  "territoires ·": [
+    "territories ·",
+    "territorios ·"
+  ],
+  "membres ·": [
+    "members ·",
+    "miembros ·"
+  ],
+  "Copier le lien d’invitation": [
+    "Copy invite link",
+    "Copiar enlace de invitación"
+  ],
+  "Les attaques et les dons déjà engagés restent à l’alliance après votre départ. Vos mises personnelles gardent votre nom et votre couleur.": [
+    "Attacks and donations already committed remain with the alliance after you leave. Personal contributions keep your name and color.",
+    "Los ataques y donaciones comprometidos permanecen en la alianza al salir. Tus aportaciones personales conservan tu nombre y color."
+  ],
+  "Vous gardez la liberté de jouer en votre nom. Vous pourrez donner à la trésorerie ; seuls le chef et les généraux pourront attaquer pour l’alliance.": [
+    "You remain free to play independently. You can donate to the treasury; only the leader and generals can attack for the alliance.",
+    "Puedes seguir jugando por tu cuenta. Puedes donar a la tesorería; solo el líder y los generales pueden atacar por la alianza."
+  ],
+  "Alliance complète · 12/12": [
+    "Alliance full · 12/12",
+    "Alianza completa · 12/12"
+  ],
+  "Rejoindre cette alliance": [
+    "Join this alliance",
+    "Unirse a esta alianza"
+  ],
+  "Quittez votre alliance actuelle avant d’en rejoindre une autre.": [
+    "Leave your current alliance before joining another.",
+    "Sal de tu alianza actual antes de unirte a otra."
+  ],
+  "La communauté": [
+    "The community",
+    "La comunidad"
+  ],
+  "Général": [
+    "General",
+    "General"
+  ],
+  "versés ·": [
+    "contributed ·",
+    "aportados ·"
+  ],
+  "engagés": [
+    "spent",
+    "gastados"
+  ],
+  "Retirer le rôle de général ?": [
+    "Remove general role?",
+    "¿Quitar el rango de general?"
+  ],
+  "Nommer général ?": [
+    "Appoint general?",
+    "¿Nombrar general?"
+  ],
+  "Un général peut engager la trésorerie sur les objectifs du chef et est prioritaire dans la succession.": [
+    "A general can spend treasury funds on the leader's targets and has priority in succession.",
+    "Un general puede gastar fondos de la tesorería en los objetivos del líder y tiene prioridad en la sucesión."
+  ],
+  "Ses contributions actives restent à l’alliance jusqu’à expiration. Il pourra rejoindre une autre alliance immédiatement.": [
+    "Their active contributions remain with the alliance until expiry. They may join another alliance immediately.",
+    "Sus aportaciones activas permanecen en la alianza hasta caducar. Podrán unirse a otra alianza inmediatamente."
+  ],
+  "Expulser": [
+    "Expel",
+    "Expulsar"
+  ],
+  "Transmettre le commandement à": [
+    "Transfer leadership to",
+    "Transferir el liderazgo a"
+  ],
+  "Succession automatique": [
+    "Automatic succession",
+    "Sucesión automática"
+  ],
+  "Dissoudre votre alliance ?": [
+    "Disband your alliance?",
+    "¿Disolver tu alianza?"
+  ],
+  "Quitter votre alliance ?": [
+    "Leave your alliance?",
+    "¿Abandonar tu alianza?"
+  ],
+  "Votre alliance sera dissoute et sa trésorerie deviendra inaccessible.": [
+    "Your alliance will be disbanded and its treasury will become unavailable.",
+    "Tu alianza se disolverá y su tesorería quedará inaccesible."
+  ],
+  "Le commandement sera transmis au successeur désigné ou, à défaut, au général prioritaire, puis au membre actif le plus ancien.": [
+    "Leadership transfers to the designated successor, otherwise to the highest-priority general and then the longest-serving active member.",
+    "El liderazgo pasará al sucesor designado o, si no lo hay, al general prioritario y luego al miembro activo más antiguo."
+  ],
+  "Quitter l’alliance": [
+    "Leave alliance",
+    "Abandonar la alianza"
+  ],
+  "Cette invitation a expiré": [
+    "This invitation has expired",
+    "Esta invitación ha caducado"
+  ],
+  "Cette alliance n’est plus disponible. Retrouvez les communautés depuis le menu Alliances.": [
+    "This alliance is no longer available. Find other communities in the Alliances menu.",
+    "Esta alianza ya no está disponible. Busca otras comunidades en el menú Alianzas."
+  ],
+  "Faites valider votre visuel, puis utilisez-le pour enchérir sur les pays de votre choix. Le sponsoring est indépendant du contrôle des joueurs.": [
+    "Get your creative approved, then use it to bid on any countries. Sponsorship is separate from conquest.",
+    "Haz que aprueben tu anuncio y úsalo para pujar por los países que elijas. El patrocinio es independiente de la conquista."
+  ],
+  "Premier pays envisagé · le visuel sera réutilisable": [
+    "First country considered · the creative can be reused",
+    "Primer país previsto · el anuncio podrá reutilizarse"
+  ],
+  "minimum pour ce pays": [
+    "minimum for this country",
+    "mínimo para este país"
+  ],
+  "Proposition envoyée à la modération. Aucun paiement effectué.": [
+    "Proposal submitted for review. No payment made.",
+    "Propuesta enviada a moderación. No se ha realizado ningún pago."
+  ],
+  "Nom de votre projet": [
+    "Your project name",
+    "Nombre de tu proyecto"
+  ],
+  "Votre marque ou votre communauté": [
+    "Your brand or community",
+    "Tu marca o comunidad"
+  ],
+  "Description courte": [
+    "Short description",
+    "Descripción breve"
+  ],
+  "Présentez votre projet au monde.": [
+    "Introduce your project to the world.",
+    "Presenta tu proyecto al mundo."
+  ],
+  "Site, application ou Instagram": [
+    "Website, app or Instagram",
+    "Sitio web, aplicación o Instagram"
+  ],
+  "Logo (facultatif)": [
+    "Logo (optional)",
+    "Logo (opcional)"
+  ],
+  "PNG, JPEG ou WebP · 1 Mo maximum. Un logo sur fond transparent est conseillé. Sans logo, vos initiales s’affichent dans le pays.": [
+    "PNG, JPEG or WebP · max 1 MB. A transparent background is recommended. Without a logo, your initials appear on the country.",
+    "PNG, JPEG o WebP · máximo 1 MB. Se recomienda fondo transparente. Sin logo, tus iniciales aparecerán en el país."
+  ],
+  "Couleur de vos initiales": [
+    "Color of your initials",
+    "Color de tus iniciales"
+  ],
+  "Je dispose des droits sur ce contenu et j’accepte les règles de modération. Les publicités politiques sont exclues.": [
+    "I own the rights to this content and accept the moderation rules. Political advertising is prohibited.",
+    "Tengo los derechos sobre este contenido y acepto las reglas de moderación. La publicidad política está prohibida."
+  ],
+  "Traitement du logo…": [
+    "Processing logo…",
+    "Procesando logo…"
+  ],
+  "Soumettre pour validation": [
+    "Submit for approval",
+    "Enviar para aprobación"
+  ],
+  "Après validation, rechargez votre portefeuille et engagez vos crédits. Les fonds engagés sont déplaçables pendant 30 jours, sans retour au portefeuille ni prolongation.": [
+    "Once approved, top up your wallet and commit credits. Funds can be moved for 30 days but never returned to the wallet.",
+    "Una vez aprobado, recarga tu monedero y compromete créditos. Los fondos se pueden mover durante 30 días, pero nunca devolver al monedero."
+  ],
+  "The world is up for grabs. Une carte, des joueurs, des alliances. C’est tout ce qu’il faut pour commencer.": [
+    "The world is up for grabs. One map, players and alliances. That's all you need to start.",
+    "El mundo está por conquistar. Un mapa, jugadores y alianzas. Eso es todo lo que necesitas para empezar."
+  ],
+  "Un pays libre peut être revendiqué dès 1 Influence. Les mises actives s’additionnent : le meilleur score contrôle le pays. En cas d’égalité, le propriétaire conserve le territoire. Chaque mise expire au bout de 72 h, même hors ligne, et n’est pas remboursée.": [
+    "100 Influence at signup, then 20 every 30 minutes, including offline. Stock is capped at 160; excess refills are lost.",
+    "100 de Influencia al registrarte y después 20 cada 30 minutos, incluso sin conexión. El límite es 160; las recargas sobrantes se pierden."
+  ],
+  "Team up": [
+    "Team up",
+    "Forma equipo"
+  ],
+  "Les sponsors ont une enchère séparée, dès 2 crédits pour les plus petits territoires (1 crédit = 1 €). Le minimum dépend de la surface et de la visibilité du pays. Le plus haut montant actif éligible affiche son logo. Les crédits engagés sont déplaçables, sans retour au portefeuille, et disparaissent 30 jours après leur premier placement. Le portefeuille est conservé, même entre saisons. Aucun gain d’Influence.": [
+    "From a country your side controls, send troops into a land neighbor and choose the rival you target. Points cancel each other out.",
+    "Desde un país que controle tu bando, envía tropas a un país vecino por tierra y elige al rival objetivo. Los puntos de ambos bandos se neutralizan."
+  ],
+  "Depuis un pays que votre camp contrôle, envoyez ses troupes vers un voisin terrestre et choisissez le rival ciblé. Les points s’annulent un pour un, seuls vos survivants s’installent. Les autres camps restent intacts. Le départ est affaibli et les expirations des troupes restent inchangées. En alliance : chef ou général, et cible autorisée uniquement.": [
+    "Sponsors have a separate auction, starting at 2 credits for the smallest territories (1 credit = €1). The minimum depends on area and visibility.",
+    "Los patrocinadores tienen una subasta independiente, desde 2 créditos para los territorios más pequeños (1 crédito = 1 €). El mínimo depende de la superficie y la visibilidad."
+  ],
+  "Laissez votre empreinte": [
+    "Leave your mark",
+    "Deja tu huella"
+  ],
+  "Retrouvez vos succès, missions et cosmétiques dans Succès & objectifs. Choisissez une mission personnelle et gardez ses pays pendant une heure sans interruption. Les cadres, titres et contours débloqués restent acquis entre les saisons, sans avantage de puissance.": [
+    "Find your achievements, missions and cosmetics under Achievements & Objectives. Choose a personal mission and hold its countries for one hour.",
+    "Consulta tus logros, misiones y cosméticos en Logros y objetivos. Elige una misión personal y mantén sus países durante una hora."
+  ],
+  "Une saison dure 30 jours. Mises et trésoreries repartent à zéro. Des bonus individuels temporaires dépendent du contrôle dans la durée, des fonds réellement utilisés et du temps de participation : maximum +20 de stock, +2 par recharge et 20 Influence de départ. Ils expirent à la fin de la saison suivante et ne s’additionnent jamais.": [
+    "A season lasts 30 days. Contributions and treasuries reset. Temporary individual bonuses depend on sustained control and participation.",
+    "Una temporada dura 30 días. Las aportaciones y tesorerías se reinician. Los bonos individuales temporales dependen del control mantenido y la participación."
+  ],
+  "Règles de communauté : pas de haine, harcèlement, nudité explicite, contenu illégal, arnaque, usurpation ou publicité politique payante. Signalez un contenu depuis sa fiche pays.": [
+    "Community rules: no hate, harassment, explicit nudity, illegal content, scams, impersonation or paid political advertising. Report content from its country page.",
+    "Reglas de la comunidad: prohibidos el odio, acoso, desnudez explícita, contenido ilegal, estafas, suplantación y publicidad política pagada. Denuncia el contenido desde su país."
+  ],
+  "La carte utilise les données": [
+    "The map uses data from",
+    "El mapa utiliza datos de"
+  ],
+  "pays et territoires, hors Antarctique.": [
+    "countries and territories, excluding Antarctica.",
+    "países y territorios, excepto la Antártida."
+  ],
+  "La projection cylindrique de Miller forme un planisphère rectangulaire avec des méridiens et des parallèles droits. Elle privilégie une vue mondiale familière ; les surfaces et les formes restent déformées, surtout près des pôles.": [
+    "The Miller cylindrical projection produces a rectangular world map with straight meridians and parallels. It favors a familiar world view; areas and shapes are distorted, particularly near the poles.",
+    "La proyección cilíndrica de Miller produce un planisferio rectangular con meridianos y paralelos rectos. Prioriza una vista familiar; las áreas y formas se distorsionan, especialmente cerca de los polos."
+  ],
+  "Les frontières et noms suivent cette source de manière cohérente. Ils ne constituent aucune prise de position ni reconnaissance diplomatique. Un territoire distinct dans les données est une unité de jeu distincte.": [
+    "Borders and names follow this source consistently. They do not imply any political position or diplomatic recognition. Each separate territory in the data is a separate game unit.",
+    "Las fronteras y nombres siguen esta fuente de forma coherente. No implican ninguna postura política ni reconocimiento diplomático. Cada territorio independiente de los datos es una unidad del juego."
+  ],
+  "Les territoires ultramarins nommés sont séparés : la France, La Réunion et la Martinique ont chacun leurs conquêtes et leur emplacement publicitaire. Le nom après la barre oblique indique leur rattachement, sans les regrouper dans le jeu. Hawaï et l’Alaska sont également séparés des États-Unis continentaux.": [
+    "Named overseas territories are separate: France, Réunion and Martinique each have their own conquest and advertising slot. The parent name after the slash does not group them in-game. Hawaii and Alaska are also separate from the continental United States.",
+    "Los territorios de ultramar con nombre propio son independientes: Francia, Reunión y Martinica tienen cada uno su conquista y publicidad. El país tras la barra no los agrupa en el juego. Hawái y Alaska también están separados de los Estados Unidos continentales."
+  ],
+  "Quelques repères discrets signalent les territoires nommés invisibles à cette échelle, avec un seul point par territoire. Les îlots minuscules apparaissent au zoom et restent accessibles par la recherche. Les archipels comme Vanuatu et les îles Marshall restent des territoires de jeu uniques.": [
+    "Small markers identify named territories that would be invisible at this scale, one per territory. Tiny islets appear when zooming and remain searchable. Archipelagos such as Vanuatu and the Marshall Islands are single game territories.",
+    "Unos discretos marcadores señalan territorios invisibles a esta escala, uno por territorio. Los islotes aparecen al ampliar y se pueden buscar. Archipiélagos como Vanuatu y las Islas Marshall son una sola unidad de juego."
+  ],
+  "Les logos se placent sur un point de référence du territoire et peuvent utiliser une pastille pour rester lisibles.": [
+    "Logos are placed at a territory reference point and may use a marker to remain readable.",
+    "Los logotipos se colocan en un punto de referencia del territorio y pueden usar una insignia para seguir siendo legibles."
+  ],
+  "CLAIMED.WORLD est édité par": [
+    "CLAIMED.WORLD is published by",
+    "CLAIMED.WORLD está editado por"
+  ],
+  ", en": [
+    ", in",
+    ", en"
+  ],
+  "Le jeu conserve votre pseudonyme, votre adresse e-mail vérifiée et privée, votre couleur, un mot de passe dérivé avec scrypt, vos contributions, vos alliances et vos propositions publicitaires. La version hébergée utilise une base PostgreSQL privée chez Supabase et un espace privé pour les logos.": [
+    "For questions or support, contact",
+    "Para consultas o asistencia, contacta con"
+  ],
+  "Un cookie strictement nécessaire, HttpOnly et SameSite, maintient votre connexion pendant 30 jours. Aucun outil de suivi publicitaire ni cookie analytique n’est installé.": [
+    "Player accounts and passwords are stored securely. Only the username and public game statistics are visible to others.",
+    "Las cuentas y contraseñas se almacenan de forma segura. Solo el nombre de usuario y estadísticas públicas del juego son visibles para otros."
+  ],
+  "Les pseudonymes, couleurs, titres, succès, alliances et scores sont publics. Les mots de passe, adresses e-mail, codes de vérification et jetons de session ne sont jamais transmis aux autres joueurs. Les codes expirent après 10 minutes et les demandes expirées sont purgées lors des demandes suivantes. Gmail assure l’envoi des e-mails de vérification. Stripe traite les informations de paiement si l’exploitant active cette option.": [
+    "Game data is used to operate the service and is not sold to advertisers.",
+    "Los datos del juego se utilizan para prestar el servicio y no se venden a anunciantes."
+  ],
+  "Retrouvez les": [
+    "See the",
+    "Consulta la"
+  ],
+  "informations sur le sponsoring": [
+    "sponsorship information",
+    "información sobre patrocinio"
+  ],
+  "Action confirmée.": [
+    "Action confirmed.",
+    "Acción confirmada."
+  ],
+  "Confirmer": [
+    "Confirm",
+    "Confirmar"
+  ],
+  "Signalement transmis à la modération.": [
+    "Report sent to moderation.",
+    "Denuncia enviada a moderación."
+  ],
+  "Décrivez précisément le contenu et le problème observé. L’équipe de modération examinera votre signalement.": [
+    "Select the reason for your report.",
+    "Elige el motivo de la denuncia."
+  ],
+  "Motif": [
+    "Reason",
+    "Motivo"
+  ],
+  "Envoyer le signalement": [
+    "Submit report",
+    "Enviar denuncia"
+  ],
+  "Propositions de sponsoring": [
+    "Sponsorship proposals",
+    "Propuestas de patrocinio"
+  ],
+  "Par": [
+    "By",
+    "Por"
+  ],
+  "Contenu validé.": [
+    "Content approved.",
+    "Contenido aprobado."
+  ],
+  "Valider": [
+    "Approve",
+    "Aprobar"
+  ],
+  "Proposition refusée.": [
+    "Proposal rejected.",
+    "Propuesta rechazada."
+  ],
+  "Refuser": [
+    "Reject",
+    "Rechazar"
+  ],
+  "Visuel suspendu. Les fonds restent déplaçables vers un visuel approuvé.": [
+    "Creative suspended. Funds can still be moved to an approved creative.",
+    "Anuncio suspendido. Los fondos pueden trasladarse a otro anuncio aprobado."
+  ],
+  "Suspendre le visuel": [
+    "Suspend creative",
+    "Suspender anuncio"
+  ],
+  "Aucune proposition à examiner.": [
+    "No proposals to review.",
+    "No hay propuestas que revisar."
+  ],
+  "Signalements ouverts": [
+    "Open reports",
+    "Denuncias pendientes"
+  ],
+  "· par": [
+    "· by",
+    "· por"
+  ],
+  "Signalement traité.": [
+    "Report resolved.",
+    "Denuncia resuelta."
+  ],
+  "Marquer traité": [
+    "Mark resolved",
+    "Marcar como resuelta"
+  ],
+  "Aucun signalement ouvert.": [
+    "No open reports.",
+    "No hay denuncias pendientes."
+  ],
+  "ALLIANCE CHAMPIONNE": [
+    "CHAMPION ALLIANCE",
+    "ALIANZA CAMPEONA"
+  ],
+  "MEILLEUR INDÉPENDANT": [
+    "BEST INDEPENDENT",
+    "MEJOR INDEPENDIENTE"
+  ],
+  "Aucun champion": [
+    "No champion",
+    "Sin campeón"
+  ],
+  "La place reste à prendre.": [
+    "The spot is still up for grabs.",
+    "El puesto sigue libre."
+  ],
+  "Classement final": [
+    "Final rankings",
+    "Clasificación final"
+  ],
+  "Les territoires les plus disputés": [
+    "Most contested territories",
+    "Territorios más disputados"
+  ],
+  "changements de contrôle": [
+    "changes of control",
+    "cambios de control"
+  ],
+  "Chargement de la carte finale…": [
+    "Loading the final map…",
+    "Cargando el mapa final…"
+  ],
+  "territoires en solo": [
+    "solo territories",
+    "territorios en solitario"
+  ],
+  "Partager ce profil": [
+    "Share this profile",
+    "Compartir este perfil"
+  ],
+  "· Saison": [
+    "· Season",
+    "· Temporada"
+  ],
+  "Succès & objectifs accomplis": [
+    "Achievements & objectives completed",
+    "Logros y objetivos completados"
+  ],
+  "Chargement du profil…": [
+    "Loading profile…",
+    "Cargando perfil…"
+  ],
+  "VOTRE EMPREINTE / À VOTRE RYTHME": [
+    "YOUR MARK / AT YOUR OWN PACE",
+    "TU HUELLA / A TU RITMO"
+  ],
+  "Une carte. Votre histoire.": [
+    "One map. Your story.",
+    "Un mapa. Tu historia."
+  ],
+  "Des défis à accomplir et une identité à construire. Vos déblocages restent acquis entre les saisons.": [
+    "Challenges to complete and an identity to build. Your unlocks stay with you across seasons.",
+    "Desafíos que completar y una identidad que construir. Conservas tus desbloqueos entre temporadas."
+  ],
+  "accomplis": [
+    "completed",
+    "completados"
+  ],
+  "Récompenses visuelles uniquement": [
+    "Cosmetic rewards only",
+    "Recompensas solo estéticas"
+  ],
+  "Rejouer le didacticiel": [
+    "Replay tutorial",
+    "Repetir tutorial"
+  ],
+  "Progression": [
+    "Progress",
+    "Progreso"
+  ],
+  "Succès": [
+    "Achievements",
+    "Logros"
+  ],
+  "Connectez-vous pour enregistrer vos succès et choisir un objectif.": [
+    "Log in to save achievements and choose an objective.",
+    "Inicia sesión para guardar tus logros y elegir un objetivo."
+  ],
+  "Commencer gratuitement": [
+    "Start for free",
+    "Empezar gratis"
+  ],
+  "Choisissez une mission, puis gardez tous ses territoires en votre nom pendant 1 heure sans interruption. Un seul objectif suivi à la fois. Changer de mission recommence le compteur ; une nouvelle saison demande une nouvelle sélection.": [
+    "Unlocks are permanent. Personal objectives reward sustained control, not purchases.",
+    "Los desbloqueos son permanentes. Los objetivos personales premian el control mantenido, no las compras."
+  ],
+  "EN COURS": [
+    "IN PROGRESS",
+    "EN CURSO"
+  ],
+  "Le compteur attend tous les territoires.": [
+    "The timer is waiting for all territories.",
+    "El contador espera a todos los territorios."
+  ],
+  "Objectif suivi. À vous de jouer !": [
+    "Objective tracked. Your move!",
+    "Objetivo en seguimiento. ¡Te toca!"
+  ],
+  "Accompli": [
+    "Completed",
+    "Completado"
+  ],
+  "Objectif suivi": [
+    "Objective tracked",
+    "Objetivo en seguimiento"
+  ],
+  "Changer d’objectif": [
+    "Change objective",
+    "Cambiar objetivo"
+  ],
+  "Suivre cet objectif": [
+    "Track this objective",
+    "Seguir este objetivo"
+  ],
+  "Ces missions personnelles ne modifient pas les cibles de votre alliance. Le temps continue hors ligne ; les mises d’Influence expirent toujours après 72 heures.": [
+    "These personal missions do not alter your alliance targets. Time passes offline; Influence contributions still expire after 72 hours.",
+    "Estas misiones personales no cambian los objetivos de la alianza. El tiempo corre sin conexión; la Influencia caduca tras 72 horas."
+  ],
+  "Votre pseudo": [
+    "Your username",
+    "Tu nombre de usuario"
+  ],
+  "Votre histoire commence ici": [
+    "Your story begins here",
+    "Tu historia empieza aquí"
+  ],
+  "Aperçu du contour": [
+    "Border preview",
+    "Vista previa del borde"
+  ],
+  "Catégorie d’apparence": [
+    "Appearance category",
+    "Categoría estética"
+  ],
+  "VO": [
+    "YOU",
+    "TÚ"
+  ],
+  "Dans votre collection": [
+    "In your collection",
+    "En tu colección"
+  ],
+  "Apparence équipée.": [
+    "Appearance equipped.",
+    "Apariencia equipada."
+  ],
+  "Équipé": [
+    "Equipped",
+    "Equipado"
+  ],
+  "À débloquer": [
+    "Locked",
+    "Por desbloquear"
+  ],
+  "Équiper": [
+    "Equip",
+    "Equipar"
+  ],
+  "Votre cadre et votre titre vous suivent sur votre profil et dans les classements. Les contours habillent vos territoires personnels. Les récompenses n’augmentent ni vos gains, ni votre stock, ni votre score.": [
+    "Your frame and title follow you on profiles and leaderboards. Borders decorate your personal territories. Cosmetics have no gameplay impact.",
+    "Tu marco y título aparecen en tu perfil y clasificaciones. Los bordes decoran tus territorios personales. Los cosméticos no afectan al juego."
+  ],
+  "PAYS SPONSORISÉ PAR": [
+    "COUNTRY SPONSORED BY",
+    "PAÍS PATROCINADO POR"
+  ],
+  "CAMPAGNE MAISON": [
+    "HOUSE CAMPAIGN",
+    "CAMPAÑA INTERNA"
+  ],
+  "PUBLICITÉ": [
+    "ADVERTISEMENT",
+    "PUBLICIDAD"
+  ],
+  "Voir sur Instagram": [
+    "View on Instagram",
+    "Ver en Instagram"
+  ],
+  "Découvrir l’application": [
+    "Discover the app",
+    "Descubrir la aplicación"
+  ],
+  "Sponsoring en mode test : aucun paiement réel.": [
+    "Sponsorship in test mode: no real payments.",
+    "Patrocinio en modo de prueba: sin pagos reales."
+  ],
+  "Le logo et le contrôle du pays ont deux enchères indépendantes.": [
+    "Logo display and country control use separate auctions.",
+    "El logo y el control del país utilizan subastas independientes."
+  ],
+  "ENCHÈRE MINIMUM POUR CE PAYS": [
+    "MINIMUM BID FOR THIS COUNTRY",
+    "PUJA MÍNIMA PARA ESTE PAÍS"
+  ],
+  "Barème selon la surface et la visibilité du pays.": [
+    "Minimum based on the country's size and visibility.",
+    "Mínimo según la superficie y visibilidad del país."
+  ],
+  "CAMPAGNE MAISON · EMPLACEMENT DISPONIBLE": [
+    "HOUSE CAMPAIGN · SLOT AVAILABLE",
+    "CAMPAÑA INTERNA · ESPACIO DISPONIBLE"
+  ],
+  "Découvrir": [
+    "Discover",
+    "Descubrir"
+  ],
+  "Autopromotion du créateur, sans enchère payante. Un sponsor éligible remplace cette annonce.": [
+    "Creator self-promotion with no paid bid. An eligible sponsor replaces this ad.",
+    "Promoción del creador sin puja pagada. Un patrocinador elegible sustituye este anuncio."
+  ],
+  "SPONSORS": [
+    "SPONSORS",
+    "PATROCINADORES"
+  ],
+  "CRÉDITS ACTIFS": [
+    "ACTIVE CREDITS",
+    "CRÉDITOS ACTIVOS"
+  ],
+  "Logo affiché": [
+    "Displayed logo",
+    "Logo mostrado"
+  ],
+  "Votre place sur la carte.": [
+    "Your place on the map.",
+    "Tu lugar en el mapa."
+  ],
+  "La première enchère publicitaire commence à": [
+    "The first advertising bid starts at",
+    "La primera puja publicitaria comienza en"
+  ],
+  "crédits, soit": [
+    "credits, equal to",
+    "créditos, equivalentes a"
+  ],
+  "Enchère sponsor enregistrée pour 30 jours.": [
+    "Sponsor bid saved for 30 days.",
+    "Puja de patrocinio guardada durante 30 días."
+  ],
+  "Visuel à afficher": [
+    "Creative to display",
+    "Anuncio que mostrar"
+  ],
+  "Visuel sponsor du pays": [
+    "Country sponsor creative",
+    "Anuncio del patrocinador del país"
+  ],
+  "Montant à ajouter (€)": [
+    "Amount to add (€)",
+    "Cantidad que añadir (€)"
+  ],
+  "Enchère sponsor du pays": [
+    "Country sponsor bid",
+    "Puja de patrocinio del país"
+  ],
+  "Solde :": [
+    "Balance:",
+    "Saldo:"
+  ],
+  "crédits · Déjà placés :": [
+    "credits · Already placed:",
+    "créditos · Ya colocados:"
+  ],
+  "Ces fonds seront engagés pendant 30 jours, déplaçables et sans retour au portefeuille.": [
+    "These funds will be committed for 30 days, movable but non-refundable to the wallet.",
+    "Estos fondos quedarán comprometidos 30 días, podrán moverse y no volverán al monedero."
+  ],
+  "Enchérir": [
+    "Place bid",
+    "Pujar"
+  ],
+  "Gérer mes crédits sponsor": [
+    "Manage sponsor credits",
+    "Gestionar créditos de patrocinio"
+  ],
+  "Un placement dure 30 jours. Les déplacements conservent sa date d’expiration ; les fonds engagés ne reviennent jamais au portefeuille. Le solde non engagé est conservé.": [
+    "A placement lasts 30 days. Transfers retain their original expiry date and committed funds cannot return to the wallet.",
+    "Una colocación dura 30 días. Los traslados conservan la caducidad original y los fondos comprometidos no vuelven al monedero."
+  ],
+  "Lien de paiement invalide.": [
+    "Invalid payment link.",
+    "Enlace de pago no válido."
+  ],
+  "Chargement du portefeuille sponsor…": [
+    "Loading sponsor wallet…",
+    "Cargando monedero de patrocinio…"
+  ],
+  "Stripe en mode test.": [
+    "Stripe test mode.",
+    "Stripe en modo de prueba."
+  ],
+  "Aucun paiement réel n’est effectué. Les crédits de test servent uniquement à vérifier le fonctionnement.": [
+    "No real payment is made. Test credits are only used to check the system.",
+    "No se realizan pagos reales. Los créditos de prueba solo sirven para verificar el sistema."
+  ],
+  "Ce compte nécessite une vérification après un remboursement ou une contestation. Les enchères sont suspendues.": [
+    "This account requires review after a refund or dispute. Bidding is suspended.",
+    "Esta cuenta necesita revisión tras un reembolso o disputa. Las pujas están suspendidas."
+  ],
+  "PORTEFEUILLE CONSERVÉ": [
+    "SAVED WALLET BALANCE",
+    "SALDO CONSERVADO"
+  ],
+  "crédits": [
+    "credits",
+    "créditos"
+  ],
+  "ENGAGÉS SUR LA CARTE": [
+    "COMMITTED ON THE MAP",
+    "COMPROMETIDOS EN EL MAPA"
+  ],
+  "Recharger avec Stripe": [
+    "Top up with Stripe",
+    "Recargar con Stripe"
+  ],
+  "Montant de la recharge (€)": [
+    "Top-up amount (€)",
+    "Importe de recarga (€)"
+  ],
+  "J’ai lu les": [
+    "I have read the",
+    "He leído la"
+  ],
+  "Tester une recharge de": [
+    "Test a top-up of",
+    "Probar una recarga de"
+  ],
+  "Les paiements sont actuellement désactivés.": [
+    "Payments are currently disabled.",
+    "Los pagos están desactivados actualmente."
+  ],
+  "Faites d’abord valider un visuel.": [
+    "Get a creative approved first.",
+    "Primero consigue la aprobación de un anuncio."
+  ],
+  "Le portefeuille est crédité après confirmation du paiement par Stripe.": [
+    "The wallet is credited after Stripe confirms payment.",
+    "El monedero se abonará cuando Stripe confirme el pago."
+  ],
+  "Vos visuels": [
+    "Your creatives",
+    "Tus anuncios"
+  ],
+  "Créer un visuel": [
+    "Create a creative",
+    "Crear un anuncio"
+  ],
+  "Approuvé · utilisable sur tous les pays": [
+    "Approved · usable for all countries",
+    "Aprobado · válido para todos los países"
+  ],
+  "Refusé ou suspendu": [
+    "Rejected or suspended",
+    "Rechazado o suspendido"
+  ],
+  "En modération": [
+    "Under review",
+    "En revisión"
+  ],
+  "Créez un visuel, faites-le valider, puis engagez vos crédits où vous le souhaitez.": [
+    "Create a creative, get it approved and commit credits where you like.",
+    "Crea un anuncio, haz que lo aprueben y compromete créditos donde quieras."
+  ],
+  "Crédits engagés pour 30 jours.": [
+    "Credits committed for 30 days.",
+    "Créditos comprometidos durante 30 días."
+  ],
+  "Engager des crédits": [
+    "Commit credits",
+    "Comprometer créditos"
+  ],
+  "Visuel de l’enchère sponsor": [
+    "Sponsor bid creative",
+    "Anuncio para la puja de patrocinio"
+  ],
+  "Choisir un visuel approuvé": [
+    "Choose an approved creative",
+    "Elige un anuncio aprobado"
+  ],
+  "Pays de l’enchère": [
+    "Bid country",
+    "País de la puja"
+  ],
+  "Pays de l’enchère sponsor": [
+    "Sponsorship bid country",
+    "País de la puja de patrocinio"
+  ],
+  "· dès": [
+    "· from",
+    "· desde"
+  ],
+  "Minimum pour ce pays :": [
+    "Minimum for this country:",
+    "Mínimo para este país:"
+  ],
+  "crédits (": [
+    "credits (",
+    "créditos ("
+  ],
+  "Déjà engagés avec ce visuel :": [
+    "Already committed with this creative:",
+    "Ya comprometidos con este anuncio:"
+  ],
+  "En tête :": [
+    "Leading:",
+    "En cabeza:"
+  ],
+  "Crédits supplémentaires à engager": [
+    "Additional credits to commit",
+    "Créditos adicionales que comprometer"
+  ],
+  "Crédits sponsor à engager": [
+    "Sponsor credits to commit",
+    "Créditos de patrocinio que comprometer"
+  ],
+  "Total après ajout :": [
+    "Total after adding:",
+    "Total tras añadir:"
+  ],
+  "crédits. Les nouvelles sommes auront leur propre échéance à 30 jours.": [
+    "credits. New amounts will have their own 30-day expiry.",
+    "créditos. Las nuevas cantidades tendrán su propio vencimiento a 30 días."
+  ],
+  "Je confirme l’engagement : ces crédits ne reviendront pas dans mon portefeuille et expireront après 30 jours, même déplacés.": [
+    "I confirm these credits cannot return to my wallet and will expire after 30 days, even if moved.",
+    "Confirmo que estos créditos no volverán a mi monedero y caducarán a los 30 días, aunque se trasladen."
+  ],
+  "Engager": [
+    "Commit",
+    "Comprometer"
+  ],
+  "Vos positions": [
+    "Your positions",
+    "Tus posiciones"
+  ],
+  "En tête": [
+    "Leading",
+    "En cabeza"
+  ],
+  "Dépassé ou visuel suspendu": [
+    "Outbid or creative suspended",
+    "Superado o anuncio suspendido"
+  ],
+  "Prochaine expiration :": [
+    "Next expiry:",
+    "Próximo vencimiento:"
+  ],
+  "Fonds déplacés. Leurs dates d’expiration sont conservées.": [
+    "Funds moved. Their original expiry dates were retained.",
+    "Fondos trasladados. Se conservan sus fechas de vencimiento."
+  ],
+  "Déplacer des fonds engagés": [
+    "Move committed funds",
+    "Mover fondos comprometidos"
+  ],
+  "Position de départ": [
+    "Origin position",
+    "Posición de origen"
+  ],
+  "Position sponsor à déplacer": [
+    "Sponsorship position to move",
+    "Posición de patrocinio que mover"
+  ],
+  "Visuel de destination": [
+    "Destination creative",
+    "Anuncio de destino"
+  ],
+  "Visuel de destination sponsor": [
+    "Sponsorship destination creative",
+    "Anuncio de patrocinio de destino"
+  ],
+  "Pays de destination": [
+    "Destination country",
+    "País de destino"
+  ],
+  "Destination des fonds sponsor": [
+    "Sponsorship funds destination",
+    "Destino de fondos de patrocinio"
+  ],
+  "Crédits à déplacer": [
+    "Credits to move",
+    "Créditos que mover"
+  ],
+  "Crédits sponsor à déplacer": [
+    "Sponsor credits to move",
+    "Créditos de patrocinio que mover"
+  ],
+  "Les fonds les plus anciens sont déplacés d’abord. Laissez zéro ou au moins": [
+    "Oldest funds move first. Leave zero or at least",
+    "Los fondos más antiguos se mueven primero. Deja cero o al menos"
+  ],
+  "crédits au départ ; la destination doit atteindre": [
+    "credits at the origin; the destination must reach",
+    "créditos en origen; el destino debe alcanzar"
+  ],
+  "crédits. Aucun retour au portefeuille.": [
+    "credits. No return to the wallet.",
+    "créditos. No volverán al monedero."
+  ],
+  "Déplacer": [
+    "Move",
+    "Mover"
+  ],
+  "Dates d’expiration de vos fonds": [
+    "Your funds' expiry dates",
+    "Fechas de vencimiento de tus fondos"
+  ],
+  "Premier placement :": [
+    "First placement:",
+    "Primera colocación:"
+  ],
+  "Expire le": [
+    "Expires on",
+    "Caduca el"
+  ],
+  "Journal des crédits": [
+    "Credit history",
+    "Historial de créditos"
+  ],
+  "Service édité par": [
+    "Service published by",
+    "Servicio editado por"
+  ],
+  "Un café pour faire grandir le monde ?": [
+    "Coffee to help the world grow?",
+    "¿Un café para ayudar a crecer al mundo?"
+  ],
+  "Vous pouvez aussi soutenir le développement de CLAIMED.WORLD sur Buy Me a Coffee. Ce soutien est indépendant des crédits sponsor et du jeu.": [
+    "You can also support the development of CLAIMED.WORLD on Buy Me a Coffee. This is separate from sponsor credits and in-game Influence.",
+    "También puedes apoyar el desarrollo de CLAIMED.WORLD en Buy Me a Coffee. Es independiente de los créditos de patrocinio y de la Influencia del juego."
+  ],
+  "Soutenir Loris": [
+    "Support Loris",
+    "Apoyar a Loris"
+  ],
+  "(ouvre un nouvel onglet)": [
+    "(opens in a new tab)",
+    "(se abre en una pestaña nueva)"
+  ],
+  "Activer le mode clair": [
+    "Switch to light mode",
+    "Activar modo claro"
+  ],
+  "Activer le mode sombre": [
+    "Switch to dark mode",
+    "Activar modo oscuro"
+  ],
+  "VOTRE PREMIÈRE VISITE /": [
+    "YOUR FIRST VISIT /",
+    "TU PRIMERA VISITA /"
+  ],
+  "SUR 4": [
+    "OF 4",
+    "DE 4"
+  ],
+  "Masquer le didacticiel": [
+    "Hide tutorial",
+    "Ocultar tutorial"
+  ],
+  "Me montrer un pays": [
+    "Show me a country",
+    "Mostrarme un país"
+  ],
+  "Voir mes objectifs et apparences": [
+    "See my objectives and appearance",
+    "Ver mis objetivos y apariencia"
+  ],
+  "Vous pouvez continuer sans revendiquer, dépenser ou attaquer.": [
+    "You can continue without claiming, spending or attacking.",
+    "Puedes continuar sin reclamar, gastar ni atacar."
+  ],
+  "Précédent": [
+    "Previous",
+    "Anterior"
+  ],
+  "Terminer la visite": [
+    "Finish tour",
+    "Terminar visita"
+  ],
+  "Je connais déjà le jeu": [
+    "I already know the game",
+    "Ya conozco el juego"
+  ],
+  "Carte interactive du monde": [
+    "Interactive world map",
+    "Mapa mundial interactivo"
+  ],
+  "Zoom avant": [
+    "Zoom in",
+    "Acercar"
+  ],
+  "Zoom arrière": [
+    "Zoom out",
+    "Alejar"
+  ],
+  "Recentrer la carte": [
+    "Recenter map",
+    "Centrar mapa"
+  ],
+  "· Glissez pour explorer": [
+    "· Drag to explore",
+    "· Arrastra para explorar"
+  ],
+  "Navigation des informations sponsor": [
+    "Sponsor information navigation",
+    "Navegación de información de patrocinio"
+  ],
+  "INFORMATIONS DU SERVICE / 27 OCTOBRE 2026": [
+    "SERVICE INFORMATION / OCTOBER 27, 2026",
+    "INFORMACIÓN DEL SERVICIO / 27 DE OCTUBRE DE 2026"
+  ],
+  "Les crédits sponsor.": [
+    "Sponsor credits.",
+    "Créditos de patrocinio."
+  ],
+  "Le jeu de conquête reste gratuit. Le sponsoring est un service publicitaire indépendant : il n’accorde ni Influence, ni territoire, ni avantage de combat.": [
+    "The conquest game remains free. Sponsorship is a separate advertising service: it grants no Influence, territory or combat advantage.",
+    "El juego de conquista sigue siendo gratuito. El patrocinio es un servicio publicitario independiente: no concede Influencia, territorios ni ventajas de combate."
+  ],
+  "Éditeur et assistance": [
+    "Publisher and support",
+    "Editor y asistencia"
+  ],
+  ". Questions sur une commande ou un paiement :": [
+    ". Questions about an order or payment:",
+    ". Consultas sobre pedidos o pagos:"
+  ],
+  "Recharger et participer aux enchères": [
+    "Top up and participate in auctions",
+    "Recargar y participar en subastas"
+  ],
+  "Un crédit sponsor correspond à 1 €. La recharge minimale est de 5 €. Le montant total est affiché avant confirmation sur Stripe. Il s’agit d’un achat ponctuel, sans abonnement ni renouvellement automatique.": [
+    "One sponsor credit equals €1. The minimum top-up is €5. The total amount is shown before confirmation on Stripe. This is a one-time purchase with no subscription or automatic renewal.",
+    "Un crédito de patrocinio equivale a 1 €. La recarga mínima es de 5 €. El importe total se muestra antes de confirmar en Stripe. Es una compra única, sin suscripción ni renovación automática."
+  ],
+  "Un compte de jeu et un visuel approuvé sont nécessaires. Les crédits sont attribués au compte connecté après confirmation du paiement par Stripe. Fermer la fenêtre ou revenir sur le jeu ne suffit pas à confirmer un paiement.": [
+    "A game account and an approved creative are required. Credits are granted to the signed-in account after Stripe confirms payment. Closing the window or returning to the game does not confirm payment.",
+    "Se necesitan una cuenta de juego y un anuncio aprobado. Los créditos se asignan a la cuenta conectada cuando Stripe confirma el pago. Cerrar la ventana o volver al juego no confirma un pago."
+  ],
+  "Portefeuille et fonds placés": [
+    "Wallet and committed funds",
+    "Monedero y fondos comprometidos"
+  ],
+  "Le solde non engagé est conservé et n’est pas remis à zéro à la fin des saisons. Chaque pays possède un minimum d’enchère, affiché avant placement, à partir de 2 crédits.": [
+    "Uncommitted funds are kept and do not reset at the end of a season. Each country has a minimum bid, shown before placing funds, starting at 2 credits.",
+    "El saldo no comprometido se conserva y no se reinicia al terminar la temporada. Cada país tiene una puja mínima, que se muestra antes de colocar fondos, desde 2 créditos."
+  ],
+  "Les fonds placés peuvent être déplacés vers un autre pays éligible, mais ne reviennent pas automatiquement au portefeuille. Chaque lot expire 30 jours après son premier placement, même s’il est déplacé, dépassé par un autre sponsor ou encore en tête. Une recharge ne prolonge pas les lots déjà placés.": [
+    "Committed funds can be moved to another eligible country but do not automatically return to the wallet. Each batch expires 30 days after its first placement, even if moved, outbid or still leading. A top-up does not extend earlier batches.",
+    "Los fondos comprometidos pueden trasladarse a otro país elegible, pero no vuelven automáticamente al monedero. Cada lote caduca 30 días después de su primera colocación, aunque se traslade, sea superado o siga en cabeza. Una recarga no prolonga los lotes anteriores."
+  ],
+  "Affichage des annonces": [
+    "Displaying advertisements",
+    "Visualización de anuncios"
+  ],
+  "Le visuel du sponsor éligible en tête est affiché dans le territoire. Une égalité conserve le sponsor en place. Aucun nombre de vues, de clics ou de jours en tête n’est garanti : une autre enchère peut remplacer le visuel. Les crédits restants peuvent alors être déplacés avant leur expiration.": [
+    "The leading eligible sponsor's creative appears in the territory. A tie preserves the incumbent. No number of views, clicks or days in the lead is guaranteed: another bid may replace the creative. Remaining credits can be moved before they expire.",
+    "El anuncio del patrocinador elegible que va en cabeza aparece en el territorio. En caso de empate se mantiene el patrocinador actual. No se garantiza un número de vistas, clics ni días en cabeza: otra puja puede sustituir el anuncio. Los créditos restantes pueden trasladarse antes de caducar."
+  ],
+  "Vous devez disposer des droits sur votre visuel et votre destination. Les contenus illégaux, trompeurs, haineux, usurpant une identité ou contraires aux règles du jeu peuvent être refusés ou suspendus. Contactez l’assistance pour toute contestation.": [
+    "You must own the rights to your creative and destination. Illegal, misleading, hateful, impersonating or otherwise rule-breaking content may be rejected or suspended. Contact support to dispute a decision.",
+    "Debes tener los derechos sobre tu anuncio y destino. El contenido ilegal, engañoso, de odio, que suplante identidades o infrinja las reglas puede rechazarse o suspenderse. Contacta con asistencia para impugnar una decisión."
+  ],
+  "Questions et remboursements": [
+    "Questions and refunds",
+    "Preguntas y reembolsos"
+  ],
+  "Les règles de déplacement et d’expiration du jeu ne suppriment pas les droits légaux applicables. Pour une demande de rétractation, un paiement en double, une erreur de crédit ou un remboursement, écrivez à": [
+    "The game's transfer and expiry rules do not remove any applicable legal rights. For withdrawal requests, duplicate charges, credit errors or refunds, email",
+    "Las reglas del juego sobre traslado y caducidad no eliminan los derechos legales aplicables. Para desistimientos, pagos duplicados, errores de crédito o reembolsos, escribe a"
+  ],
+  "avec votre pseudonyme et la référence de paiement. Ne transmettez jamais votre numéro de carte.": [
+    "with your username and payment reference. Never send your card number.",
+    "con tu nombre de usuario y la referencia de pago. Nunca envíes tu número de tarjeta."
+  ],
+  "Les remboursements acceptés passent par Stripe et peuvent retirer les crédits correspondants du portefeuille ou des mises. Les crédits sponsor ne sont pas une monnaie retirable, ne produisent pas d’intérêts et ne sont pas convertibles en Influence.": [
+    "Refunds accepted through Stripe may remove the corresponding credits from the wallet or bids. Sponsor credits cannot be withdrawn, do not earn interest and cannot be converted into Influence.",
+    "Los reembolsos aceptados por Stripe pueden retirar los créditos correspondientes del monedero o las pujas. Los créditos de patrocinio no se pueden retirar, no generan intereses ni pueden convertirse en Influencia."
+  ],
+  "Accéder à mes crédits sponsor →": [
+    "Access my sponsor credits →",
+    "Acceder a mis créditos de patrocinio →"
+  ],
+  "Offensive frontalière · {0}": [
+    "Border offensive · {0}",
+    "Ofensiva fronteriza · {0}"
+  ],
+  "Attaque · {0}": [
+    "Attack · {0}",
+    "Ataque · {0}"
+  ],
+  "{0} troupes": [
+    "{0} troops",
+    "{0} tropas"
+  ],
+  "Attaque exécutée : {0} Influence brûlée et {1} survivants déployés.": [
+    "Attack completed: {0} Influence destroyed and {1} survivors deployed.",
+    "Ataque completado: {0} de Influencia destruida y {1} supervivientes desplegados."
+  ],
+  "{0} serait en tête avec {1} Influence.": [
+    "{0} would lead with {1} Influence.",
+    "{0} estaría en cabeza con {1} de Influencia."
+  ],
+  "Conquête de {0}": [
+    "Conquest of {0}",
+    "Conquista de {0}"
+  ],
+  "{0} · +{1} pour passer devant": [
+    "{0} · +{1} to take the lead",
+    "{0} · +{1} para ponerse en cabeza"
+  ],
+  "Choisir {0} Influence": [
+    "Choose {0} Influence",
+    "Elegir {0} de Influencia"
+  ],
+  "{0} disponibles ·": [
+    "{0} available ·",
+    "{0} disponibles ·"
+  ],
+  "{0} nécessaires pour prendre le contrôle. Vous pouvez aussi contribuer moins.": [
+    "{0} needed to take control. You can also contribute less.",
+    "Se necesitan {0} para tomar el control. También puedes aportar menos."
+  ],
+  "il y a {0} min": [
+    "{0} min ago",
+    "hace {0} min"
+  ],
+  "il y a {0} h": [
+    "{0} h ago",
+    "hace {0} h"
+  ],
+  "{0} · Retrouvez-les dans votre progression.": [
+    "{0} · Find them in your progress.",
+    "{0} · Consúltalos en tu progreso."
+  ],
+  "{0} récompenses débloquées": [
+    "{0} rewards unlocked",
+    "{0} recompensas desbloqueadas"
+  ],
+  "Succès débloqué : {0}": [
+    "Achievement unlocked: {0}",
+    "Logro desbloqueado: {0}"
+  ],
+  "{0} est sous votre contrôle. Bien joué !": [
+    "You control {0}. Well done!",
+    "Controlas {0}. ¡Bien hecho!"
+  ],
+  "Libre · {0} Influence minimum": [
+    "Unclaimed · {0} Influence minimum",
+    "Libre · mínimo {0} de Influencia"
+  ],
+  "{0} Influence pour prendre le contrôle": [
+    "{0} Influence to take control",
+    "{0} de Influencia para tomar el control"
+  ],
+  "Recharge automatique, stock maximum {0}. L’excédent n’est pas conservé.": [
+    "Automatic refill, maximum stock {0}. Surplus is lost.",
+    "Recarga automática, máximo {0}. El excedente se pierde."
+  ],
+  "+{0} dans {1}": [
+    "+{0} in {1}",
+    "+{0} en {1}"
+  ],
+  "Trésorerie de {0} · {1} disponibles": [
+    "{0} treasury · {1} available",
+    "Tesorería de {0} · {1} disponibles"
+  ],
+  "Stock personnel · {0}/{1}": [
+    "Personal stock · {0}/{1}",
+    "Reserva personal · {0}/{1}"
+  ],
+  "{0} revendiqués": [
+    "{0} claimed",
+    "{0} reclamados"
+  ],
+  "Couleur {0}": [
+    "Color {0}",
+    "Color {0}"
+  ],
+  "Une place en {0}.": [
+    "A place in {0}.",
+    "Un lugar en {0}."
+  ],
+  "Saison {0} — Archives": [
+    "Season {0} — Archives",
+    "Temporada {0} — Archivo"
+  ],
+  "Prochaine recharge dans {0}.": [
+    "Next refill in {0}.",
+    "Próxima recarga en {0}."
+  ],
+  "Emblème {0}": [
+    "Emblem {0}",
+    "Emblema {0}"
+  ],
+  "Rejoindre {0} ?": [
+    "Join {0}?",
+    "¿Unirse a {0}?"
+  ],
+  "Nommer {0} général": [
+    "Appoint {0} as general",
+    "Nombrar general a {0}"
+  ],
+  "Expulser {0} ?": [
+    "Expel {0}?",
+    "¿Expulsar a {0}?"
+  ],
+  "{0} pays et territoires. Choisissez votre terrain sur la carte ou utilisez la recherche.": [
+    "{0} countries and territories. Pick your spot on the map or use search.",
+    "{0} países y territorios. Elige tu lugar en el mapa o usa el buscador."
+  ],
+  "Logo de {0}": [
+    "Logo of {0}",
+    "Logo de {0}"
+  ],
+  "{0} territoires": [
+    "{0} territories",
+    "{0} territorios"
+  ],
+  "Acquis le {0}": [
+    "Unlocked on {0}",
+    "Desbloqueado el {0}"
+  ],
+  "Contrôle : {0}": [
+    "Control: {0}",
+    "Control: {0}"
+  ],
+  "{0} min de contrôle restant": [
+    "{0} min of control remaining",
+    "{0} min de control restantes"
+  ],
+  "Sponsor de {0}": [
+    "Sponsor of {0}",
+    "Patrocinador de {0}"
+  ],
+  "{0} de {1} (nouvel onglet)": [
+    "{0} by {1} (new tab)",
+    "{0} de {1} (pestaña nueva)"
+  ],
+  "Minimum de {0} crédits à atteindre": [
+    "Minimum {0} credits needed",
+    "Mínimo de {0} créditos necesarios"
+  ],
+  "+{0} pour passer devant": [
+    "+{0} to take the lead",
+    "+{0} para ponerse en cabeza"
+  ],
+  "Régularisation restante : {0} €.": [
+    "Outstanding adjustment: €{0}.",
+    "Regularización pendiente: {0} €."
+  ],
+  "Emplacement libre · première enchère à {0} crédits": [
+    "Available slot · first bid from {0} credits",
+    "Espacio disponible · primera puja desde {0} créditos"
+  ],
+  "Sous le minimum de {0}": [
+    "Below the minimum of {0}",
+    "Por debajo del mínimo de {0}"
+  ],
+  "Bienvenue dans votre monde.": [
+    "Welcome to your world.",
+    "Bienvenido a tu mundo."
+  ],
+  "Votre stock personnel est en haut : vous commencez avec 100 Influence. Il se recharge de 20 toutes les demi-heures, même hors ligne, jusqu’à 160. Jouer et conquérir restent gratuits.": [
+    "Your personal stock is at the top. You start with 100 Influence and gain 20 every 30 minutes, even offline, up to 160. Playing and conquering are free.",
+    "Tu reserva personal aparece arriba. Empiezas con 100 de Influencia y obtienes 20 cada media hora, incluso sin conexión, hasta 160. Jugar y conquistar es gratis."
+  ],
+  "Choisissez un territoire.": [
+    "Choose a territory.",
+    "Elige un territorio."
+  ],
+  "Cliquez sur la carte ou utilisez la recherche. Le panneau à droite présente le propriétaire et les scores des prétendants. Un pays libre peut être revendiqué dès 1 Influence.": [
+    "Click the map or use search. The right panel shows the owner and contenders' scores. An unclaimed country can be claimed with just 1 Influence.",
+    "Haz clic en el mapa o usa el buscador. El panel derecho muestra al propietario y las puntuaciones de los aspirantes. Puedes reclamar un país libre desde 1 de Influencia."
+  ],
+  "Vous choisissez le montant.": [
+    "You choose the amount.",
+    "Tú eliges la cantidad."
+  ],
+  "Dans Conquête, saisissez directement combien d’Influence envoyer, puis validez. Le montant nécessaire pour prendre le contrôle est indiqué. Vous pouvez aussi contribuer moins ou renforcer un pays. Chaque mise dure 72 h.": [
+    "Under Conquest, enter how much Influence to send and confirm. You'll see what's needed to take control. You can contribute less or reinforce a country. Each contribution lasts 72 hours.",
+    "En Conquista, introduce cuánta Influencia quieres enviar y confirma. Verás cuánto necesitas para tomar el control. También puedes aportar menos o reforzar un país. Cada aportación dura 72 horas."
+  ],
+  "Ensuite, jouez à votre rythme.": [
+    "Then play at your own pace.",
+    "Después, juega a tu ritmo."
+  ],
+  "Pour attaquer, contrôlez un pays voisin et choisissez un rival ; vous pouvez envoyer votre stock. En alliance, contribuez à la trésorerie : le chef et ses généraux la dépensent. Retrouvez les objectifs et cosmétiques dans votre progression. Le sponsoring affiche des logos, sans bonus de conquête.": [
+    "To attack, control a neighboring country and choose a rival. You can send your stock. In an alliance, donate to the treasury; the leader and generals spend it. Find objectives and cosmetics in Progress. Sponsorship displays logos but gives no conquest bonus.",
+    "Para atacar, controla un país vecino y elige un rival. Puedes enviar tus reservas. En una alianza, aporta a la tesorería; el líder y los generales la gastan. Encuentra objetivos y cosméticos en Progreso. El patrocinio muestra logos sin bonificaciones de conquista."
+  ],
+  "Suivant": [
+    "Next",
+    "Siguiente"
+  ],
+  "Objectifs": [
+    "Objectives",
+    "Objetivos"
+  ],
+  "Apparence": [
+    "Appearance",
+    "Apariencia"
+  ],
+  "Le premier pas": [
+    "The first step",
+    "El primer paso"
+  ],
+  "Engager votre première Influence en votre nom.": [
+    "Commit your first Influence in your own name.",
+    "Compromete tu primer punto de Influencia en tu propio nombre."
+  ],
+  "Votre place dans le monde": [
+    "Your place in the world",
+    "Tu lugar en el mundo"
+  ],
+  "Contrôler un premier territoire en votre nom.": [
+    "Control your first territory in your own name.",
+    "Controla tu primer territorio en tu propio nombre."
+  ],
+  "Sans frontières": [
+    "Without borders",
+    "Sin fronteras"
+  ],
+  "Avoir contrôlé 5 territoires différents en solo.": [
+    "Have controlled 5 different territories solo.",
+    "Haber controlado 5 territorios diferentes en solitario."
+  ],
+  "Tenir la ligne": [
+    "Hold the line",
+    "Mantener la línea"
+  ],
+  "Garder un territoire personnel pendant 24 heures sans interruption.": [
+    "Hold a personal territory for 24 hours without interruption.",
+    "Mantén un territorio personal durante 24 horas seguidas."
+  ],
+  "La force des choix": [
+    "The power of choice",
+    "El poder de elegir"
+  ],
+  "Engager 1 000 Influence personnelle au fil des saisons.": [
+    "Commit 1,000 personal Influence across seasons.",
+    "Compromete 1000 de Influencia personal a lo largo de las temporadas."
+  ],
+  "L’effort collectif": [
+    "Team effort",
+    "Esfuerzo colectivo"
+  ],
+  "Financer 200 Influence effectivement engagées par une alliance.": [
+    "Fund 200 Influence actually spent by an alliance.",
+    "Financia 200 de Influencia realmente gastada por una alianza."
+  ],
+  "Au cœur de l’Europe": [
+    "At the heart of Europe",
+    "En el corazón de Europa"
+  ],
+  "France, Allemagne et Italie.": [
+    "France, Germany and Italy.",
+    "Francia, Alemania e Italia."
+  ],
+  "L’appel du Pacifique": [
+    "Call of the Pacific",
+    "La llamada del Pacífico"
+  ],
+  "Vanuatu, Fidji et îles Salomon.": [
+    "Vanuatu, Fiji and Solomon Islands.",
+    "Vanuatu, Fiyi e Islas Salomón."
+  ],
+  "Trois îles, trois histoires": [
+    "Three islands, three stories",
+    "Tres islas, tres historias"
+  ],
+  "La Réunion, Martinique et Guadeloupe.": [
+    "Réunion, Martinique and Guadeloupe.",
+    "Reunión, Martinica y Guadalupe."
+  ],
+  "L’océan en partage": [
+    "An ocean to share",
+    "Un océano compartido"
+  ],
+  "La Réunion et Maurice.": [
+    "Réunion and Mauritius.",
+    "Reunión y Mauricio."
+  ],
+  "Essentiel": [
+    "Essential",
+    "Esencial"
+  ],
+  "Orbite": [
+    "Orbit",
+    "Órbita"
+  ],
+  "Collectif": [
+    "Collective",
+    "Colectivo"
+  ],
+  "Boussole": [
+    "Compass",
+    "Brújula"
+  ],
+  "Sans titre": [
+    "Untitled",
+    "Sin título"
+  ],
+  "Pionnier": [
+    "Pioneer",
+    "Pionero"
+  ],
+  "Stratège": [
+    "Strategist",
+    "Estratega"
+  ],
+  "Architecte d’Europe": [
+    "Architect of Europe",
+    "Arquitecto de Europa"
+  ],
+  "Voix des îles": [
+    "Voice of the islands",
+    "Voz de las islas"
+  ],
+  "Continu": [
+    "Solid",
+    "Continuo"
+  ],
+  "Double ligne": [
+    "Double line",
+    "Doble línea"
+  ],
+  "Balise": [
+    "Beacon",
+    "Baliza"
+  ],
+  "OCÉAN PACIFIQUE": [
+    "PACIFIC OCEAN",
+    "OCÉANO PACÍFICO"
+  ],
+  "OCÉAN ATLANTIQUE": [
+    "ATLANTIC OCEAN",
+    "OCÉANO ATLÁNTICO"
+  ],
+  "OCÉAN INDIEN": [
+    "INDIAN OCEAN",
+    "OCÉANO ÍNDICO"
+  ],
+  "Langue du site": [
+    "Site language",
+    "Idioma del sitio"
+  ],
+  "Trop de tentatives.": [
+    "Too many attempts.",
+    "Demasiados intentos."
+  ],
+  "VOTRE EMPREINTE": [
+    "YOUR MARK",
+    "TU HUELLA"
+  ],
+  "Attention : cette action est irréversible depuis le jeu. Les forces de la saison présentes sur la carte expireront immédiatement. Les comptes, stocks, alliances, sponsors et historiques sont conservés.": [
+    "Warning: this action cannot be reversed in-game. All current-season forces on the map expire immediately. Accounts, stock, alliances, sponsors and history are preserved.",
+    "Atención: esta acción es irreversible desde el juego. Todas las fuerzas de la temporada en el mapa caducarán inmediatamente. Se conservan las cuentas, reservas, alianzas, patrocinadores e historial."
+  ],
+  "8 caractères minimum": [
+    "At least 8 characters",
+    "Al menos 8 caracteres"
+  ],
+  "Votre profil": [
+    "Your profile",
+    "Tu perfil"
+  ],
+  "Votre progression": [
+    "Your progress",
+    "Tu progreso"
+  ],
+  "Vérifiez votre adresse e-mail.": [
+    "Verify your email address.",
+    "Verifica tu correo electrónico."
+  ],
+  "Les grandes conquêtes commencent à plusieurs.": [
+    "Great conquests start together.",
+    "Las grandes conquistas empiezan en equipo."
+  ],
+  "Votre communauté vous attend.": [
+    "Your community is waiting for you.",
+    "Tu comunidad te espera."
+  ],
+  "Prenez votre place dans le monde.": [
+    "Make your mark on the world.",
+    "Hazte un lugar en el mundo."
+  ],
+  "Une carte, une politique cohérente.": [
+    "One map, a consistent approach.",
+    "Un mapa, un enfoque coherente."
+  ],
+  "Vos données, en toute transparence.": [
+    "Your data, transparently.",
+    "Tus datos, con transparencia."
+  ],
+  "Le journal des conquêtes": [
+    "Conquest history",
+    "Historial de conquistas"
+  ],
+  "Crédits et enchères sponsor": [
+    "Sponsor credits and auctions",
+    "Créditos y subastas de patrocinio"
+  ],
+  "Signaler un contenu": [
+    "Report content",
+    "Denunciar contenido"
+  ],
+  "à l’instant": [
+    "just now",
+    "ahora mismo"
+  ],
+  "Recharge confirmée": [
+    "Top-up confirmed",
+    "Recarga confirmada"
+  ],
+  "Fonds engagés": [
+    "Funds committed",
+    "Fondos comprometidos"
+  ],
+  "Déplacement": [
+    "Transfer",
+    "Traslado"
+  ],
+  "Fonds expirés": [
+    "Expired funds",
+    "Fondos caducados"
+  ],
+  "Remboursement Stripe": [
+    "Stripe refund",
+    "Reembolso de Stripe"
+  ],
+  "Rétrograder {0}": [
+    "Demote {0}",
+    "Degradar a {0}"
+  ],
+  "Les dons et mises collectives restent à l’alliance. Vos mises personnelles restent à votre nom. Vous devrez attendre 24 h avant de rejoindre ou créer une alliance.": [
+    "Donations and collective contributions remain with the alliance. Your personal contributions remain yours. You must wait 24 hours before joining or creating another alliance.",
+    "Las donaciones y aportaciones colectivas permanecen en la alianza. Tus aportaciones personales siguen a tu nombre. Debes esperar 24 horas antes de unirte o crear otra alianza."
+  ],
+  "100 Influence à l’inscription, puis 20 toutes les 30 min en continu, même hors ligne. Le stock est plafonné à 160 : les recharges excédentaires sont perdues. Dépensez pour libérer de la place.": [
+    "100 Influence when signing up, then 20 every 30 minutes, even offline. Stock is capped at 160; excess refills are lost. Spend points to make room.",
+    "100 de Influencia al registrarte y luego 20 cada 30 minutos, incluso sin conexión. La reserva se limita a 160; las recargas sobrantes se pierden. Gasta puntos para liberar espacio."
+  ],
+  "12 membres maximum. Le chef définit les pays cibles et nomme les généraux. Tous peuvent donner à la trésorerie (plafond 1 920), seuls le chef et les généraux l’engagent. Le jeu personnel reste libre. Après un départ volontaire : 24 h avant de rejoindre ou créer une alliance.": [
+    "Up to 12 members. The leader chooses target countries and appoints generals. Everyone can donate to the treasury (cap: 1,920), but only the leader and generals can spend it. Personal play remains free. After leaving voluntarily, wait 24 hours before joining or creating an alliance.",
+    "Hasta 12 miembros. El líder elige los países objetivo y nombra generales. Todos pueden donar a la tesorería (límite: 1920), pero solo el líder y los generales pueden gastarla. Puedes seguir jugando por tu cuenta. Al salir voluntariamente, espera 24 horas antes de unirte o crear otra alianza."
+  ],
+  "Collect": [
+    "Collect",
+    "Acumula"
+  ],
+  "Claim": [
+    "Claim",
+    "Reclama"
+  ],
+  "Explore": [
+    "Explore",
+    "Explora"
+  ],
+  "Sponsor": [
+    "Sponsor",
+    "Patrocina"
+  ],
+  "Attaquez": [
+    "Attack",
+    "Ataca"
+  ],
+  "Alliance": [
+    "Alliance",
+    "Alianza"
+  ],
+  "Confidentialité": [
+    "Privacy",
+    "Privacidad"
+  ],
+  "Signaler": [
+    "Report",
+    "Denunciar"
+  ],
+  "Vérification": [
+    "Verification",
+    "Verificación"
+  ],
+  "Français": [
+    "French",
+    "Francés"
+  ],
+  "Attention : cette action est irréversible depuis le jeu. Les forces de la saison présentes sur la carte expireront immédiatement. Les comptes, stocks, alliances, fonds et annonces sponsorisés sont conservés. L’historique reste disponible.": [
+    "Warning: this action cannot be reversed in-game. All current-season forces on the map expire immediately. Accounts, stock, alliances, sponsors and history are preserved.",
+    "Atención: esta acción es irreversible desde el juego. Todas las fuerzas de la temporada en el mapa caducarán inmediatamente. Se conservan las cuentas, reservas, alianzas, patrocinadores e historial."
+  ],
+  ". Saisissez-le ici pour activer votre accès.": [
+    ". Enter it here to activate your access.",
+    ". Introdúcelo aquí para activar tu acceso."
+  ],
+  ". Pour une question sur le service, le sponsoring ou vos données :": [
+    ". For questions about the service, sponsorship or your data:",
+    ". Para preguntas sobre el servicio, el patrocinio o tus datos:"
+  ],
+  ". Pour demander l’accès, la rectification ou la suppression de vos données, contactez l’adresse ci-dessus. Le jeu ne dispose pas encore d’un service de récupération de mot de passe.": [
+    ". To request access, correction or deletion of your data, contact the address above. The game does not yet provide password recovery.",
+    ". Para solicitar acceso, rectificación o eliminación de tus datos, contacta con la dirección anterior. El juego todavía no ofrece recuperación de contraseña."
+  ],
+  ". Total après ajout :": [
+    ". Total after adding:",
+    ". Total después de añadir:"
+  ],
+  "1 crédit = 1 €. Le portefeuille n’est pas remis à zéro. Les fonds engagés restent déplaçables entre pays, sans retour au portefeuille, et expirent 30 jours après leur premier placement. Un déplacement ne prolonge jamais ce délai. Les enchères commencent dès 2 € selon le pays ; une recharge du portefeuille commence à 5 €.": [
+    "1 credit = €1. The wallet never resets. Committed funds can be moved between countries but never returned to the wallet; they expire 30 days after their first placement. Moving funds never extends that period. Bids start at €2 depending on the country; wallet top-ups start at €5.",
+    "1 crédito = 1 €. El monedero nunca se reinicia. Los fondos comprometidos pueden trasladarse entre países, pero no volver al monedero; caducan 30 días después de su primera colocación. Mover fondos no prolonga ese plazo. Las pujas comienzan desde 2 € según el país; las recargas del monedero desde 5 €."
+  ],
+  ". Les crédits ne donnent aucune Influence ; les fonds placés expirent après 30 jours.": [
+    ". Credits grant no Influence; placed funds expire after 30 days.",
+    ". Los créditos no conceden Influencia; los fondos colocados caducan después de 30 días."
+  ],
+  "Saisissez une adresse e-mail valide.": [
+    "Enter a valid email address.",
+    "Introduce una dirección de correo válida."
+  ],
+  "Adresse e-mail invalide.": [
+    "Invalid email address.",
+    "Dirección de correo no válida."
+  ],
+  "La vérification par e-mail est momentanément indisponible. Réessayez plus tard.": [
+    "Email verification is temporarily unavailable. Please try again later.",
+    "La verificación por correo no está disponible temporalmente. Inténtalo más tarde."
+  ],
+  "Le code n’a pas pu être envoyé. Vérifiez votre adresse et réessayez plus tard.": [
+    "The code could not be sent. Check your email address and try again later.",
+    "No se pudo enviar el código. Revisa tu correo e inténtalo más tarde."
+  ],
+  "Choisissez un mot de passe de 8 caractères minimum, difficile à deviner.": [
+    "Choose a strong password with at least 8 characters.",
+    "Elige una contraseña segura de al menos 8 caracteres."
+  ],
+  "Cette vérification ne peut pas être effectuée.": [
+    "This verification cannot be completed.",
+    "No se puede completar esta verificación."
+  ],
+  "Ce pseudonyme est déjà utilisé.": [
+    "This username is already taken.",
+    "Este nombre de usuario ya está en uso."
+  ],
+  "Cette adresse ne peut pas être utilisée pour créer ou associer un compte. Connectez-vous à votre compte existant.": [
+    "This email address cannot be used to create or link an account. Sign in to your existing account.",
+    "No puedes usar este correo para crear o vincular una cuenta. Inicia sesión en tu cuenta existente."
+  ],
+  "Recommencez la vérification de votre adresse.": [
+    "Start email verification again.",
+    "Vuelve a iniciar la verificación de tu correo."
+  ],
+  "Saisissez le code à 6 chiffres reçu par e-mail.": [
+    "Enter the 6-digit code sent by email.",
+    "Introduce el código de 6 dígitos enviado por correo."
+  ],
+  "Code expiré ou trop de tentatives. Demandez un nouveau code.": [
+    "Code expired or too many attempts. Request a new code.",
+    "El código ha caducado o has realizado demasiados intentos. Solicita uno nuevo."
+  ],
+  "Code incorrect. Vérifiez le dernier e-mail reçu.": [
+    "Incorrect code. Check your latest email.",
+    "Código incorrecto. Revisa tu último correo."
+  ],
+  "Ce code a déjà été utilisé.": [
+    "This code has already been used.",
+    "Este código ya se ha utilizado."
+  ],
+  "Cette adresse est déjà associée à un compte.": [
+    "This email address is already linked to an account.",
+    "Este correo ya está vinculado a una cuenta."
+  ],
+  "Ce pseudonyme vient d’être pris. Recommencez avec un autre.": [
+    "This username has just been taken. Try another one.",
+    "Acaban de elegir este nombre de usuario. Prueba con otro."
+  ],
+  "Connectez-vous à votre compte existant.": [
+    "Log in to your existing account.",
+    "Inicia sesión en tu cuenta existente."
+  ],
+  "Mot de passe incorrect.": [
+    "Incorrect password.",
+    "Contraseña incorrecta."
+  ],
+  "Action inconnue.": [
+    "Unknown action.",
+    "Acción desconocida."
+  ],
+  "Vérifiez le formulaire ou réessayez plus tard.": [
+    "Check the form or try again later.",
+    "Revisa el formulario o inténtalo más tarde."
+  ],
+  "Déconnectez-vous avant de créer un autre compte.": [
+    "Log out before creating another account.",
+    "Cierra sesión antes de crear otra cuenta."
+  ],
+  "Alliances": [
+    "Alliances",
+    "Alianzas"
+  ],
+  "Classement": [
+    "Leaderboard",
+    "Clasificación"
+  ],
+  "Sponsors": [
+    "Sponsors",
+    "Patrocinadores"
+  ],
+  "Saisons": [
+    "Seasons",
+    "Temporadas"
+  ],
+  "Renforcer": [
+    "Reinforce",
+    "Reforzar"
+  ],
+  "Revendiquer": [
+    "Claim",
+    "Reclamar"
+  ],
+  "Contribuer": [
+    "Contribute",
+    "Contribuir"
+  ]
+}

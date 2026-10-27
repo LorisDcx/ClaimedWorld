@@ -1,4 +1,7 @@
 'use client';
+import { countryLabel } from '@/i18n/countries';
+import { useT, useLocale } from '@/i18n/provider';
+
 import { useEffect, useId, useRef, useState } from 'react';
 import { Crosshair, Minus, Plus } from 'lucide-react';
 import data from '@/data/countries.json';
@@ -21,6 +24,8 @@ export default function WorldMap({
   focusId: { id: string; nonce: number } | null;
   immersive?: boolean;
 }) {
+  const t = useT();
+  const locale = useLocale();
   const svgRef = useRef<SVGSVGElement>(null);
   const mapId = useId().replace(/:/g, '');
   const visiblePath = (c: Country) =>
@@ -79,7 +84,7 @@ export default function WorldMap({
         ref={svgRef}
         viewBox="0 0 1100 600"
         preserveAspectRatio={immersive ? 'xMidYMid slice' : 'xMidYMid meet'}
-        aria-label="Carte interactive du monde"
+        aria-label={t("Carte interactive du monde")}
         role="img"
         onPointerDown={(e) => {
           setDragging(true);
@@ -162,7 +167,7 @@ export default function WorldMap({
                 key={index}
                 transform={`translate(${ocean.point.join(' ')}) scale(${1 / view.scale})`}
               >
-                {ocean.name}
+                {t(ocean.name)}
               </text>
             ))}
           </g>
@@ -192,7 +197,7 @@ export default function WorldMap({
                 strokeLinejoin="round"
                 className={`country-path ${territory?.sponsor ? 'is-sponsored' : ''} ${dimmed ? 'dimmed' : ''} ${selected === c.id ? 'selected' : ''}`}
                 role="button"
-                aria-label={c.name}
+                aria-label={countryLabel(c, locale)}
                 focusable="false"
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={(event) => {
@@ -334,7 +339,7 @@ export default function WorldMap({
                   transform={`translate(${anchor.point.join(' ')}) scale(${1 / view.scale})`}
                   data-territory={c.id}
                   role="button"
-                  aria-label={c.name}
+                  aria-label={countryLabel(c, locale)}
                   focusable="false"
                   onMouseDown={(event) => event.preventDefault()}
                   onClick={(event) => {
@@ -372,24 +377,24 @@ export default function WorldMap({
         </g>
       </svg>
       <div className="map-controls">
-        <button onClick={() => zoom(1.4)} title="Zoom avant" aria-label="Zoom avant">
+        <button onClick={() => zoom(1.4)} title={t("Zoom avant")} aria-label={t("Zoom avant")}>
           <Plus size={17} />
         </button>
-        <button onClick={() => zoom(1 / 1.4)} title="Zoom arrière" aria-label="Zoom arrière">
+        <button onClick={() => zoom(1 / 1.4)} title={t("Zoom arrière")} aria-label={t("Zoom arrière")}>
           <Minus size={17} />
         </button>
         <span />
         <button
           onClick={() => setView({ x: 0, y: 0, scale: 1 })}
-          title="Recentrer la carte"
-          aria-label="Recentrer la carte"
+          title={t("Recentrer la carte")}
+          aria-label={t("Recentrer la carte")}
         >
           <Crosshair size={17} />
         </button>
       </div>
       <div className="map-scale">
         <span />
-        {view.scale.toFixed(1)}× <span className="desktop-only">· Glissez pour explorer</span>
+        {view.scale.toFixed(1)}× <span className="desktop-only">{t("· Glissez pour explorer")}</span>
       </div>
     </div>
   );

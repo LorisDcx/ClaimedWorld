@@ -1,4 +1,6 @@
 'use client';
+import { useT } from '@/i18n/provider';
+
 import { useEffect, useState, type FormEvent } from 'react';
 import { ArrowUpRight, LoaderCircle, Mail, ShieldCheck } from 'lucide-react';
 type Pending = { email: string; expiresAt: number };
@@ -17,6 +19,7 @@ export default function AccountAuth({
   onComplete: () => Promise<void>;
   onMode: (mode: string) => void;
 }) {
+  const t = useT();
   const [pending, setPending] = useState<Pending | null>(null);
   const [working, setWorking] = useState(false);
   const [error, setError] = useState('');
@@ -43,7 +46,7 @@ export default function AccountAuth({
       body: JSON.stringify(body),
     });
     const result = await r.json();
-    if (!r.ok) throw new Error(result.error || 'Réessayez plus tard.');
+    if (!r.ok) throw new Error(result.error || t("Réessayez plus tard."));
     return result;
   }
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -81,7 +84,7 @@ export default function AccountAuth({
       const result = await request('/api/account/email', { action: 'resend' });
       setPending(result.pending);
       setCode('');
-      setNotice('Un nouveau code a été envoyé. Utilisez le dernier reçu.');
+      setNotice(t("Un nouveau code a été envoyé. Utilisez le dernier reçu."));
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -93,23 +96,20 @@ export default function AccountAuth({
       <p className="modal-intro">
         {pending ? (
           <>
-            Un code a été envoyé à <strong>{pending.email}</strong>. Saisissez-le ici pour activer
-            votre accès.
-          </>
+            {t("\r\n            Un code a été envoyé à ")}<strong>{pending.email}</strong>{t(". Saisissez-le ici pour activer\r\n            votre accès.\r\n          ")}</>
         ) : mode === 'signup' ? (
-          'Une couleur, un pseudo et une adresse vérifiée. Vos 100 Influence vous attendent après confirmation.'
+          t("Une couleur, un pseudo et une adresse vérifiée. Vos 100 Influence vous attendent après confirmation.")
         ) : mode === 'verify-email' ? (
-          'Sécurisez votre compte existant. Vos territoires, votre alliance et vos crédits sont conservés.'
+          t("Sécurisez votre compte existant. Vos territoires, votre alliance et vos crédits sont conservés.")
         ) : (
-          'Votre communauté et vos territoires vous attendent.'
+          t("Votre communauté et vos territoires vous attendent.")
         )}
       </p>
       <form key={pending ? 'verification' : mode} onSubmit={(e) => void submit(e)}>
         {pending ? (
           <>
             <label>
-              Code de vérification
-              <input
+              {t("\r\n              Code de vérification\r\n              ")}<input
                 name="code"
                 type="text"
                 inputMode="numeric"
@@ -121,32 +121,29 @@ export default function AccountAuth({
                 autoFocus
                 value={code}
                 onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                placeholder="000000"
+                placeholder={t("000000")}
               />
             </label>
             <p className="form-note">
-              Valable 10 minutes · 5 essais maximum. Pensez à vérifier les courriers indésirables.
-            </p>
+              {t("\r\n              Valable 10 minutes · 5 essais maximum. Pensez à vérifier les courriers indésirables.\r\n            ")}</p>
           </>
         ) : (
           <>
             {mode !== 'verify-email' && (
               <label>
-                Pseudonyme
-                <input
+                {t("\r\n                Pseudonyme\r\n                ")}<input
                   name="username"
                   autoComplete="username"
                   required
                   minLength={3}
                   maxLength={24}
-                  placeholder="Votre nom sur la carte"
+                  placeholder={t("Votre nom sur la carte")}
                 />
               </label>
             )}
             {mode !== 'login' && (
               <label>
-                Adresse e-mail
-                <input
+                {t("\r\n                Adresse e-mail\r\n                ")}<input
                   name="email"
                   type="email"
                   autoComplete="email"
@@ -154,12 +151,12 @@ export default function AccountAuth({
                   maxLength={254}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="vous@exemple.fr"
+                  placeholder={t("vous@exemple.fr")}
                 />
               </label>
             )}
             <label>
-              {mode === 'verify-email' ? 'Mot de passe actuel' : 'Mot de passe'}
+              {mode === 'verify-email' ? t("Mot de passe actuel") : t("Mot de passe")}
               <input
                 name="password"
                 type="password"
@@ -167,35 +164,33 @@ export default function AccountAuth({
                 required
                 minLength={8}
                 maxLength={128}
-                placeholder={mode === 'signup' ? '8 caractères minimum' : 'Votre mot de passe'}
+                placeholder={mode === 'signup' ? t('8 caractères minimum') : t("Votre mot de passe")}
               />
             </label>
-            {mode === 'signup' && <label>Votre couleur{colorPicker}</label>}
+            {mode === 'signup' && <label>{t("Votre couleur")}{colorPicker}</label>}
             {mode !== 'login' && (
               <p className="form-note">
-                <Mail size={16} /> Un seul compte par personne. Les adresses temporaires sont
-                refusées. Votre e-mail reste privé.
-              </p>
+                <Mail size={16} /> {t(" Un seul compte par personne. Les adresses temporaires sont\r\n                refusées. Votre e-mail reste privé.\r\n              ")}</p>
             )}
           </>
         )}
         {error && (
           <p className="form-error" role="alert">
-            {error}
+            {t(error)}
           </p>
         )}
-        {notice && <p role="status">{notice}</p>}
+        {notice && <p role="status">{t(notice)}</p>}
         <button className="primary full" disabled={working}>
           {working ? (
             <LoaderCircle size={17} className="spin" />
           ) : pending ? (
-            'Vérifier mon adresse'
+            t("Vérifier mon adresse")
           ) : mode === 'signup' ? (
-            'Créer mon compte gratuit'
+            t("Créer mon compte gratuit")
           ) : mode === 'verify-email' ? (
-            'Recevoir mon code'
+            t("Recevoir mon code")
           ) : (
-            'Me connecter'
+            t("Me connecter")
           )}
           <ArrowUpRight size={16} />
         </button>
@@ -203,8 +198,7 @@ export default function AccountAuth({
       {pending && (
         <div className="form-switch">
           <button disabled={working} onClick={() => void resend()}>
-            Renvoyer un code
-          </button>{' '}
+            {t("\r\n            Renvoyer un code\r\n          ")}</button>{' '}
           ·{' '}
           <button
             disabled={working}
@@ -214,21 +208,20 @@ export default function AccountAuth({
               setError('');
             }}
           >
-            Changer d’adresse ou recommencer
-          </button>
+            {t("\r\n            Changer d’adresse ou recommencer\r\n          ")}</button>
         </div>
       )}
       {mode !== 'verify-email' && (
         <p className="form-switch">
-          {mode === 'signup' ? 'Déjà dans la partie ?' : 'Pas encore de compte ?'}{' '}
+          {mode === 'signup' ? t("Déjà dans la partie ?") : t("Pas encore de compte ?")}{' '}
           <button disabled={working} onClick={() => onMode(mode === 'signup' ? 'login' : 'signup')}>
-            {mode === 'signup' ? 'Se connecter' : 'Rejoindre la conquête'}
+            {mode === 'signup' ? t("Se connecter") : t("Rejoindre la conquête")}
           </button>
         </p>
       )}
       <div className="form-note">
         <ShieldCheck size={16} />
-        <span>La conquête est gratuite. Aucun achat ne donne d’avantage en jeu.</span>
+        <span>{t("La conquête est gratuite. Aucun achat ne donne d’avantage en jeu.")}</span>
       </div>
     </>
   );

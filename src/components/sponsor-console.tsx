@@ -1,4 +1,7 @@
 'use client';
+import { countryLabel } from '@/i18n/countries';
+import { useT, useLocale } from '@/i18n/provider';
+
 import { useCallback, useEffect, useState } from 'react';
 import { ArrowRight, ArrowUpRight, Clock3, Plus, Wallet } from 'lucide-react';
 import countries from '@/data/countries.json';
@@ -32,6 +35,8 @@ export default function SponsorConsole({
   act: Act;
   onCreate: (country: string) => void;
 }) {
+  const t = useT();
+  const locale = useLocale();
   const [data, setData] = useState<SponsorConsoleData | null>(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
@@ -122,7 +127,7 @@ export default function SponsorConsole({
       const result = await response.json();
       if (!response.ok) throw new Error(result.error);
       if (typeof result.url !== 'string' || !result.url.startsWith('https://checkout.stripe.com/'))
-        throw new Error('Lien de paiement invalide.');
+        throw new Error(t("Lien de paiement invalide."));
       window.location.assign(result.url);
     } catch (cause) {
       setError((cause as Error).message);
@@ -132,53 +137,44 @@ export default function SponsorConsole({
   }
   if (!data)
     return (
-      <p className={error ? 'notice' : 'muted'}>{error || 'Chargement du portefeuille sponsor…'}</p>
+      <p className={error ? 'notice' : 'muted'}>{error || t("Chargement du portefeuille sponsor…")}</p>
     );
   return (
     <div className="sponsor-console">
       {paymentsMode === 'test' && (
         <div className="payment-test-note">
-          <strong>Stripe en mode test.</strong> Aucun paiement réel n’est effectué. Les crédits de
-          test servent uniquement à vérifier le fonctionnement.
-        </div>
+          <strong>{t("Stripe en mode test.")}</strong> {t(" Aucun paiement réel n’est effectué. Les crédits de\r\n          test servent uniquement à vérifier le fonctionnement.\r\n        ")}</div>
       )}
       {error && (
         <p className="notice" role="alert">
-          {error}
+          {t(error)}
         </p>
       )}
       {locked && (
         <p className="notice">
-          Ce compte nécessite une vérification après un remboursement ou une contestation. Les
-          enchères sont suspendues.
-          {data.wallet.debt_cents > 0 &&
-            ` Régularisation restante : ${credits(data.wallet.debt_cents)} €.`}
+          {t("\r\n          Ce compte nécessite une vérification après un remboursement ou une contestation. Les\r\n          enchères sont suspendues.\r\n          ")}{data.wallet.debt_cents > 0 &&
+            t("Régularisation restante : {0} €.", [credits(data.wallet.debt_cents)])}
         </p>
       )}
       <div className="sponsor-wallet">
         <div>
           <span>
-            <Wallet size={14} /> PORTEFEUILLE CONSERVÉ
-          </span>
+            <Wallet size={14} /> {t(" PORTEFEUILLE CONSERVÉ\r\n          ")}</span>
           <strong>
-            {credits(data.wallet.balance_cents)} <small>crédits</small>
+            {credits(data.wallet.balance_cents)} <small>{t("crédits")}</small>
           </strong>
         </div>
         <div>
-          <span>ENGAGÉS SUR LA CARTE</span>
+          <span>{t("ENGAGÉS SUR LA CARTE")}</span>
           <strong>
-            {credits(groups.reduce((sum, group) => sum + group.amount, 0))} <small>crédits</small>
+            {credits(groups.reduce((sum, group) => sum + group.amount, 0))} <small>{t("crédits")}</small>
           </strong>
         </div>
       </div>
       <p className="sponsor-money-rule">
-        1 crédit = 1 €. Le portefeuille n’est pas remis à zéro. Les fonds engagés restent
-        déplaçables entre pays, sans retour au portefeuille, et expirent 30 jours après leur premier
-        placement. Un déplacement ne prolonge jamais ce délai. Les enchères commencent dès 2 € selon
-        le pays ; une recharge du portefeuille commence à 5 €.
-      </p>
+        {t("\r\n        1 crédit = 1 €. Le portefeuille n’est pas remis à zéro. Les fonds engagés restent\r\n        déplaçables entre pays, sans retour au portefeuille, et expirent 30 jours après leur premier\r\n        placement. Un déplacement ne prolonge jamais ce délai. Les enchères commencent dès 2 € selon\r\n        le pays ; une recharge du portefeuille commence à 5 €.\r\n      ")}</p>
       <details className="sponsor-section">
-        <summary>Recharger avec Stripe</summary>
+        <summary>{t("Recharger avec Stripe")}</summary>
         <form
           onSubmit={(event) => {
             event.preventDefault();
@@ -186,8 +182,7 @@ export default function SponsorConsole({
           }}
         >
           <label>
-            Montant de la recharge (€)
-            <input
+            {t("\r\n            Montant de la recharge (€)\r\n            ")}<input
               type="number"
               min="5"
               max="10000"
@@ -205,35 +200,32 @@ export default function SponsorConsole({
               required
             />
             <span>
-              J’ai lu les{' '}
+              {t("\r\n              J’ai lu les")}{' '}
               <a href="/sponsoring" target="_blank" rel="noopener noreferrer">
-                informations sur le sponsoring
-              </a>
-              . Les crédits ne donnent aucune Influence ; les fonds placés expirent après 30 jours.
-            </span>
+                {t("\r\n                informations sur le sponsoring\r\n              ")}</a>
+              {t("\r\n              . Les crédits ne donnent aucune Influence ; les fonds placés expirent après 30 jours.\r\n            ")}</span>
           </label>
           <button
             className="primary full"
             disabled={busy || !paymentsEnabled || locked || !approved.length}
           >
-            {paymentsMode === 'test' ? 'Tester une recharge de' : 'Recharger'} {topup || '0'} €{' '}
+            {paymentsMode === 'test' ? t("Tester une recharge de") : 'Recharger'} {topup || '0'} €{' '}
             <ArrowUpRight size={14} />
           </button>
           <p className="muted">
             {!paymentsEnabled
-              ? 'Les paiements sont actuellement désactivés.'
+              ? t("Les paiements sont actuellement désactivés.")
               : !approved.length
-                ? 'Faites d’abord valider un visuel.'
-                : 'Le portefeuille est crédité après confirmation du paiement par Stripe.'}
+                ? t("Faites d’abord valider un visuel.")
+                : t("Le portefeuille est crédité après confirmation du paiement par Stripe.")}
           </p>
         </form>
       </details>
       <div className="sponsor-section">
         <div className="sponsor-section-title">
-          <h3>Vos visuels</h3>
+          <h3>{t("Vos visuels")}</h3>
           <button className="text-button" onClick={() => onCreate(country)}>
-            <Plus size={13} /> Créer un visuel
-          </button>
+            <Plus size={13} /> {t(" Créer un visuel\r\n          ")}</button>
         </div>
         {data.campaigns.length ? (
           data.campaigns.map((item) => (
@@ -241,17 +233,16 @@ export default function SponsorConsole({
               <strong>{item.name}</strong>
               <span>
                 {item.status === 'approved'
-                  ? 'Approuvé · utilisable sur tous les pays'
+                  ? t("Approuvé · utilisable sur tous les pays")
                   : item.status === 'rejected'
-                    ? 'Refusé ou suspendu'
-                    : 'En modération'}
+                    ? t("Refusé ou suspendu")
+                    : t("En modération")}
               </span>
             </div>
           ))
         ) : (
           <p className="muted">
-            Créez un visuel, faites-le valider, puis engagez vos crédits où vous le souhaitez.
-          </p>
+            {t("\r\n            Créez un visuel, faites-le valider, puis engagez vos crédits où vous le souhaitez.\r\n          ")}</p>
         )}
       </div>
       <form
@@ -260,22 +251,20 @@ export default function SponsorConsole({
           event.preventDefault();
           void submit(
             { action: 'sponsor-place', campaignId, countryId: country, amountCents, accepted },
-            'Crédits engagés pour 30 jours.',
+            t("Crédits engagés pour 30 jours."),
           );
         }}
       >
-        <h3>Engager des crédits</h3>
+        <h3>{t("Engager des crédits")}</h3>
         <label>
-          Visuel à afficher
-          <select
-            aria-label="Visuel de l’enchère sponsor"
+          {t("\r\n          Visuel à afficher\r\n          ")}<select
+            aria-label={t("Visuel de l’enchère sponsor")}
             value={campaignId}
             onChange={(event) => setCampaign(event.target.value)}
             required
           >
             <option value="" disabled>
-              Choisir un visuel approuvé
-            </option>
+              {t("\r\n              Choisir un visuel approuvé\r\n            ")}</option>
             {approved.map((item) => (
               <option key={item.id} value={item.id}>
                 {item.name}
@@ -284,9 +273,8 @@ export default function SponsorConsole({
           </select>
         </label>
         <label>
-          Pays de l’enchère
-          <select
-            aria-label="Pays de l’enchère sponsor"
+          {t("\r\n          Pays de l’enchère\r\n          ")}<select
+            aria-label={t("Pays de l’enchère sponsor")}
             value={country}
             onChange={(event) => {
               const next = event.target.value;
@@ -299,35 +287,34 @@ export default function SponsorConsole({
           >
             {countries.map((item) => (
               <option key={item.id} value={item.id}>
-                {item.name} · dès {sponsorMinimum(item.id) / 100} €
+                {countryLabel(item, locale)} {t(" · dès ")}{sponsorMinimum(item.id) / 100} €
               </option>
             ))}
           </select>
         </label>
         <div className="sponsor-bid-context">
           <span>
-            Minimum pour ce pays :{' '}
+            {t("\r\n            Minimum pour ce pays :")}{' '}
             <b>
-              {credits(minimum)} crédits ({credits(minimum)} €)
+              {credits(minimum)} {t(" crédits (")}{credits(minimum)} €)
             </b>
           </span>
           <span>
-            Déjà engagés avec ce visuel : <b>{credits(personal)}</b>
+            {t("\r\n            Déjà engagés avec ce visuel : ")}<b>{credits(personal)}</b>
           </span>
           <span>
             {leader ? (
               <>
-                En tête : {leader.name} · <b>{credits(leader.amount)}</b>
+                {t("\r\n                En tête : ")}{leader.name} · <b>{credits(leader.amount)}</b>
               </>
             ) : (
-              `Emplacement libre · première enchère à ${credits(minimum)} crédits`
+              t("Emplacement libre · première enchère à {0} crédits", [credits(minimum)])
             )}
           </span>
         </div>
         <label>
-          Crédits supplémentaires à engager
-          <input
-            aria-label="Crédits sponsor à engager"
+          {t("\r\n          Crédits supplémentaires à engager\r\n          ")}<input
+            aria-label={t("Crédits sponsor à engager")}
             type="number"
             min={Math.max(1, minimum - personal) / 100}
             step="0.01"
@@ -338,9 +325,8 @@ export default function SponsorConsole({
           />
         </label>
         <p className="muted">
-          Total après ajout : {credits(personal + (Number.isFinite(amountCents) ? amountCents : 0))}{' '}
-          crédits. Les nouvelles sommes auront leur propre échéance à 30 jours.
-        </p>
+          {t("\r\n          Total après ajout : ")}{credits(personal + (Number.isFinite(amountCents) ? amountCents : 0))}{' '}
+          {t("\r\n          crédits. Les nouvelles sommes auront leur propre échéance à 30 jours.\r\n        ")}</p>
         <label className="checkbox-label">
           <input
             type="checkbox"
@@ -348,9 +334,7 @@ export default function SponsorConsole({
             onChange={(event) => setAccepted(event.target.checked)}
             required
           />
-          Je confirme l’engagement : ces crédits ne reviendront pas dans mon portefeuille et
-          expireront après 30 jours, même déplacés.
-        </label>
+          {t("\r\n          Je confirme l’engagement : ces crédits ne reviendront pas dans mon portefeuille et\r\n          expireront après 30 jours, même déplacés.\r\n        ")}</label>
         <button
           className="primary full"
           disabled={
@@ -362,13 +346,13 @@ export default function SponsorConsole({
             amountCents > data.wallet.balance_cents
           }
         >
-          Engager {amount || '0'} crédits <ArrowUpRight size={14} />
+          {t("\r\n          Engager ")}{amount || '0'} {t(" crédits ")}<ArrowUpRight size={14} />
         </button>
       </form>
       {groups.length > 0 && (
         <>
           <div className="sponsor-section">
-            <h3>Vos positions</h3>
+            <h3>{t("Vos positions")}</h3>
             {groups.map((group) => {
               const winner = data.bids.some(
                 (bid) =>
@@ -377,17 +361,17 @@ export default function SponsorConsole({
               return (
                 <div className="sponsor-position" key={group.key}>
                   <div>
-                    <strong>{countries.find((item) => item.id === group.country)?.name}</strong>
+                    <strong>{(countries.find((item) => item.id === group.country) ? countryLabel(countries.find((item) => item.id === group.country)!, locale) : '')}</strong>
                     <small>
                       {data.campaigns.find((item) => item.id === group.campaign)?.name} ·{' '}
                       {winner
-                        ? 'En tête'
+                        ? t("En tête")
                         : group.amount < sponsorMinimum(group.country)
-                          ? `Sous le minimum de ${sponsorMinimum(group.country) / 100}`
-                          : 'Dépassé ou visuel suspendu'}
+                          ? t("Sous le minimum de {0}", [sponsorMinimum(group.country) / 100])
+                          : t("Dépassé ou visuel suspendu")}
                     </small>
                     <span>
-                      <Clock3 size={11} /> Prochaine expiration : {date(group.expires)}
+                      <Clock3 size={11} /> {t(" Prochaine expiration : ")}{date(group.expires)}
                     </span>
                   </div>
                   <b>{credits(group.amount)}</b>
@@ -409,15 +393,14 @@ export default function SponsorConsole({
                     countryId: destination,
                     amountCents: moveCents,
                   },
-                  'Fonds déplacés. Leurs dates d’expiration sont conservées.',
+                  t("Fonds déplacés. Leurs dates d’expiration sont conservées."),
                 );
             }}
           >
-            <h3>Déplacer des fonds engagés</h3>
+            <h3>{t("Déplacer des fonds engagés")}</h3>
             <label>
-              Position de départ
-              <select
-                aria-label="Position sponsor à déplacer"
+              {t("\r\n              Position de départ\r\n              ")}<select
+                aria-label={t("Position sponsor à déplacer")}
                 value={source?.key || ''}
                 onChange={(event) => {
                   setSourceKey(event.target.value);
@@ -427,47 +410,42 @@ export default function SponsorConsole({
               >
                 {groups.map((group) => (
                   <option key={group.key} value={group.key}>
-                    {countries.find((item) => item.id === group.country)?.name} ·{' '}
-                    {credits(group.amount)} crédits
-                  </option>
+                    {(countries.find((item) => item.id === group.country) ? countryLabel(countries.find((item) => item.id === group.country)!, locale) : '')} ·{' '}
+                    {credits(group.amount)} {t(" crédits\r\n                  ")}</option>
                 ))}
               </select>
             </label>
             <label>
-              Visuel de destination
-              <select
-                aria-label="Visuel de destination sponsor"
+              {t("\r\n              Visuel de destination\r\n              ")}<select
+                aria-label={t("Visuel de destination sponsor")}
                 value={moveTargetCampaign}
                 onChange={(event) => setMoveCampaign(event.target.value)}
               >
                 <option value="" disabled>
-                  Choisir un visuel approuvé
-                </option>
+                  {t("\r\n                  Choisir un visuel approuvé\r\n                ")}</option>
                 {approved.map((item) => (
                   <option key={item.id} value={item.id}>
-                    {item.name} · dès {sponsorMinimum(item.id) / 100} €
+                    {item.name} {t(" · dès ")}{sponsorMinimum(item.id) / 100} €
                   </option>
                 ))}
               </select>
             </label>
             <label>
-              Pays de destination
-              <select
-                aria-label="Destination des fonds sponsor"
+              {t("\r\n              Pays de destination\r\n              ")}<select
+                aria-label={t("Destination des fonds sponsor")}
                 value={destination}
                 onChange={(event) => setDestination(event.target.value)}
               >
                 {countries.map((item) => (
                   <option key={item.id} value={item.id}>
-                    {item.name}
+                    {countryLabel(item, locale)}
                   </option>
                 ))}
               </select>
             </label>
             <label>
-              Crédits à déplacer
-              <input
-                aria-label="Crédits sponsor à déplacer"
+              {t("\r\n              Crédits à déplacer\r\n              ")}<input
+                aria-label={t("Crédits sponsor à déplacer")}
                 type="number"
                 min="0.01"
                 step="0.01"
@@ -478,10 +456,8 @@ export default function SponsorConsole({
               />
             </label>
             <p className="muted">
-              Les fonds les plus anciens sont déplacés d’abord. Laissez zéro ou au moins{' '}
-              {sponsorMinimum(source?.country || '') / 100} crédits au départ ; la destination doit
-              atteindre {sponsorMinimum(destination) / 100} crédits. Aucun retour au portefeuille.
-            </p>
+              {t("\r\n              Les fonds les plus anciens sont déplacés d’abord. Laissez zéro ou au moins")}{' '}
+              {sponsorMinimum(source?.country || '') / 100} {t(" crédits au départ ; la destination doit\r\n              atteindre ")}{sponsorMinimum(destination) / 100} {t(" crédits. Aucun retour au portefeuille.\r\n            ")}</p>
             <button
               className="secondary full"
               disabled={
@@ -492,20 +468,19 @@ export default function SponsorConsole({
                 moveCents > (source?.amount || 0)
               }
             >
-              Déplacer {credits(moveCents || 0)} crédits <ArrowRight size={14} />
+              {t("\r\n              Déplacer ")}{credits(moveCents || 0)} {t(" crédits ")}<ArrowRight size={14} />
             </button>
           </form>
           <details className="sponsor-section">
-            <summary>Dates d’expiration de vos fonds</summary>
+            <summary>{t("Dates d’expiration de vos fonds")}</summary>
             {data.stakes.map((stake) => (
               <div className="sponsor-fund-lot" key={stake.id}>
                 <span>
-                  {countries.find((item) => item.id === stake.country_id)?.name}
-                  <small>Premier placement : {date(stake.placed_at)}</small>
+                  {(countries.find((item) => item.id === stake.country_id) ? countryLabel(countries.find((item) => item.id === stake.country_id)!, locale) : '')}
+                  <small>{t("Premier placement : ")}{date(stake.placed_at)}</small>
                 </span>
                 <span>
-                  {credits(stake.amount_cents)} crédits
-                  <small>Expire le {date(stake.expires_at)}</small>
+                  {credits(stake.amount_cents)} {t(" crédits\r\n                  ")}<small>{t("Expire le ")}{date(stake.expires_at)}</small>
                 </span>
               </div>
             ))}
@@ -513,17 +488,17 @@ export default function SponsorConsole({
         </>
       )}
       <details className="sponsor-section">
-        <summary>Journal des crédits</summary>
+        <summary>{t("Journal des crédits")}</summary>
         {data.ledger.map((entry) => (
           <div className="sponsor-fund-lot" key={entry.id}>
             <span>
               {(
                 {
-                  credit: 'Recharge confirmée',
-                  place: 'Fonds engagés',
-                  move: 'Déplacement',
-                  expire: 'Fonds expirés',
-                  refund: 'Remboursement Stripe',
+                  credit: t('Recharge confirmée'),
+                  place: t('Fonds engagés'),
+                  move: t('Déplacement'),
+                  expire: t('Fonds expirés'),
+                  refund: t('Remboursement Stripe'),
                 } as Record<string, string>
               )[entry.kind] || entry.kind}
               <small>{date(entry.created_at)}</small>
@@ -533,8 +508,7 @@ export default function SponsorConsole({
         ))}
       </details>
       <p className="muted">
-        Service édité par {OPERATOR.name} — {OPERATOR.status}, {OPERATOR.country}. Assistance
-        sponsoring : <a href={`mailto:${OPERATOR.email}`}>{OPERATOR.email}</a>.
+        {t("\r\n        Service édité par ")}{OPERATOR.name} — {OPERATOR.status}, {OPERATOR.country}{t(". Assistance\r\n        sponsoring : ")}<a href={`mailto:${OPERATOR.email}`}>{OPERATOR.email}</a>.
       </p>
       <SupportCreator />
     </div>

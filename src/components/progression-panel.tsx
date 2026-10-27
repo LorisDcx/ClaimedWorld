@@ -1,4 +1,7 @@
 'use client';
+import { countryLabel } from '@/i18n/countries';
+import { useT, useLocale } from '@/i18n/provider';
+
 import { useState } from 'react';
 import { ArrowUpRight, Check, Flag, LockKeyhole, Sparkles, Target, Trophy } from 'lucide-react';
 import {
@@ -27,41 +30,39 @@ export default function ProgressionPanel({
   onSignup: () => void;
   onTutorial: () => void;
 }) {
+  const t = useT();
+  const locale = useLocale();
   const [tab, setTab] = useState('achievements');
   const [slot, setSlot] = useState<CosmeticSlot>('frame');
   const progress = state?.progression;
   const unlocked = new Set(progress?.unlocks.map((u) => u.id));
   const color = state?.player?.color || '#111111';
   const appearance = progress?.appearance;
-  const rewardName = (id: string) => COSMETICS.find((c) => c.id === id)?.name;
+  const rewardName = (id: string) => t(COSMETICS.find((c) => c.id === id)?.name);
   return (
     <div className="progression-panel">
       <div className="progression-intro">
-        <span className="eyebrow">VOTRE EMPREINTE / À VOTRE RYTHME</span>
-        <h3>Une carte. Votre histoire.</h3>
+        <span className="eyebrow">{t("VOTRE EMPREINTE / À VOTRE RYTHME")}</span>
+        <h3>{t("Une carte. Votre histoire.")}</h3>
         <p>
-          Des défis à accomplir et une identité à construire. Vos déblocages restent acquis entre
-          les saisons.
-        </p>
+          {t("\r\n          Des défis à accomplir et une identité à construire. Vos déblocages restent acquis entre\r\n          les saisons.\r\n        ")}</p>
         <div className="progression-totals">
           <span>
-            <b>{unlocked.size}</b> / {ACHIEVEMENTS.length + CONTROL_OBJECTIVES.length} accomplis
-          </span>
+            <b>{unlocked.size}</b> / {ACHIEVEMENTS.length + CONTROL_OBJECTIVES.length} {t(" accomplis\r\n          ")}</span>
           <span>
-            <Sparkles size={13} /> Récompenses visuelles uniquement
-          </span>
+            <Sparkles size={13} /> {t(" Récompenses visuelles uniquement\r\n          ")}</span>
         </div>
         {state?.player && (
           <button className="text-button progression-tutorial" onClick={onTutorial}>
-            Rejouer le didacticiel <ArrowUpRight size={12} />
+            {t("\r\n            Rejouer le didacticiel ")}<ArrowUpRight size={12} />
           </button>
         )}
       </div>
-      <div className="progression-tabs" role="tablist" aria-label="Progression">
+      <div className="progression-tabs" role="tablist" aria-label={t("Progression")}>
         {[
-          ['achievements', 'Succès', Trophy],
-          ['objectives', 'Objectifs', Target],
-          ['appearance', 'Apparence', Sparkles],
+          ['achievements', t("Succès"), Trophy],
+          ['objectives', t('Objectifs'), Target],
+          ['appearance', t('Apparence'), Sparkles],
         ].map(([id, label, Icon]) => {
           const TabIcon = Icon as typeof Trophy;
           return (
@@ -82,9 +83,9 @@ export default function ProgressionPanel({
       </div>
       {!state?.player && (
         <div className="progression-signup">
-          <p>Connectez-vous pour enregistrer vos succès et choisir un objectif.</p>
+          <p>{t("Connectez-vous pour enregistrer vos succès et choisir un objectif.")}</p>
           <button className="primary full" onClick={onSignup}>
-            Commencer gratuitement <ArrowUpRight size={15} />
+            {t("\r\n            Commencer gratuitement ")}<ArrowUpRight size={15} />
           </button>
         </div>
       )}
@@ -100,12 +101,12 @@ export default function ProgressionPanel({
                     {earned ? <Check size={17} /> : String(index + 1).padStart(2, '0')}
                   </span>
                   <div>
-                    <h4>{success.name}</h4>
-                    <p>{success.description}</p>
+                    <h4>{t(success.name)}</h4>
+                    <p>{t(success.description)}</p>
                     <div
                       className="achievement-meter"
                       role="progressbar"
-                      aria-label={success.name}
+                      aria-label={t(success.name)}
                       aria-valuemin={0}
                       aria-valuemax={success.target}
                       aria-valuenow={Math.floor(value)}
@@ -115,7 +116,7 @@ export default function ProgressionPanel({
                     <div className="achievement-meta">
                       <span>
                         {earned
-                          ? `Acquis le ${new Date(earned.unlockedAt).toLocaleDateString('fr-FR')}`
+                          ? t("Acquis le {0}", [new Date(earned.unlockedAt).toLocaleDateString('fr-FR')])
                           : `${Math.floor(value).toLocaleString('fr-FR')} / ${success.target.toLocaleString('fr-FR')}${success.metric === 'holdHours' ? ' h' : ''}`}
                       </span>
                       <span>
@@ -132,10 +133,7 @@ export default function ProgressionPanel({
         {tab === 'objectives' && (
           <>
             <p className="progression-note">
-              Choisissez une mission, puis gardez tous ses territoires en votre nom pendant 1 heure
-              sans interruption. Un seul objectif suivi à la fois. Changer de mission recommence le
-              compteur ; une nouvelle saison demande une nouvelle sélection.
-            </p>
+              {t("\r\n              Choisissez une mission, puis gardez tous ses territoires en votre nom pendant 1 heure\r\n              sans interruption. Un seul objectif suivi à la fois. Changer de mission recommence le\r\n              compteur ; une nouvelle saison demande une nouvelle sélection.\r\n            ")}</p>
             <div className="objective-list">
               {CONTROL_OBJECTIVES.map((goal) => {
                 const active = progress?.objective?.id === goal.id ? progress.objective : null;
@@ -149,10 +147,10 @@ export default function ProgressionPanel({
                   >
                     <div className="objective-heading">
                       <Target size={18} />
-                      <h4>{goal.name}</h4>
-                      <span>{completed ? 'ACCOMPLI' : active ? 'EN COURS' : '01 H'}</span>
+                      <h4>{t(goal.name)}</h4>
+                      <span>{completed ? t('Accompli').toUpperCase() : active ? t("EN COURS") : '01 H'}</span>
                     </div>
-                    <p>{goal.description}</p>
+                    <p>{t(goal.description)}</p>
                     <div className="objective-countries">
                       {goal.countries.map((id) => (
                         <button key={id} onClick={() => onCountry(id)}>
@@ -161,7 +159,7 @@ export default function ProgressionPanel({
                           ) : (
                             <Flag size={11} />
                           )}
-                          {countries.find((c) => c.id === id)?.name}
+                          {(countries.find((c) => c.id === id) ? countryLabel(countries.find((c) => c.id === id)!, locale) : '')}
                         </button>
                       ))}
                     </div>
@@ -170,7 +168,7 @@ export default function ProgressionPanel({
                         <div
                           className="achievement-meter"
                           role="progressbar"
-                          aria-label={`Contrôle : ${goal.name}`}
+                          aria-label={t("Contrôle : {0}", [t(goal.name)])}
                           aria-valuemin={0}
                           aria-valuemax={60}
                           aria-valuenow={Math.floor(held / 60000)}
@@ -178,10 +176,10 @@ export default function ProgressionPanel({
                           <i style={{ width: `${(held / goal.duration) * 100}%` }} />
                         </div>
                         <p className="objective-status">
-                          {active.controlled.length} / {goal.countries.length} territoires ·{' '}
+                          {active.controlled.length} / {goal.countries.length} {t(" territoires ·")}{' '}
                           {active.controlled.length === goal.countries.length
-                            ? `${remaining} min de contrôle restant`
-                            : 'Le compteur attend tous les territoires.'}
+                            ? t("{0} min de contrôle restant", [remaining])
+                            : t("Le compteur attend tous les territoires.")}
                         </p>
                       </>
                     )}
@@ -196,21 +194,20 @@ export default function ProgressionPanel({
                         onClick={() =>
                           void act(
                             { action: 'select-objective', objectiveId: goal.id },
-                            'Objectif suivi. À vous de jouer !',
+                            t("Objectif suivi. À vous de jouer !"),
                           )
                         }
                       >
                         {completed ? (
                           <>
                             <Check size={12} />
-                            Accompli
-                          </>
+                            {t("\r\n                            Accompli\r\n                          ")}</>
                         ) : active ? (
-                          'Objectif suivi'
+                          t("Objectif suivi")
                         ) : progress?.objective ? (
-                          'Changer d’objectif'
+                          t("Changer d’objectif")
                         ) : (
-                          'Suivre cet objectif'
+                          t("Suivre cet objectif")
                         )}
                       </button>
                     </div>
@@ -219,9 +216,7 @@ export default function ProgressionPanel({
               })}
             </div>
             <p className="progression-note">
-              Ces missions personnelles ne modifient pas les cibles de votre alliance. Le temps
-              continue hors ligne ; les mises d’Influence expirent toujours après 72 heures.
-            </p>
+              {t("\r\n              Ces missions personnelles ne modifient pas les cibles de votre alliance. Le temps\r\n              continue hors ligne ; les mises d’Influence expirent toujours après 72 heures.\r\n            ")}</p>
           </>
         )}
         {tab === 'appearance' && (
@@ -234,10 +229,10 @@ export default function ProgressionPanel({
                 {state?.player?.username.slice(0, 2).toUpperCase() || 'VO'}
               </span>
               <div>
-                <h4>{state?.player?.username || 'Votre pseudo'}</h4>
-                <p>{appearance?.title || 'Votre histoire commence ici'}</p>
+                <h4>{state?.player?.username || t("Votre pseudo")}</h4>
+                <p>{appearance?.title || t("Votre histoire commence ici")}</p>
               </div>
-              <svg viewBox="0 0 72 64" width="72" height="64" aria-label="Aperçu du contour">
+              <svg viewBox="0 0 72 64" width="72" height="64" aria-label={t("Aperçu du contour")}>
                 <path
                   d="M10 14 38 5 61 22 52 52 24 58 7 38Z"
                   fill="#141414"
@@ -255,7 +250,7 @@ export default function ProgressionPanel({
                 )}
               </svg>
             </div>
-            <div className="cosmetic-slots" aria-label="Catégorie d’apparence">
+            <div className="cosmetic-slots" aria-label={t("Catégorie d’apparence")}>
               {(
                 [
                   ['frame', 'Cadres'],
@@ -288,8 +283,7 @@ export default function ProgressionPanel({
                           className={`avatar frame-${item.style}`}
                           style={{ background: color }}
                         >
-                          VO
-                        </span>
+                          {t("\r\n                          VO\r\n                        ")}</span>
                       ) : slot === 'title' ? (
                         <span className="sample-title">{item.style || '—'}</span>
                       ) : (
@@ -306,29 +300,27 @@ export default function ProgressionPanel({
                         </svg>
                       )}
                     </div>
-                    <h4>{item.name}</h4>
-                    <p>{available ? 'Dans votre collection' : requirement}</p>
+                    <h4>{t(item.name)}</h4>
+                    <p>{available ? t("Dans votre collection") : requirement}</p>
                     <button
                       className="secondary full"
                       disabled={!state?.player || !!busy || !available || equipped}
                       onClick={() =>
                         void act(
                           { action: 'equip-cosmetic', cosmeticId: item.id },
-                          'Apparence équipée.',
+                          t("Apparence équipée."),
                         )
                       }
                     >
                       {equipped ? (
                         <>
                           <Check size={12} />
-                          Équipé
-                        </>
+                          {t("\r\n                          Équipé\r\n                        ")}</>
                       ) : !available ? (
                         <>
-                          <LockKeyhole size={12} />À débloquer
-                        </>
+                          <LockKeyhole size={12} />{t("À débloquer\r\n                        ")}</>
                       ) : (
-                        'Équiper'
+                        t("Équiper")
                       )}
                     </button>
                   </article>
@@ -336,10 +328,7 @@ export default function ProgressionPanel({
               })}
             </div>
             <p className="progression-note">
-              Votre cadre et votre titre vous suivent sur votre profil et dans les classements. Les
-              contours habillent vos territoires personnels. Les récompenses n’augmentent ni vos
-              gains, ni votre stock, ni votre score.
-            </p>
+              {t("\r\n              Votre cadre et votre titre vous suivent sur votre profil et dans les classements. Les\r\n              contours habillent vos territoires personnels. Les récompenses n’augmentent ni vos\r\n              gains, ni votre stock, ni votre score.\r\n            ")}</p>
           </>
         )}
       </div>

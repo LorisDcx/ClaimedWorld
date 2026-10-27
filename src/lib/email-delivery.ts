@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import { verificationEmail } from './email-template';
+import type { Locale } from '@/i18n/locales';
 
 export function testEmailOutbox() {
   return (
@@ -39,8 +40,8 @@ export function smtpTransport() {
   });
 }
 
-export async function sendVerificationEmail(email: string, code: string) {
-  const message = verificationEmail(code);
+export async function sendVerificationEmail(email: string, code: string, locale: Locale = 'fr') {
+  const message = verificationEmail(code, locale);
   if (!emailDeliveryConfigured()) throw new Error('Email delivery unavailable');
   const outbox = testEmailOutbox();
   if (outbox) {

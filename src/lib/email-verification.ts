@@ -4,6 +4,7 @@ import { digest, GameError, hashPassword, rateLimit } from './auth';
 import { emailIdentity, registrationPassword } from './email-policy';
 import { emailDeliveryConfigured, sendVerificationEmail } from './email-delivery';
 import { z } from 'zod';
+import { serverLocale } from '@/i18n/server';
 
 export const EMAIL_CHALLENGE_COOKIE = 'claimed_email_challenge';
 export const EMAIL_CODE_LIFETIME = 10 * 60000;
@@ -54,7 +55,9 @@ function requireDelivery() {
 }
 async function deliver(email: string, code: string, tokenHash: string) {
   try {
-    await sendVerificationEmail(email, code);
+    // Outside HTTP requests (tests/scripts), keep the historical French fallback.
+    const locale = await serverLocale().catch(() => 'fr' as const);
+    await sendVerificationEmail(email, code, locale);
   } catch {
     await run('DELETE FROM email_challenges WHERE token_hash=?', tokenHash);
     throw new GameError(
