@@ -1,3 +1,4 @@
+import { gamePost } from './email-helpers';
 import { test, expect } from '@playwright/test';
 import { DatabaseSync } from 'node:sqlite';
 import { mkdirSync } from 'node:fs';
@@ -8,7 +9,7 @@ test.beforeEach(() => {
   const path = process.env.E2E_DATABASE_PATH!;
   expect(path).toMatch(/^\.\/data\/test-\d+\.sqlite$/);
   const db = new DatabaseSync(path);
-  db.prepare("DELETE FROM rate_limits WHERE key='auth:local'").run();
+  db.exec('DELETE FROM rate_limits');
   db.close();
 });
 
@@ -39,29 +40,24 @@ test('progression, cosmetic equipment, offline objectives and targeted frontier 
 }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
-  const response = await page.request.post('/api/game', {
-    data: { action: 'signup', username: 'ProgressExplorer', password, color: '#39a5c5' },
+  const response = await gamePost(page.request, {
+    action: 'signup',
+    username: 'ProgressExplorer',
+    password,
+    color: '#39a5c5',
   });
   expect(response.ok()).toBeTruthy();
   const initial = (await response.json()) as Snapshot;
   const userId = initial.player!.id;
-  await page.request.post('/api/game', {
-    data: { action: 'tutorial', step: 4, dismissed: false },
-  });
+  await gamePost(page.request, { action: 'tutorial', step: 4, dismissed: false });
   expect(initial.progression!.unlocks).toHaveLength(0);
   expect(
     (
-      await page.request.post('/api/game', {
-        data: { action: 'equip-cosmetic', cosmeticId: 'border-double' },
-      })
+      await gamePost(page.request, { action: 'equip-cosmetic', cosmeticId: 'border-double' })
     ).status(),
   ).toBe(400);
   expect(
-    (
-      await page.request.post('/api/game', {
-        data: { action: 'tutorial', step: 999, dismissed: false },
-      })
-    ).status(),
+    (await gamePost(page.request, { action: 'tutorial', step: 999, dismissed: false })).status(),
   ).toBe(400);
   for (const [countryId, amount] of [
     ['012', 50],
@@ -69,20 +65,18 @@ test('progression, cosmetic equipment, offline objectives and targeted frontier 
     ['480', 1],
   ] as const)
     expect(
-      (
-        await page.request.post('/api/game', { data: { action: 'contribute', countryId, amount } })
-      ).ok(),
+      (await gamePost(page.request, { action: 'contribute', countryId, amount })).ok(),
     ).toBeTruthy();
   const rival = await playwright.request.newContext({ baseURL: 'http://127.0.0.1:3001' });
   const third = await playwright.request.newContext({ baseURL: 'http://127.0.0.1:3001' });
-  const rivalWorld = (await rival
-    .post('/api/game', { data: { action: 'signup', username: 'FrontierDefender', password } })
-    .then((r) => r.json())) as Snapshot;
-  await rival.post('/api/game', { data: { action: 'contribute', countryId: '434', amount: 20 } });
-  await third.post('/api/game', {
-    data: { action: 'signup', username: 'FrontierThird', password },
-  });
-  await third.post('/api/game', { data: { action: 'contribute', countryId: '434', amount: 15 } });
+  const rivalWorld = (await gamePost(rival, {
+    action: 'signup',
+    username: 'FrontierDefender',
+    password,
+  }).then((r) => r.json())) as Snapshot;
+  await gamePost(rival, { action: 'contribute', countryId: '434', amount: 20 });
+  await gamePost(third, { action: 'signup', username: 'FrontierThird', password });
+  await gamePost(third, { action: 'contribute', countryId: '434', amount: 15 });
   await page.goto('/?country=434');
   const panel = page.getByRole('complementary', { name: 'Conquête de Libye' });
   await panel.getByRole('tab', { name: 'Attaquer', exact: true }).click();

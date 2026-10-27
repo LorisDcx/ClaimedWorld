@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { randomBytes, randomUUID } from 'node:crypto';
+import { cookies } from 'next/headers';
 import { z } from 'zod';
 import countries from '@/data/countries.json';
 import {
@@ -18,14 +19,19 @@ import {
   createSession,
   endSession,
   GameError,
-  hashPassword,
   rateLimit,
   sessionUser,
   assertSameOrigin,
   readJsonBody,
   requestIp,
   digest,
+  requireVerifiedEmail,
 } from '@/lib/auth';
+import {
+  beginEmailVerification,
+  EMAIL_CHALLENGE_COOKIE,
+  EMAIL_CODE_LIFETIME,
+} from '@/lib/email-verification';
 import { CONTRIBUTION_LIFETIME, DAY, ALLIANCE_LIMIT, TREASURY_CAP } from '@/lib/rules';
 import type { Alliance } from '@/lib/types';
 import { moveSponsorFunds, placeSponsorFunds, SponsorError, sponsorMarket } from '@/lib/sponsoring';
@@ -189,31 +195,29 @@ export async function POST(request: Request) {
       await rateLimit(`auth:${ip}`, 20, 15 * 60000);
       const name = username.parse(body.username);
       await rateLimit(`auth-user:${digest(name.toLowerCase())}`, 30, 15 * 60000);
-      const password = z
-        .string()
-        .min(action === 'signup' ? 12 : 8)
-        .max(128)
-        .parse(body.password);
+      const password = z.string().min(8).max(128).parse(body.password);
       if (action === 'signup') {
         requireThat(
-          !(await get('SELECT id FROM users WHERE lower(username)=lower(?)', name)),
-          'Ce pseudonyme est déjà utilisé.',
+          !(await sessionUser()),
+          'Déconnectez-vous avant de créer un autre compte.',
           409,
         );
         const chosen = color.parse(body.color || '#ff5d35');
-        const uid = randomUUID();
-        await run(
-          'INSERT INTO users(id,username,password,color,created_at,generation_anchor) VALUES(?,?,?,?,?,?)',
-          uid,
-          name,
-          hashPassword(password),
-          chosen,
-          now,
+        const challenge = await beginEmailVerification(
+          { email: body.email, username: name, password, color: chosen, ip },
           now,
         );
-        await createSession(uid);
-        await notifyWorld();
-        return NextResponse.json(await snapshot(uid));
+        (await cookies()).set(EMAIL_CHALLENGE_COOKIE, challenge.token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax',
+          path: '/',
+          maxAge: EMAIL_CODE_LIFETIME / 1000,
+        });
+        return NextResponse.json(
+          { verificationRequired: true, email: challenge.email, expiresAt: challenge.expiresAt },
+          { status: 202, headers: { 'Cache-Control': 'no-store' } },
+        );
       }
       const user = await get<{ id: string; password: string; banned: number }>(
         'SELECT * FROM users WHERE lower(username)=lower(?)',
@@ -233,6 +237,7 @@ export async function POST(request: Request) {
     }
     const userId = await sessionUser();
     requireThat(userId, 'Connectez-vous pour participer.', 401);
+    await requireVerifiedEmail(userId);
     const user = await publicPlayer(userId, now);
     requireThat(user, 'Compte introuvable.', 401);
     await rateLimit(`action:${userId}`, 60, 60000);

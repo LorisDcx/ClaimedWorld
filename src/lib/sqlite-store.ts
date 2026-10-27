@@ -82,6 +82,20 @@ export function database(): DatabaseSync {
     connection.exec('ALTER TABLE sponsors ADD COLUMN logo_id TEXT REFERENCES uploads(id)');
   if (!all<{ name: string }>('PRAGMA table_info(users)').some((c) => c.name === 'is_admin'))
     connection.exec('ALTER TABLE users ADD COLUMN is_admin INTEGER NOT NULL DEFAULT 0');
+  if (!all<{ name: string }>('PRAGMA table_info(users)').some((c) => c.name === 'email'))
+    connection.exec(
+      'ALTER TABLE users ADD COLUMN email TEXT; ALTER TABLE users ADD COLUMN email_key TEXT; ALTER TABLE users ADD COLUMN email_verified_at INTEGER;',
+    );
+  connection.exec(`
+    CREATE UNIQUE INDEX IF NOT EXISTS users_email_key_unique ON users(email_key) WHERE email_key IS NOT NULL;
+    CREATE TABLE IF NOT EXISTS email_challenges (
+      token_hash TEXT PRIMARY KEY, email TEXT NOT NULL, email_key TEXT NOT NULL,
+      user_id TEXT REFERENCES users(id) ON DELETE CASCADE,
+      username TEXT, password TEXT, color TEXT, code_hash TEXT NOT NULL,
+      created_at INTEGER NOT NULL, expires_at INTEGER NOT NULL, attempts INTEGER NOT NULL DEFAULT 0
+    );
+    CREATE INDEX IF NOT EXISTS email_challenges_expiry ON email_challenges(expires_at);
+  `);
   if (!all<{ name: string }>('PRAGMA table_info(seasons)').some((c) => c.name === 'processed_at'))
     connection.exec('ALTER TABLE seasons ADD COLUMN processed_at INTEGER NOT NULL DEFAULT 0');
   if (

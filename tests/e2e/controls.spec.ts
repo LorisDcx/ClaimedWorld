@@ -1,3 +1,4 @@
+import { gamePost } from './email-helpers';
 import { test, expect } from '@playwright/test';
 import { randomUUID } from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
@@ -5,7 +6,7 @@ test.beforeEach(() => {
   const path = process.env.E2E_DATABASE_PATH!;
   expect(path).toMatch(/^\.\/data\/test-\d+\.sqlite$/);
   const db = new DatabaseSync(path);
-  db.prepare("DELETE FROM rate_limits WHERE key='auth:local'").run();
+  db.exec('DELETE FROM rate_limits');
   db.close();
 });
 
@@ -13,7 +14,7 @@ test('stock troops attack through a one-point border, and friendly targets requi
   page,
   playwright,
 }) => {
-  const post = (data: Record<string, unknown>) => page.request.post('/api/game', { data });
+  const post = (data: Record<string, unknown>) => gamePost(page.request, data);
   const password = 'Controls-password-123!';
   let response = await post({ action: 'signup', username: 'StockBorderUI', password });
   const me = (await response.json()).player;
@@ -28,7 +29,7 @@ test('stock troops attack through a one-point border, and friendly targets requi
   const world = await page.request.get('/api/game').then((r) => r.json());
   const faction = world.alliances.find((a: { id: string }) => a.id === world.player.alliance_id);
   const rival = await playwright.request.newContext({ baseURL: 'http://127.0.0.1:3001' });
-  const rivalPost = (data: Record<string, unknown>) => rival.post('/api/game', { data });
+  const rivalPost = (data: Record<string, unknown>) => gamePost(rival, data);
   response = await rivalPost({ action: 'signup', username: 'FriendlyDefenderUI', password });
   const enemy = (await response.json()).player;
   await rivalPost({ action: 'contribute', countryId: '040', amount: 50 });
@@ -74,8 +75,10 @@ test('stock troops attack through a one-point border, and friendly targets requi
 test('admin reset exposes a warning and typed confirmation while cancellation leaves conquests intact', async ({
   page,
 }) => {
-  await page.request.post('/api/game', {
-    data: { action: 'login', username: 'AdminTest', password: 'Admin-password-123!' },
+  await gamePost(page.request, {
+    action: 'login',
+    username: 'AdminTest',
+    password: 'Admin-password-123!',
   });
   await page.goto('/');
   await page.getByRole('button', { name: 'Administration', exact: true }).click();
@@ -91,15 +94,13 @@ test('admin reset exposes a warning and typed confirmation while cancellation le
   await page.screenshot({ path: 'artifacts/admin-reset-warning.png' });
   await section.getByRole('button', { name: 'Annuler', exact: true }).click();
   await expect(confirm).toHaveCount(0);
-  const visitor = await page.request.post('/api/game', { data: { action: 'logout' } });
+  const visitor = await gamePost(page.request, { action: 'logout' });
   expect(visitor.ok()).toBeTruthy();
-  const forbidden = await page.request.post('/api/game', {
-    data: {
-      action: 'admin-reset-map',
-      confirmation: 'REINITIALISER',
-      resetBefore: Date.now(),
-      seasonId: 1,
-    },
+  const forbidden = await gamePost(page.request, {
+    action: 'admin-reset-map',
+    confirmation: 'REINITIALISER',
+    resetBefore: Date.now(),
+    seasonId: 1,
   });
   expect(forbidden.status()).toBe(401);
 });
