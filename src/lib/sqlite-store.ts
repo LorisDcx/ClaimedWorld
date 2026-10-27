@@ -4,6 +4,7 @@ import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { SEASON_LENGTH, STOCK_CAP } from './rules';
 import { hashPassword } from './password';
+import { sponsorEnvironmentQuery, sponsorFinancialTables } from './sponsor-environment';
 type Row = Record<string, string | number | null>;
 let connection: DatabaseSync;
 let transactionDepth = 0;
@@ -60,6 +61,22 @@ export function database(): DatabaseSync {
     CREATE TABLE IF NOT EXISTS sponsor_clock (id INTEGER PRIMARY KEY CHECK(id=1), processed_at INTEGER NOT NULL);
     CREATE TABLE IF NOT EXISTS sponsor_disputes (payment_intent TEXT PRIMARY KEY, event_id TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'open', created_at INTEGER NOT NULL);
     CREATE TABLE IF NOT EXISTS sponsor_ledger (id TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id), kind TEXT NOT NULL, amount_cents INTEGER NOT NULL, wallet_delta INTEGER NOT NULL DEFAULT 0, from_country TEXT, to_country TEXT, stake_id TEXT, topup_id TEXT, created_at INTEGER NOT NULL);
+  `);
+  for (const table of sponsorFinancialTables) {
+    const definition = connection
+      .prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name=?")
+      .get(table) as { sql: string };
+    connection.exec(
+      sponsorEnvironmentQuery(
+        definition.sql.replace(/^CREATE TABLE(?: IF NOT EXISTS)?/i, 'CREATE TABLE IF NOT EXISTS'),
+        'live',
+      ),
+    );
+  }
+  connection.exec(`
+    CREATE INDEX IF NOT EXISTS live_sponsor_stakes_active ON live_sponsor_stakes(country_id,expires_at) WHERE status='active';
+    CREATE INDEX IF NOT EXISTS live_sponsor_stakes_user ON live_sponsor_stakes(user_id,status,expires_at);
+    CREATE INDEX IF NOT EXISTS live_sponsor_ledger_user ON live_sponsor_ledger(user_id,created_at DESC,id DESC);
   `);
   if (!all<{ name: string }>('PRAGMA table_info(sponsors)').some((c) => c.name === 'logo_id'))
     connection.exec('ALTER TABLE sponsors ADD COLUMN logo_id TEXT REFERENCES uploads(id)');
