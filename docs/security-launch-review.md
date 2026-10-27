@@ -1,6 +1,6 @@
 # Revue avant lancement — 27 octobre 2026
 
-Le jeu gratuit peut être essayé. **Le sponsoring payant réel n’est pas encore prêt à ouvrir.** Cette revue porte sur le code, les accès cloud et des vérifications ciblées ; elle ne constitue ni un test d’intrusion indépendant ni une certification de résistance à une campagne de grande ampleur.
+Le jeu gratuit est disponible. La configuration des recharges sponsor passe sur Stripe réel à la demande de l’exploitant. **Cette mise en service technique ne confirme pas que les mentions professionnelles sont complètes** : une domiciliation professionnelle et un numéro de contact restent à renseigner. L’adresse personnelle de l’exploitant n’est pas publiée. Cette revue porte sur le code, les accès cloud et des vérifications ciblées ; elle ne constitue ni un test d’intrusion indépendant ni une certification de résistance à une campagne de grande ampleur.
 
 ## Vérifications et protections
 
@@ -10,7 +10,7 @@ Le jeu gratuit peut être essayé. **Le sponsoring payant réel n’est pas enco
 - La remise à zéro exige le rôle administrateur, une confirmation écrite récente **et le mot de passe actuel**. Les échecs de réauthentification restent comptés même si la transaction échoue. Le reset conserve le sponsoring et reste protégé contre les répétitions de la même demande.
 - Logos : décodage/réencodage d’images PNG/JPEG/WebP, dimensions et poids bornés, pas de SVG actif accepté. Fichiers Supabase privés, accès aux annonces soumis à leur statut.
 - Stripe : vérification de signature, montants/devises/métadonnées contrôlés, traitement idempotent des événements et gestion des remboursements/litiges. Un événement signé provenant du mauvais environnement est désormais refusé.
-- Un simple remplacement de la clé de test par une clé live ne suffit plus à ouvrir les paiements : `LIVE_PAYMENT_LAUNCH_APPROVED` doit être explicitement activé après la préparation ci-dessous. Il reste désactivé.
+- Un simple remplacement de la clé de test par une clé live ne suffit pas à ouvrir les paiements : `LIVE_PAYMENT_LAUNCH_APPROVED` doit être explicitement activé. Les clés réelles et ce paramètre ont été préparés pour le déploiement de production demandé par l’exploitant.
 - Politique CSP ajoutée, avec restrictions des ressources, connexions et formulaires, interdiction des objets embarqués et des frames parentes. Elle autorise encore les scripts inline nécessaires au rendu actuel ; ce n’est pas une CSP stricte à nonce. Headers nosniff, Referrer-Policy, Permissions-Policy et X-Frame-Options présents.
 
 ## État cloud constaté
@@ -23,12 +23,12 @@ Les sondes publiques ont retourné 404 pour `.env.local` et `.git/config`, 403 p
 
 L’audit des dépendances de production n’a signalé aucune vulnérabilité connue à cette date. Cela ne démontre pas l’absence de faille dans le jeu.
 
-## Ce qui bloque les paiements réels
+## État du passage sur Stripe réel
 
-1. **Configuration Stripe réelle à vérifier** : l’exploitant indique avoir terminé l’activation du compte le 27 octobre 2026. L’installation utilise encore une clé de test ; la clé réelle n’est pas encore renseignée dans le fichier privé de préparation. Les capacités du compte en mode réel seront vérifiées avec cette clé avant ouverture.
+1. **Compte réel vérifié** : la clé fournie est une clé live. Stripe confirme `charges_enabled=true`, `payouts_enabled=true`, `details_submitted=true`. Aucun secret n’est publié dans le dépôt.
 2. **Isolation des fonds préparée** : les crédits fictifs sont conservés dans les tables historiques. Le registre live démarre vide et n’utilise ni leurs soldes ni leurs mises. Les tests couvrent aussi l’isolation des remboursements, litiges et identifiants d’événements identiques entre environnements. Cette préparation ne suffit pas à activer Stripe.
-3. Configurer les clés live et le webhook live, puis vérifier le parcours réel de paiement, livraison des crédits, répétition du webhook, remboursement et litige. Les tests locaux et les précédentes sessions Stripe test ne remplacent pas cette validation.
-4. L’exploitant a fourni les informations publiques suivantes : Loris Ducroux, entrepreneur individuel en France, contact `lorisdcx.pro@gmail.com`. Elles figurent dans les écrans d’information et de sponsoring. Le numéro d’immatriculation, la domiciliation professionnelle et le numéro de contact restent à fournir pour compléter les mentions ; les conditions du sponsoring et les durées de conservation restent à finaliser avant encaissement.
+3. Le webhook live dédié utilise la version d’API du SDK, `2026-09-30.endive`, et les cinq événements de paiement/remboursement/litige traités par l’application. La création d’un checkout live de 5 € a été vérifiée ; cette session a été immédiatement expirée, sans paiement, sans crédit de portefeuille et sans remise d’un lien de paiement générique. Les simulations de paiement/remboursement utilisent le mode test, conformément aux consignes Stripe. Aucune transaction réelle de client n’a encore validé la livraison du prestataire de bout en bout ; ne pas présenter la création d’une session ou un test de signature comme une vente réelle réussie.
+4. L’exploitant a fourni les informations publiques suivantes : Loris Ducroux, entrepreneur individuel en France, SIRET `92017831600021`, contact `lorisdcx.pro@gmail.com`. Elles figurent dans les écrans d’information et de sponsoring. Il demande de ne pas publier son adresse personnelle. Une domiciliation professionnelle et un numéro de contact restent nécessaires pour compléter les mentions ; les CGV complètes, les durées de conservation et les procédures commerciales restent à finaliser. La page `/sponsoring` explique le fonctionnement du service et les demandes de remboursement, sans certifier une conformité juridique complète.
 5. Prévoir la récupération des comptes et renforcer l’accès administrateur. L’authentification actuelle est propre au jeu ; elle n’offre ni récupération par e-mail ni MFA.
 6. Vérifier une restauration de sauvegarde et la capacité en charge avant une audience importante. Les limites de fréquence et le cache n’ont pas été validés à l’échelle d’une communauté de streamers.
 
@@ -48,4 +48,4 @@ Les tests utilisent une base SQLite isolée et une émulation PostgreSQL locale 
 - [Stripe — webhooks](https://docs.stripe.com/webhooks)
 - [Vercel — conditions du plan Hobby](https://vercel.com/docs/plans/hobby)
 
-La campagne Reddit est préparée dans `reddit-campaign.md`. Aucun post n’a été envoyé et aucun paiement réel n’a été activé par cette revue.
+La campagne Reddit est préparée dans `reddit-campaign.md`. Aucun post n’a été envoyé et aucune carte n’a été débitée par l’agent. L’entrée `/?sponsor=1` ouvre le portefeuille du compte connecté, ou l’inscription puis ce portefeuille, sans créer de checkout tant que l’utilisateur ne valide pas une recharge.

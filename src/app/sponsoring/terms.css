@@ -1,0 +1,36 @@
+.sponsor-terms-page {
+  height: 100dvh;
+  overflow-y: auto;
+  padding: 48px 24px 80px;
+  background: var(--paper);
+}
+.sponsor-terms-page article {
+  max-width: 720px;
+  margin: 0 auto;
+}
+.sponsor-terms-page nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.sponsor-terms-page .eyebrow {
+  margin-top: 44px;
+}
+.sponsor-terms-page h1 {
+  font-size: clamp(32px, 6vw, 52px);
+  letter-spacing: -2px;
+  margin: 16px 0 28px;
+}
+.sponsor-terms-page h2 {
+  font-size: 21px;
+  margin: 32px 0 12px;
+}
+.sponsor-terms-page p {
+  font-size: 14px;
+  line-height: 1.9;
+  margin: 12px 0;
+}
+.sponsor-terms-page .primary {
+  margin-top: 32px;
+  text-decoration: none;
+}

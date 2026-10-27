@@ -48,6 +48,7 @@ export async function POST(request: Request) {
         checkout_id: string | null;
         checkout_expires: number | null;
         credited_at: number | null;
+        created_at: number;
       }>('SELECT * FROM sponsor_topups WHERE user_id=? AND request_id=?', uid, body.requestId))!;
     });
     if (topup.amount_cents !== body.amountCents)
@@ -64,8 +65,14 @@ export async function POST(request: Request) {
       );
     }
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || new URL(request.url).origin;
-    const expires = Math.floor(now / 1000) + 31 * 60;
-    const metadata = { kind: 'sponsor_topup', topup_id: topup.id, user_id: uid };
+    const expires = Math.floor(topup.created_at / 1000) + 31 * 60;
+    const metadata = {
+      kind: 'sponsor_topup',
+      topup_id: topup.id,
+      user_id: uid,
+      terms_version: '2026-10-27',
+      terms_accepted_at: String(topup.created_at),
+    };
     const checkout = await stripe.checkout.sessions.create(
       {
         mode: 'payment',
